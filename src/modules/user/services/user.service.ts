@@ -93,12 +93,6 @@ export class UserService {
     }
 
     if (updateUserPayload.new_password) {
-      if (updateUserPayload.new_password.length < 8) {
-        throw new BadRequestError(
-          'New password must be at least 8 characters long',
-        );
-      }
-
       userItem.hashed_password = await createHashedPassword(
         updateUserPayload.new_password,
       );
