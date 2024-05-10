@@ -10,7 +10,7 @@ import {
 export const envSchema = z.object({
   DATABASE_ROOT_PASSWORD: stringSchema,
   DATABASE_DATABASE_NAME: stringSchema,
-  DB_PORT: optionalStringToNumberSchema.default('5432'),
+  DB_PORT: optionalStringToNumberSchema.default('1433'),
   DATABASE_HOST: optionalStringSchema.default('localhost'),
   DB_USER: stringSchema,
   JWT_SECRET: stringSchema,

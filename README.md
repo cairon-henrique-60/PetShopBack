@@ -45,6 +45,38 @@ $ pnpm run start:dev
 $ pnpm run start:prod
 ```
 
+## Docker Container
+
+```bash
+# running
+$ docker-compose up
+
+# list
+$ docker ps
+
+# stop
+$ docker stop id_container
+
+# destroy
+$ docker-compose down -v
+
+# data-base bash
+$ docker compose exec db bash
+```
+
+## Migrations
+
+```bash
+# create
+$ typeorm migration:create src/lib/database/migrations/--migration-name--
+
+# running the new migration
+$ typeorm migration:run -- -d src/lib/database/database.providers.ts
+
+# Rollbacks
+$ typeorm migration:revert --fake
+```
+
 ## Test
 
 ```bash
@@ -64,10 +96,10 @@ Nest is an MIT-licensed open source project. It can grow thanks to the sponsors 
 
 ## Stay in touch
 
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+- Author - [Cairon Henrique](https://github.com/cairon-henrique-60)
+- LinkeIn - [https://www.linkedin.com/in/cairon-henrique-b88375224/](https://www.linkedin.com/in/cairon-henrique-b88375224/)
+- Author - [Gustavo Almeida](https://github.com/Guxxtavoww)
+- LinkeIn - [https://www.linkedin.com/in/gustavo-augusto-3a513b1b5/](https://www.linkedin.com/in/gustavo-augusto-3a513b1b5/)
 
-## License
-
-Nest is [MIT licensed](LICENSE).
+Url para acessar o swagger em ambiente de desenvolvimento:
+[http://localhost:5000/server#](http://localhost:5000/server#)

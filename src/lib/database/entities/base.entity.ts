@@ -18,4 +18,9 @@ export class Base {
     default: null,
   })
   updatedAt: string | null;
+
+  // @BeforeInsert()
+  // addId() {
+  //   this.id = uuidv4();
+  // }
 }
