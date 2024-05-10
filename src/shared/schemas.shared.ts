@@ -105,6 +105,7 @@ export const optionalDateStringSchema = dateStringSchema
 export const booleanParamSchema = z
   .union([z.literal('true'), z.literal('false')])
   .optional()
+  .nullable()
   .transform((value) =>
     !isNullableValue(value) ? value === 'true' : undefined,
   );
