@@ -22,7 +22,7 @@ const dataSource = new DataSource({
   migrations: [migrationsPath],
   synchronize: false,
   migrationsRun: true,
-  logging: hasDatabaseHost ? true : false,
+  logging: hasDatabaseHost,
 });
 
 export const databaseProviders = [
