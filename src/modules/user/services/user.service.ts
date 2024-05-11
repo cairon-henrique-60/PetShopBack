@@ -61,7 +61,7 @@ export class UserService {
   //   return Promise.resolve(paginatedHotelsResult);
   // }
 
-  async paginateUser(params: PaginateUsersPayload): Promise<Pagination<User>> {
+  async paginateUsers(params: PaginateUsersPayload): Promise<Pagination<User>> {
     const { limit, page, ...rest } = params;
 
     const whereClause: ListUsersPayload = this.buildWhereClause(rest);
@@ -79,21 +79,17 @@ export class UserService {
     return paginate<User>(queryBuilder, options);
   }
 
-  async paginateUsers({ limit, page }: PaginateUsersPayload) {
-    return this.paginationService.paginate(
-      this.userRepository,
-      {
-        limit,
-        page,
-      },
-      { select: ['createdAt', 'id', 'user_email', 'user_name', 'updatedAt'] },
-    );
-  }
-
   async getUserByEmail(user_email: string): Promise<User> {
     const foundedUser = await this.userRepository.findOne({
       where: { user_email },
-      select: ['createdAt', 'id', 'updatedAt', 'user_email', 'user_name', 'hashed_password'],
+      select: [
+        'createdAt',
+        'id',
+        'updatedAt',
+        'user_email',
+        'user_name',
+        'hashed_password',
+      ],
     });
 
     if (!foundedUser) {
@@ -108,6 +104,7 @@ export class UserService {
 
     const users = await this.userRepository.find({
       where: whereClause,
+      select: ['createdAt', 'id', 'updatedAt', 'user_email', 'user_name'],
     });
 
     return users;

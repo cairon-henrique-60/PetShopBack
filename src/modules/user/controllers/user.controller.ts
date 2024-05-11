@@ -33,13 +33,6 @@ export class UserController {
     return this.userService.listUser(querys);
   }
 
-  @Get('teste')
-  @Public()
-  @ApiPaginationQuery()
-  async paginateUsersTeste(@Query() querys: PaginateUsersDTO) {
-    return this.userService.paginateUser(querys);
-  }
-
   @Get('paginate')
   @ApiPaginationQuery()
   async paginateUsers(@Query() querys: PaginateUsersDTO) {
