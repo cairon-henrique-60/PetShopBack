@@ -85,6 +85,11 @@ export const paginationParamSchema = z
   })
   .transform(Number);
 
+export const optionalPaginationParamSchema = paginationParamSchema
+  .optional()
+  .nullable()
+  .transform((value) => (isNullableValue(value) ? undefined : value));
+
 export const dateStringSchema = stringSchema
   .refine(
     (value) => {
@@ -110,6 +115,11 @@ export const endDateStringSchema = stringSchema
     endDate.setDate(endDate.getDate() + 1);
     return endDate;
   });
+
+export const optionalEndDateStringSchema = endDateStringSchema
+  .optional()
+  .nullable()
+  .transform((value) => (isNullableValue(value) ? undefined : value));
 
 export const optionalDateStringSchema = dateStringSchema
   .optional()

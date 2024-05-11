@@ -1,5 +1,9 @@
 import { ZodError } from 'nestjs-zod/z';
-import { Pagination, paginate } from 'nestjs-typeorm-paginate';
+import {
+  type IPaginationMeta,
+  Pagination,
+  paginate,
+} from 'nestjs-typeorm-paginate';
 import { Injectable } from '@nestjs/common';
 import {
   type ObjectLiteral,
@@ -34,15 +38,15 @@ export class PaginationService {
     entityRepository: Repository<T>,
     { limit, page, ...options }: PaginationArgs,
     searchOptions?: FindOptionsWhere<T> | FindManyOptions<T>,
-  ) {
+  ): Promise<Pagination<T, IPaginationMeta>> {
     const { parsedLimit, parsedPage } = this.parseLimitAndPage(limit, page);
 
     return paginate<T>(
       entityRepository,
       {
+        ...options,
         limit: parsedLimit,
         page: parsedPage,
-        ...options,
       },
       searchOptions,
     );
@@ -50,12 +54,9 @@ export class PaginationService {
 
   public async paginateWithQueryBuilder<T extends ObjectLiteral>(
     queryBuilder: SelectQueryBuilder<T>,
-    options: PaginationArgs,
-  ): Promise<Pagination<T>> {
-    const { parsedLimit, parsedPage } = this.parseLimitAndPage(
-      options.limit,
-      options.page,
-    );
+    { limit, page, ...options }: PaginationArgs,
+  ): Promise<Pagination<T, IPaginationMeta>> {
+    const { parsedLimit, parsedPage } = this.parseLimitAndPage(limit, page);
 
     return paginate<T>(queryBuilder, {
       ...options,

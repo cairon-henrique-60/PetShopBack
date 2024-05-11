@@ -3,17 +3,17 @@ import { createZodDto } from 'nestjs-zod';
 import { ApiPropertyOptional } from '@nestjs/swagger';
 
 import {
-  stringSchema,
-  emailStringSchema,
-  dateStringSchema,
-  endDateStringSchema,
+  optionalEndDateStringSchema,
+  optionalDateStringSchema,
+  optionalStringSchema,
+  optionalEmailStringSchema,
 } from 'src/shared/schemas.shared';
 
 export const listUsersSchema = z.object({
-  user_name: stringSchema.optional(),
-  user_email: emailStringSchema.optional(),
-  initialDate: dateStringSchema.optional(),
-  endDate: endDateStringSchema.optional(),
+  user_name: optionalStringSchema,
+  user_email: optionalEmailStringSchema,
+  initialDate: optionalDateStringSchema,
+  endDate: optionalEndDateStringSchema,
 });
 
 export type ListUsersPayload = z.infer<typeof listUsersSchema>;
@@ -24,23 +24,23 @@ export class ListUsersDTO extends createZodDto(listUsersSchema) {
    * @example Paulo Salvatore
    */
   @ApiPropertyOptional()
-  user_name: string;
+  user_name?: string;
   /**
    *Email of the user.
    *@example pauloSalvatore@gmail.com
    */
   @ApiPropertyOptional()
-  user_email: string;
+  user_email?: string;
   /**
    * Initial Date created at of the user.
    * @example 2024-10-10
    */
   @ApiPropertyOptional()
-  initialDate: Date;
+  initialDate?: Date;
   /**
    * End Date created at of the user.
    * @example 2024-11-10
    */
   @ApiPropertyOptional()
-  endDate: Date;
+  endDate?: Date;
 }

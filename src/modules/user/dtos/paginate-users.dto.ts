@@ -3,20 +3,20 @@ import { createZodDto } from 'nestjs-zod';
 import { ApiPropertyOptional } from '@nestjs/swagger';
 
 import {
-  paginationParamSchema,
-  stringSchema,
-  emailStringSchema,
-  dateStringSchema,
-  endDateStringSchema,
+  optionalPaginationParamSchema,
+  optionalStringSchema,
+  optionalEndDateStringSchema,
+  optionalDateStringSchema,
+  optionalEmailStringSchema,
 } from 'src/shared/schemas.shared';
 
 export const paginateUsersSchema = z.object({
-  page: paginationParamSchema.optional(),
-  limit: paginationParamSchema.optional(),
-  user_name: stringSchema.optional(),
-  user_email: emailStringSchema.optional(),
-  initialDate: dateStringSchema.optional(),
-  endDate: endDateStringSchema.optional(),
+  page: optionalPaginationParamSchema,
+  limit: optionalPaginationParamSchema,
+  user_name: optionalStringSchema,
+  user_email: optionalEmailStringSchema,
+  initialDate: optionalDateStringSchema,
+  endDate: optionalEndDateStringSchema,
 });
 
 export type PaginateUsersPayload = z.infer<typeof paginateUsersSchema>;

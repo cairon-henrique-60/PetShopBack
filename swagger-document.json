@@ -72,6 +72,7 @@
             "required": false,
             "in": "query",
             "description": "Name of the user.",
+            "example": "Paulo Salvatore",
             "schema": {
               "type": "string"
             }

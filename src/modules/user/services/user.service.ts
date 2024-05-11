@@ -8,15 +8,10 @@ import {
 import { Inject, Injectable } from '@nestjs/common';
 
 import {
-  paginate,
-  Pagination,
-  IPaginationOptions,
-} from 'nestjs-typeorm-paginate';
-
-import {
   createHashedPassword,
   validatePassword,
 } from 'src/utils/password.utils';
+import { isNullableValue } from 'src/utils/is-nullable-value.util';
 import { PaginationService } from 'src/lib/pagination/pagination.service';
 import { NotFoundError } from 'src/lib/http-exceptions/errors/types/not-found-error';
 import { BadRequestError } from 'src/lib/http-exceptions/errors/types/bad-request-error';
@@ -26,7 +21,6 @@ import type { UpdateUserType } from '../dtos/update-user.to';
 import type { ListUsersPayload } from '../dtos/list-users.dto';
 import type { CreateUserPayload } from '../dtos/create-user.dto';
 import type { PaginateUsersPayload } from '../dtos/paginate-users.dto';
-import { isNullableValue } from 'src/utils/is-nullable-value.util';
 
 @Injectable()
 export class UserService {
@@ -36,47 +30,21 @@ export class UserService {
     private readonly paginationService: PaginationService,
   ) {}
 
-  // async paginateUser({ limit, page, ...params }: PaginateUsersPayload) {
-  //   const paginatedHotelsResult = await this.paginationService.paginate(
-  //     this.userRepository,
-  //     {
-  //       limit,
-  //       page,
-  //     },
-  //     {
-  //       where: {
-  //         user_email: params.user_email,
-  //         user_name: params.user_name,
-  //       },
-  //       select: {
-  //         id: true,
-  //         user_name: true,
-  //         user_email: true,
-  //         createdAt: true,
-  //         updatedAt: true,
-  //       },
-  //     },
-  //   );
+  async paginateUsers({ limit, page, ...params }: PaginateUsersPayload) {
+    const whereClause = this.buildWhereClause(params);
 
-  //   return Promise.resolve(paginatedHotelsResult);
-  // }
-
-  async paginateUsers(params: PaginateUsersPayload): Promise<Pagination<User>> {
-    const { limit, page, ...rest } = params;
-
-    const whereClause: ListUsersPayload = this.buildWhereClause(rest);
-
-    const options: IPaginationOptions = {
-      limit: limit || 1,
-      page: page || 10,
-    };
-
-    const queryBuilder = this.userRepository.createQueryBuilder('u');
-    queryBuilder
+    const queryBuilder = this.userRepository
+      .createQueryBuilder('u')
       .select(['u.user_name', 'u.user_email', 'u.createdAt', 'u.updatedAt'])
       .where(whereClause);
 
-    return paginate<User>(queryBuilder, options);
+    const paginatedHotelsResult =
+      await this.paginationService.paginateWithQueryBuilder(queryBuilder, {
+        limit,
+        page,
+      });
+
+    return Promise.resolve(paginatedHotelsResult);
   }
 
   async getUserByEmail(user_email: string): Promise<User> {
@@ -100,7 +68,7 @@ export class UserService {
   }
 
   async listUser(params: ListUsersPayload): Promise<User[]> {
-    const whereClause: ListUsersPayload = this.buildWhereClause(params);
+    const whereClause = this.buildWhereClause(params);
 
     const users = await this.userRepository.find({
       where: whereClause,
@@ -179,8 +147,8 @@ export class UserService {
   }
 
   // private metods
-  private buildWhereClause(params: ListUsersPayload): object {
-    const whereClause: { [key: string]: any } = {};
+  private buildWhereClause(params: ListUsersPayload): ListUsersPayload {
+    const whereClause: Record<string, any> = {};
 
     if (params.initialDate && params.endDate) {
       whereClause['createdAt'] = Between(params.initialDate, params.endDate);
