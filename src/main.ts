@@ -7,10 +7,10 @@ import { ENV_VARIABLES } from 'src/config/env.config';
 import { swaggerConfig } from 'src/config/swagger.config';
 
 import { AppModule } from './app.module';
-import { DataBaseInterceptor } from './lib/http-exceptions/errors/interceptors/dataBase.interceptor';
-import { NotFoundInterceptor } from './lib/http-exceptions/errors/interceptors/not-found.interceptor';
-import { BadRequestInterceptor } from './lib/http-exceptions/errors/interceptors/bad-request.interceptor';
-import { UnauthorizedInterceptor } from './lib/http-exceptions/errors/interceptors/unauthorized.interceptor';
+import { DataBaseInterceptor } from 'src/lib/http-exceptions/errors/interceptors/database.interceptor';
+import { NotFoundInterceptor } from 'src/lib/http-exceptions/errors/interceptors/not-found.interceptor';
+import { BadRequestInterceptor } from 'src/lib/http-exceptions/errors/interceptors/bad-request.interceptor';
+import { UnauthorizedInterceptor } from 'src/lib/http-exceptions/errors/interceptors/unauthorized.interceptor';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);

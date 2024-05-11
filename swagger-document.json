@@ -63,17 +63,145 @@
         ]
       }
     },
-    "/server/user/paginate": {
+    "/server/user": {
       "get": {
-        "operationId": "UserController_paginateUsers",
+        "operationId": "UserController_list",
         "parameters": [
           {
-            "name": "limit",
+            "name": "user_name",
             "required": false,
             "in": "query",
-            "description": "The limit of items. If not passed the default limit will be 10",
+            "description": "Name of the user.",
             "schema": {
-              "type": "number"
+              "type": "string"
+            }
+          },
+          {
+            "name": "user_email",
+            "required": false,
+            "in": "query",
+            "description": "Email of the user.",
+            "example": "pauloSalvatore@gmail.com",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "initialDate",
+            "required": false,
+            "in": "query",
+            "description": "Initial Date created at of the user.",
+            "example": "2024-10-10",
+            "schema": {
+              "format": "date-time",
+              "type": "string"
+            }
+          },
+          {
+            "name": "endDate",
+            "required": false,
+            "in": "query",
+            "description": "End Date created at of the user.",
+            "example": "2024-11-10",
+            "schema": {
+              "format": "date-time",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/User"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "user"
+        ]
+      },
+      "post": {
+        "operationId": "UserController_create",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateUserDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/User"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "user"
+        ]
+      }
+    },
+    "/server/user/teste": {
+      "get": {
+        "operationId": "UserController_paginateUsersTeste",
+        "parameters": [
+          {
+            "name": "user_name",
+            "required": false,
+            "in": "query",
+            "description": "Name of the user.",
+            "example": "Paulo Salvatore",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "user_email",
+            "required": false,
+            "in": "query",
+            "description": "Email of the user.",
+            "example": "pauloSalvatore@gmail.com",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "initialDate",
+            "required": false,
+            "in": "query",
+            "description": "Initial Date created at of the user.",
+            "example": "2024-10-10",
+            "schema": {
+              "format": "date-time",
+              "type": "string"
+            }
+          },
+          {
+            "name": "endDate",
+            "required": false,
+            "in": "query",
+            "description": "End Date created at of the user.",
+            "example": "2024-11-10",
+            "schema": {
+              "format": "date-time",
+              "type": "string"
             }
           },
           {
@@ -81,6 +209,94 @@
             "required": false,
             "in": "query",
             "description": "The Current Page. If not passed the default page will be 1",
+            "example": 1,
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "The limit of items. If not passed the default limit will be 10",
+            "example": 100,
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "user"
+        ]
+      }
+    },
+    "/server/user/paginate": {
+      "get": {
+        "operationId": "UserController_paginateUsers",
+        "parameters": [
+          {
+            "name": "user_name",
+            "required": false,
+            "in": "query",
+            "description": "Name of the user.",
+            "example": "Paulo Salvatore",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "user_email",
+            "required": false,
+            "in": "query",
+            "description": "Email of the user.",
+            "example": "pauloSalvatore@gmail.com",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "initialDate",
+            "required": false,
+            "in": "query",
+            "description": "Initial Date created at of the user.",
+            "example": "2024-10-10",
+            "schema": {
+              "format": "date-time",
+              "type": "string"
+            }
+          },
+          {
+            "name": "endDate",
+            "required": false,
+            "in": "query",
+            "description": "End Date created at of the user.",
+            "example": "2024-11-10",
+            "schema": {
+              "format": "date-time",
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "description": "The Current Page. If not passed the default page will be 1",
+            "example": 1,
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "The limit of items. If not passed the default limit will be 10",
+            "example": 100,
             "schema": {
               "type": "number"
             }
@@ -286,6 +502,30 @@
           "id",
           "createdAt",
           "updatedAt"
+        ]
+      },
+      "CreateUserDTO": {
+        "type": "object",
+        "properties": {
+          "user_name": {
+            "type": "string",
+            "description": "Name of the user."
+          },
+          "password": {
+            "type": "string",
+            "description": "Password of the user.",
+            "example": "909090"
+          },
+          "user_email": {
+            "type": "string",
+            "description": "Email of the user.",
+            "example": "pauloSalvatore@gmail.com"
+          }
+        },
+        "required": [
+          "user_name",
+          "password",
+          "user_email"
         ]
       },
       "UpdateUserDTO": {

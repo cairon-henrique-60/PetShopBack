@@ -6,26 +6,11 @@ services:
       POSTGRES_USER: ${DB_USER}
       POSTGRES_PASSWORD: ${DATABASE_ROOT_PASSWORD}
     ports:
-      - "${DB_PORT}:${DB_PORT}"
+      - "${DB_PORT}:5432"
     networks:
       - my_network
     volumes:
       - ./scripts:/docker-entrypoint-initdb.d
-
-  # app:
-  #   build:
-  #     context: .
-  #     dockerfile: Dockerfile
-  #   depends_on:
-  #     - db
-  #   ports:
-  #     - "3000:3000"
-  #   environment:
-  #     NODE_ENV: ${NODE_ENV}
-  #     DATABASE_ROOT_PASSWORD: ${DATABASE_ROOT_PASSWORD}
-  #     DATABASE_DATABASE_NAME: ${DATABASE_DATABASE_NAME}
-  #     JWT_SECRET: ${JWT_SECRET}
-  #     JWT_EXPIRES_IN: ${JWT_EXPIRES_IN}
 
 networks:
   my_network:
