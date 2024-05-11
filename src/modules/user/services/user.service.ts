@@ -36,7 +36,7 @@ export class UserService {
   public async getUserByEmail(user_email: string): Promise<User> {
     const foundedUser = await this.userRepository.findOne({
       where: { user_email },
-      select: ['createdAt', 'id', 'updatedAt', 'user_email', 'user_name'],
+      select: ['createdAt', 'id', 'updatedAt', 'user_email', 'user_name', 'hashed_password'],
     });
 
     if (!foundedUser) {
