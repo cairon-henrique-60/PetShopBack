@@ -5,7 +5,7 @@ import { Public } from 'src/shared/decorators/auth.decorator';
 import { UuidParam } from 'src/shared/decorators/uuid-param.decorator';
 
 import { PetSpeciesService } from '../services/pet-species.service';
-import { CreateOrUpdateSpeciesDTO } from '../dtos/create-or-update-pet-species';
+import { CreateOrUpdateSpeciesDTO } from '../dtos/create-or-update-pet-species.dto';
 
 @ApiTags('pet-species')
 @Controller('pet-species')
