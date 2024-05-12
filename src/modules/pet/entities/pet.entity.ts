@@ -2,7 +2,7 @@ import { Column, Entity, Index, JoinColumn, ManyToOne } from 'typeorm';
 
 import { Base } from 'src/lib/database/entities/base.entity';
 import { User } from 'src/modules/user/entities/user.entity';
-import { PetSpecies } from 'src/modules/pet_species/entities/pet-species.entity';
+import { PetSpecies } from 'src/modules/pet-species/entities/pet-species.entity';
 
 // export enum PetSpecies {
 //   Cachorro = 'Cachorro',
