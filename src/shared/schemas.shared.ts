@@ -135,3 +135,8 @@ export const booleanParamSchema = z
   );
 
 export const orderParamSchema = z.union([z.literal('ASC'), z.literal('DESC')]);
+
+export const optionalOrderParamSchema = orderParamSchema
+  .optional()
+  .nullable()
+  .transform((value) => (isNullableValue(value) ? undefined : value));

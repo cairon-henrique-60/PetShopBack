@@ -1,6 +1,7 @@
-import { Entity, Column, Index } from 'typeorm';
+import { Entity, Column, Index, OneToMany } from 'typeorm';
 
 import { Base } from 'src/lib/database/entities/base.entity';
+import { Pet } from 'src/modules/pet/entities/pet.entity';
 
 @Entity('users')
 export class User extends Base {
@@ -13,4 +14,7 @@ export class User extends Base {
  
   @Column('varchar')
   user_email: string;
+
+  @OneToMany(() => Pet, pet => pet.tutor)
+  pets: Pet[]
 }
