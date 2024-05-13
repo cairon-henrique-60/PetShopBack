@@ -1,15 +1,8 @@
-/* eslint-disable @typescript-eslint/ban-types */
-import { type Type } from '@nestjs/common';
-import { ApiQuery } from '@nestjs/swagger';
+import { ApiQuery, type ApiQueryOptions } from '@nestjs/swagger';
 
-export function ApiPaginationQuery(
-  params?: {
-    name: string;
-    description: string;
-    type?: Type<unknown> | Function | [Function] | string;
-    required?: boolean;
-  }[],
-): MethodDecorator {
+export type Params = ApiQueryOptions[];
+
+export function ApiPaginationQuery(params?: Params): MethodDecorator {
   return (
     target: any,
     key: string | symbol,

@@ -7,6 +7,7 @@ import {
   optionalUuidSchema,
   optionalOrderParamSchema,
 } from 'src/shared/schemas.shared';
+import type { Params } from 'src/shared/decorators/api-pagination-query.decorator';
 
 export const paginatePetsQuerysSchema = z.object({
   page: optionalPaginationParamSchema,
@@ -22,7 +23,7 @@ export const paginatePetsQuerysSchema = z.object({
 
 export type PaginatePetsQuerysType = z.infer<typeof paginatePetsQuerysSchema>;
 
-export const swaggerFields = [
+export const swaggerFields: Params = [
   {
     name: 'order_by_created_at',
     description: 'Order pets by created date.',
