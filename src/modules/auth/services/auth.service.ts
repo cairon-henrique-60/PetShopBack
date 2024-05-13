@@ -67,11 +67,11 @@ export class AuthService {
     };
   }
 
-  async getAccessToken(user_id: string, email: string, name: string) {
+  async getAccessToken(id: string, email: string, name: string) {
     const jwtPayload: IJwtPayload = {
       name,
-      email: email,
-      id: user_id,
+      email,
+      id,
     };
 
     const access_token = await this.jwtService.signAsync(jwtPayload, {
