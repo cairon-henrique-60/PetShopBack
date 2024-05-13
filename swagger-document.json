@@ -380,6 +380,26 @@
             }
           },
           {
+            "name": "order_by_created_at",
+            "required": false,
+            "in": "query",
+            "description": "Order pets by created date.",
+            "example": "ASC",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "order_by_updated_at",
+            "required": false,
+            "in": "query",
+            "description": "Order pets by updated date",
+            "example": "DESC",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
             "name": "limit",
             "required": false,
             "in": "query",
@@ -421,6 +441,44 @@
             }
           }
         ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Pet"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "pet"
+        ]
+      },
+      "put": {
+        "operationId": "PetController_updatePet",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdatePetDTO"
+              }
+            }
+          }
+        },
         "responses": {
           "200": {
             "description": "",
@@ -931,6 +989,76 @@
           "pet_breed",
           "pet_gender",
           "pet_color",
+          "tutor_id",
+          "pet_species_id"
+        ]
+      },
+      "UpdatePetDTO": {
+        "type": "object",
+        "properties": {
+          "pet_name": {
+            "type": "string",
+            "description": "Name of the pet.",
+            "example": "Luna"
+          },
+          "pet_breed": {
+            "type": "string",
+            "description": "Breed of the pet.",
+            "example": "Labrador Retriever"
+          },
+          "date_of_birth": {
+            "format": "date-time",
+            "type": "string",
+            "description": "Date of birth of the pet.",
+            "example": "2020-01-15"
+          },
+          "pet_gender": {
+            "type": "string",
+            "description": "Gender of the pet.",
+            "example": "Female"
+          },
+          "pet_color": {
+            "type": "string",
+            "description": "Color of the pet.",
+            "example": "Golden"
+          },
+          "alergies": {
+            "type": "string",
+            "description": "Any allergies the pet may have.",
+            "example": "Pollen"
+          },
+          "medical_conditions": {
+            "type": "string",
+            "description": "Any medical conditions the pet may have.",
+            "example": "Hip dysplasia"
+          },
+          "current_medication": {
+            "type": "string",
+            "description": "Current medication the pet is taking.",
+            "example": "None"
+          },
+          "pet_image_url": {
+            "type": "string",
+            "description": "URL of the pet's image.",
+            "example": "https://example.com/pet.jpg"
+          },
+          "pet_microship_id": {
+            "type": "string",
+            "description": "Microchip ID of the pet.",
+            "example": "A123456789"
+          },
+          "tutor_id": {
+            "type": "string",
+            "description": "ID of the tutor (owner) of the pet.",
+            "example": "123e4567-e89b-12d3-a456-426614174000"
+          },
+          "pet_species_id": {
+            "type": "string",
+            "description": "ID of the species the pet belongs to.",
+            "example": "123e4567-e89b-12d3-a456-426614174001"
+          }
+        },
+        "required": [
           "tutor_id",
           "pet_species_id"
         ]

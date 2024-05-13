@@ -17,7 +17,7 @@ import { ApiPaginationQuery } from 'src/shared/decorators/api-pagination-query.d
 import { PetService } from '../services/pet.service';
 import { CreatePetDTO } from '../dtos/create-pet.dto';
 import { UpdatePetDTO } from '../dtos/update-pet.dto';
-import { PaginatePetsQuerysDTO } from '../dtos/paginate-pets-querys.dto';
+import { PaginatePetsQuerysDTO, swaggerFields } from '../dtos/paginate-pets-querys.dto';
 
 @ApiTags('pet')
 @Controller('pet')
@@ -26,7 +26,7 @@ export class PetController {
 
   @Public()
   @Get('paginate')
-  @ApiPaginationQuery()
+  @ApiPaginationQuery(swaggerFields)
   async paginatePets(@Query() querys: PaginatePetsQuerysDTO) {
     return this.petService.paginatePets(querys);
   }

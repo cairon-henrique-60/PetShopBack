@@ -22,6 +22,21 @@ export const paginatePetsQuerysSchema = z.object({
 
 export type PaginatePetsQuerysType = z.infer<typeof paginatePetsQuerysSchema>;
 
+export const swaggerFields = [
+  {
+    name: 'order_by_created_at',
+    description: 'Order pets by created date.',
+    required: false,
+    type: String,
+  },
+  {
+    name: 'order_by_updated_at',
+    description: 'Order pets by updated date',
+    required: false,
+    type: String,
+  },
+];
+
 export class PaginatePetsQuerysDTO extends createZodDto(
   paginatePetsQuerysSchema,
 ) {
