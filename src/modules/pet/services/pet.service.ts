@@ -16,6 +16,10 @@ export class PetService {
     private readonly paginationService: PaginationService,
   ) {}
 
+  private buildPetQueryBuilder() {
+    return this.petRepository.createQueryBuilder('pet');
+  }
+
   async paginatePets({
     limit,
     page,
@@ -27,39 +31,38 @@ export class PetService {
     tutor_id,
     pet_name,
   }: PaginatePetsQuerysType) {
-    const petQueryBuilder = this.petRepository
-      .createQueryBuilder('p')
+    const petQueryBuilder = this.buildPetQueryBuilder()
       .select([
-        'p.pet_name',
-        'p.pet_breed',
-        'p.pet_gender',
-        'p.pet_color',
-        'p.tutor_id',
-        'p.pet_image_url',
-        'p.pet_species_id',
-        'p.created_at',
-        'p.updated_at',
-        'p.id',
+        'pet.pet_name',
+        'pet.pet_breed',
+        'pet.pet_gender',
+        'pet.pet_color',
+        'pet.tutor_id',
+        'pet.pet_image_url',
+        'pet.pet_species_id',
+        'pet.created_at',
+        'pet.updated_at',
+        'pet.id',
       ])
-      .where(tutor_id ? 'p.tutor_id = :tutor_id' : '1=1', { tutor_id })
-      .andWhere(pet_breed ? 'p.pet_breed LIKE :pet_breed' : '1=1', {
+      .where(tutor_id ? 'pet.tutor_id = :tutor_id' : '1=1', { tutor_id })
+      .andWhere(pet_breed ? 'pet.pet_breed LIKE :pet_breed' : '1=1', {
         pet_breed: `%${pet_breed}%`,
       })
-      .andWhere(pet_name ? 'p.pet_name LIKE :pet_name' : '1=1', {
+      .andWhere(pet_name ? 'pet.pet_name LIKE :pet_name' : '1=1', {
         pet_name: `%${pet_name}%`,
       })
-      .andWhere(pet_color ? 'p.pet_color LIKE :pet_color' : '1=1', {
+      .andWhere(pet_color ? 'pet.pet_color LIKE :pet_color' : '1=1', {
         pet_color: `%${pet_color}%`,
       })
-      .andWhere(pet_gender ? 'p.pet_gender LIKE :pet_gender' : '1=1', {
+      .andWhere(pet_gender ? 'pet.pet_gender LIKE :pet_gender' : '1=1', {
         pet_gender: `%${pet_gender}%`,
       });
 
     if (order_by_created_at)
-      petQueryBuilder.orderBy('p.created_at', order_by_created_at);
+      petQueryBuilder.orderBy('pet.created_at', order_by_created_at);
 
     if (order_by_updated_at)
-      petQueryBuilder.orderBy('p.updated_at', order_by_updated_at);
+      petQueryBuilder.orderBy('pet.updated_at', order_by_updated_at);
 
     return this.paginationService.paginateWithQueryBuilder(petQueryBuilder, {
       limit,
@@ -68,8 +71,7 @@ export class PetService {
   }
 
   async getPet(id: string): Promise<Pet> {
-    const foundedPet = await this.petRepository
-      .createQueryBuilder('pet')
+    const foundedPet = await this.buildPetQueryBuilder()
       .where('pet.id = :id', { id })
       .leftJoinAndSelect('pet.pet_species', 'pet_species')
       .leftJoinAndSelect('pet.tutor', 'tutor')
