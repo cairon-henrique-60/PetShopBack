@@ -11,11 +11,11 @@ export class Base {
   id: string;
 
   @CreateDateColumn({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
-  createdAt: string;
+  created_at: string;
 
   @UpdateDateColumn({
     type: 'timestamp',
     default: null,
   })
-  updatedAt: string | null;
+  updated_at: string | null;
 }

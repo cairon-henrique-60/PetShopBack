@@ -12,6 +12,7 @@ import { CreateOrUpdateSpeciesDTO } from '../dtos/create-or-update-pet-species.d
 export class PetSpeciesController {
   constructor(private readonly petSpeciesService: PetSpeciesService) {}
 
+  @Public()
   @Get()
   async getAll() {
     return this.petSpeciesService.getAllSpecies();

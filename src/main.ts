@@ -5,12 +5,12 @@ import { SwaggerModule } from '@nestjs/swagger';
 
 import { ENV_VARIABLES } from 'src/config/env.config';
 import { swaggerConfig } from 'src/config/swagger.config';
-
-import { AppModule } from './app.module';
 import { DataBaseInterceptor } from 'src/lib/http-exceptions/errors/interceptors/database.interceptor';
 import { NotFoundInterceptor } from 'src/lib/http-exceptions/errors/interceptors/not-found.interceptor';
 import { BadRequestInterceptor } from 'src/lib/http-exceptions/errors/interceptors/bad-request.interceptor';
 import { UnauthorizedInterceptor } from 'src/lib/http-exceptions/errors/interceptors/unauthorized.interceptor';
+
+import { AppModule } from './app.module';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);

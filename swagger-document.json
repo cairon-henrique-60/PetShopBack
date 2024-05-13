@@ -408,6 +408,64 @@
         ]
       }
     },
+    "/server/pet/{id}": {
+      "get": {
+        "operationId": "PetController_getPet",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Pet"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "pet"
+        ]
+      },
+      "delete": {
+        "operationId": "PetController_deletePet",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Pet"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "pet"
+        ]
+      }
+    },
     "/server/pet": {
       "post": {
         "operationId": "PetController_createPet",
@@ -424,36 +482,6 @@
         },
         "responses": {
           "201": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Pet"
-                }
-              }
-            }
-          }
-        },
-        "tags": [
-          "pet"
-        ]
-      }
-    },
-    "/server/pet/{id}": {
-      "delete": {
-        "operationId": "PetController_deletePet",
-        "parameters": [
-          {
-            "name": "id",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
             "description": "",
             "content": {
               "application/json": {
@@ -682,10 +710,10 @@
           "id": {
             "type": "string"
           },
-          "createdAt": {
+          "created_at": {
             "type": "string"
           },
-          "updatedAt": {
+          "updated_at": {
             "type": "string",
             "nullable": true
           }
@@ -696,8 +724,8 @@
           "user_email",
           "pets",
           "id",
-          "createdAt",
-          "updatedAt"
+          "created_at",
+          "updated_at"
         ]
       },
       "PetSpecies": {
@@ -709,10 +737,10 @@
           "id": {
             "type": "string"
           },
-          "createdAt": {
+          "created_at": {
             "type": "string"
           },
-          "updatedAt": {
+          "updated_at": {
             "type": "string",
             "nullable": true
           }
@@ -720,8 +748,8 @@
         "required": [
           "species_name",
           "id",
-          "createdAt",
-          "updatedAt"
+          "created_at",
+          "updated_at"
         ]
       },
       "Pet": {
@@ -778,10 +806,10 @@
           "id": {
             "type": "string"
           },
-          "createdAt": {
+          "created_at": {
             "type": "string"
           },
-          "updatedAt": {
+          "updated_at": {
             "type": "string",
             "nullable": true
           }
@@ -802,8 +830,8 @@
           "pet_species",
           "pet_species_id",
           "id",
-          "createdAt",
-          "updatedAt"
+          "created_at",
+          "updated_at"
         ]
       },
       "CreateUserDTO": {
@@ -912,6 +940,7 @@
         "properties": {
           "species_name": {
             "type": "string",
+            "description": "Name of the species.",
             "example": "Cachorro"
           }
         },

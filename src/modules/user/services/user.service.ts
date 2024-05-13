@@ -35,7 +35,7 @@ export class UserService {
 
     const queryBuilder = this.userRepository
       .createQueryBuilder('u')
-      .select(['u.user_name', 'u.user_email', 'u.createdAt', 'u.updatedAt'])
+      .select(['u.user_name', 'u.user_email', 'u.created_at', 'u.updated_at'])
       .where(whereClause);
 
     const paginatedHotelsResult =
@@ -51,9 +51,9 @@ export class UserService {
     const foundedUser = await this.userRepository.findOne({
       where: { user_email },
       select: [
-        'createdAt',
+        'created_at',
         'id',
-        'updatedAt',
+        'updated_at',
         'user_email',
         'user_name',
         'hashed_password',
@@ -72,7 +72,7 @@ export class UserService {
 
     const users = await this.userRepository.find({
       where: whereClause,
-      select: ['createdAt', 'id', 'updatedAt', 'user_email', 'user_name'],
+      select: ['created_at', 'id', 'updated_at', 'user_email', 'user_name'],
     });
 
     return users;
@@ -81,7 +81,7 @@ export class UserService {
   async getUserById(id: string): Promise<User> {
     const foundedUser = await this.userRepository.findOne({
       where: { id },
-      select: ['createdAt', 'id', 'updatedAt', 'user_email', 'user_name'],
+      select: ['created_at', 'id', 'updated_at', 'user_email', 'user_name'],
     });
 
     if (!foundedUser) {
@@ -151,11 +151,11 @@ export class UserService {
     const whereClause: Record<string, any> = {};
 
     if (params.initialDate && params.endDate) {
-      whereClause['createdAt'] = Between(params.initialDate, params.endDate);
+      whereClause['created_at'] = Between(params.initialDate, params.endDate);
     } else if (params.initialDate) {
-      whereClause['createdAt'] = MoreThanOrEqual(params.initialDate);
+      whereClause['created_at'] = MoreThanOrEqual(params.initialDate);
     } else if (params.endDate) {
-      whereClause['createdAt'] = LessThanOrEqual(params.endDate);
+      whereClause['created_at'] = LessThanOrEqual(params.endDate);
     }
 
     Object.entries(params).forEach(([key, value]) => {

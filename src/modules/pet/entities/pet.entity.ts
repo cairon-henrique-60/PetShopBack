@@ -4,18 +4,6 @@ import { Base } from 'src/lib/database/entities/base.entity';
 import { User } from 'src/modules/user/entities/user.entity';
 import { PetSpecies } from 'src/modules/pet-species/entities/pet-species.entity';
 
-// export enum PetSpecies {
-//   Cachorro = 'Cachorro',
-//   Gato = 'Gato',
-//   Ave = 'Ave',
-//   Coelho = 'Coelho',
-//   Hamster = 'Hamster',
-//   Peixe = 'Peixe',
-//   Tartaruga = 'Tartaruga',
-//   Cobra = 'Cobra',
-//   Lagarto = 'Lagarto',
-// }
-
 @Entity('pets')
 export class Pet extends Base {
   @Index()

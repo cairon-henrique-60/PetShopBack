@@ -22,6 +22,11 @@ export class PetController {
     return this.petService.paginatePets(querys);
   }
 
+  @Get(':id')
+  async getPet(@UuidParam('id') id: string) {
+    return this.petService.getPet(id);
+  }
+
   @Post()
   async createPet(@Body() payload: CreatePetDTO) {
     return this.petService.createPet(payload);

@@ -36,8 +36,9 @@ export class PetService {
         'p.tutor_id',
         'p.pet_image_url',
         'p.pet_species_id',
-        'p.createdAt',
-        'p.updatedAt',
+        'p.created_at',
+        'p.updated_at',
+        'p.id',
       ])
       .where(tutor_id ? 'p.tutor_id = :tutor_id' : '1=1', { tutor_id })
       .andWhere(pet_breed ? 'p.pet_breed LIKE :pet_breed' : '1=1', {
@@ -54,10 +55,10 @@ export class PetService {
       });
 
     if (order_by_created_at)
-      petQueryBuilder.orderBy('p.createdAt', order_by_created_at);
+      petQueryBuilder.orderBy('p.created_at', order_by_created_at);
 
     if (order_by_updated_at)
-      petQueryBuilder.orderBy('p.updatedAt', order_by_updated_at);
+      petQueryBuilder.orderBy('p.updated_at', order_by_updated_at);
 
     return this.paginationService.paginateWithQueryBuilder(petQueryBuilder, {
       limit,
@@ -66,33 +67,31 @@ export class PetService {
   }
 
   async getPet(id: string): Promise<Pet> {
-    const foundedPet = await this.petRepository.findOne({
-      where: { id },
-      select: {
-        alergies: true,
-        createdAt: true,
-        current_medication: true,
-        date_of_birth: true,
-        id: true,
-        medical_conditions: true,
-        pet_breed: true,
-        pet_color: true,
-        pet_microship_id: true,
-        pet_image_url: true,
-        updatedAt: true,
-        pet_gender: true,
-        pet_species: {
-          species_name: true,
-          id: true,
-        },
-        pet_name: true,
-        tutor: {
-          id: true,
-          user_name: true,
-          user_email: true,
-        },
-      },
-    });
+    const foundedPet = await this.petRepository
+      .createQueryBuilder('pet')
+      .leftJoinAndSelect('pet.pet_species', 'pet_species')
+      .leftJoinAndSelect('pet.tutor', 'tutor')
+      .where('pet.id = :id', { id })
+      .select([
+        'pet.id',
+        'pet.created_at',
+        'pet.pet_name',
+        'pet.pet_breed',
+        'pet.date_of_birth',
+        'pet.pet_gender',
+        'pet.pet_color',
+        'pet.alergies',
+        'pet.medical_conditions',
+        'pet.current_medication',
+        'pet.pet_image_url',
+        'pet.pet_microship_id',
+        'pet_species.species_name',
+        'pet_species.id',
+        'tutor.id',
+        'tutor.user_name',
+        'tutor.user_email',
+      ])
+      .getOne();
 
     if (!foundedPet) {
       throw new NotFoundError('Pet Não encontrado');
