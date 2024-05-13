@@ -69,12 +69,11 @@ export class PetService {
   async getPet(id: string): Promise<Pet> {
     const foundedPet = await this.petRepository
       .createQueryBuilder('pet')
+      .where('pet.id = :id', { id })
       .leftJoinAndSelect('pet.pet_species', 'pet_species')
       .leftJoinAndSelect('pet.tutor', 'tutor')
-      .where('pet.id = :id', { id })
       .select([
         'pet.id',
-        'pet.created_at',
         'pet.pet_name',
         'pet.pet_breed',
         'pet.date_of_birth',
@@ -85,6 +84,8 @@ export class PetService {
         'pet.current_medication',
         'pet.pet_image_url',
         'pet.pet_microship_id',
+        'pet.created_at',
+        'pet.updated_at',
         'pet_species.species_name',
         'pet_species.id',
         'tutor.id',
