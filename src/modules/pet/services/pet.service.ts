@@ -5,6 +5,7 @@ import { PaginationService } from 'src/lib/pagination/pagination.service';
 import { NotFoundError } from 'src/lib/http-exceptions/errors/types/not-found-error';
 
 import { Pet } from '../entities/pet.entity';
+import type { UpdatePetPayload } from '../dtos/update-pet.dto';
 import type { CreatePetPayload } from '../dtos/create-pet.dto';
 import type { PaginatePetsQuerysType } from '../dtos/paginate-pets-querys.dto';
 
@@ -109,15 +110,49 @@ export class PetService {
     return this.petRepository.save(petItem);
   }
 
+  async updatePet(id: string, tutor_id: string, payload: UpdatePetPayload) {
+    const petToUpdate = await this.getPet(id);
+
+    this.checkIfTutorOwnsCurrentPet(petToUpdate, tutor_id);
+
+    const petItem = this.petRepository.create();
+
+    Object.assign(petItem, {
+      pet_name: payload.pet_name ?? petToUpdate.pet_name,
+      pet_breed: payload.pet_breed ?? petToUpdate.pet_breed,
+      date_of_birth: payload.date_of_birth ?? petToUpdate.date_of_birth,
+      pet_gender: payload.pet_gender ?? petToUpdate.pet_gender,
+      pet_color: payload.pet_color ?? petToUpdate.pet_color,
+      alergies: payload.alergies ?? petToUpdate.alergies,
+      medical_conditions:
+        payload.medical_conditions ?? petToUpdate.medical_conditions,
+      current_medication:
+        payload.current_medication ?? petToUpdate.current_medication,
+      pet_image_url: payload.pet_image_url ?? petToUpdate.pet_image_url,
+      pet_microship_id:
+        payload.pet_microship_id ?? petToUpdate.pet_microship_id,
+      tutor_id: payload.tutor_id ?? petToUpdate.tutor_id,
+      pet_species_id: payload.pet_species_id ?? petToUpdate.pet_species_id,
+    });
+
+    await this.petRepository.update(id, petItem);
+
+    return this.getPet(petToUpdate.id);
+  }
+
   async deletePet(id: string, current_user_id: string) {
     const petToDelete = await this.getPet(id);
 
-    if (petToDelete.tutor.id !== current_user_id) {
-      throw new ForbiddenException(
-        'Não é possivel deletar um pet que não é seu',
-      );
-    }
+    this.checkIfTutorOwnsCurrentPet(petToDelete, current_user_id);
 
     return this.petRepository.remove(petToDelete);
+  }
+
+  private checkIfTutorOwnsCurrentPet(currentPet: Pet, tutor_id: string) {
+    if (currentPet.tutor.id !== tutor_id) {
+      throw new ForbiddenException(
+        'Não é possivel alterar ou deletar um pet que não é seu',
+      );
+    }
   }
 }

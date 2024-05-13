@@ -1,4 +1,12 @@
-import { Body, Controller, Delete, Get, Post, Query } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Post,
+  Put,
+  Query,
+} from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 
 import { Public } from 'src/shared/decorators/auth.decorator';
@@ -8,6 +16,7 @@ import { ApiPaginationQuery } from 'src/shared/decorators/api-pagination-query.d
 
 import { PetService } from '../services/pet.service';
 import { CreatePetDTO } from '../dtos/create-pet.dto';
+import { UpdatePetDTO } from '../dtos/update-pet.dto';
 import { PaginatePetsQuerysDTO } from '../dtos/paginate-pets-querys.dto';
 
 @ApiTags('pet')
@@ -30,6 +39,15 @@ export class PetController {
   @Post()
   async createPet(@Body() payload: CreatePetDTO) {
     return this.petService.createPet(payload);
+  }
+
+  @Put(':id')
+  async updatePet(
+    @UuidParam('id') id: string,
+    @Body() payload: UpdatePetDTO,
+    @DecodedToken() decoded_token: DecodedTokenType,
+  ) {
+    return this.petService.updatePet(id, decoded_token.id, payload);
   }
 
   @Delete(':id')

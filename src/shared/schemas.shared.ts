@@ -6,6 +6,8 @@ export const stringSchema = z.string().trim();
 
 export const emailStringSchema = stringSchema.email();
 
+export const urlStringSchema = stringSchema.url();
+
 export const optionalEmailStringSchema = emailStringSchema
   .optional()
   .nullable()
@@ -43,18 +45,10 @@ export const optionalUuidSchema = uuidSchema
   .nullable()
   .transform((value) => (isNullableValue(value) ? undefined : value));
 
-export const optionalUrlStringSchema = optionalStringSchema.refine(
-  (value) => {
-    if (value) {
-      const urlRegex = /^(ftp|http|https):\/\/[^ "]+$/;
-
-      return urlRegex.test(value);
-    }
-
-    return true;
-  },
-  { message: 'Invalid URL' },
-);
+export const optionalUrlStringSchema = urlStringSchema
+  .optional()
+  .nullable()
+  .transform((value) => (isNullableValue(value) ? undefined : value));
 
 export const optionalNumberSchema = z
   .number()
