@@ -1,10 +1,12 @@
 import { z } from 'nestjs-zod/z';
 import { createZodDto } from 'nestjs-zod';
 
+import { emailStringSchema, stringSchema } from 'src/shared/schemas.shared';
+
 export const registerAndLoginSchema = z.object({
-  user_email: z.string().email(),
-  password: z.string(),
-  user_name: z.string(),
+  user_email: emailStringSchema,
+  password: stringSchema,
+  user_name: stringSchema,
 });
 
 export type RegisterAndLoginPayload = z.infer<typeof registerAndLoginSchema>;

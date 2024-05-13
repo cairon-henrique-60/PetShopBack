@@ -1,9 +1,11 @@
 import { z } from 'nestjs-zod/z';
 import { createZodDto } from 'nestjs-zod';
 
+import { emailStringSchema, stringSchema } from 'src/shared/schemas.shared';
+
 export const authDtoSchema = z.object({
-  email: z.string().email(),
-  password: z.string(),
+  email: emailStringSchema,
+  password: stringSchema,
 });
 
 export class AuthUserDTO extends createZodDto(authDtoSchema) {
