@@ -50,17 +50,12 @@ export const optionalUrlStringSchema = urlStringSchema
   .nullable()
   .transform((value) => (isNullableValue(value) ? undefined : value));
 
-export const optionalNumberSchema = z
-  .number()
+export const numberSchema = z.number();
+
+export const optionalNumberSchema = numberSchema
   .optional()
   .nullable()
-  .refine((value) => {
-    if (value) {
-      return !Number.isNaN(value);
-    }
-
-    return true;
-  })
+  .refine((value) => !Number.isNaN(value), { message: 'NaN is not valid' })
   .transform((value) => (isNullableValue(value) ? undefined : value));
 
 export const paginationParamSchema = z
