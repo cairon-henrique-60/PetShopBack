@@ -48,19 +48,20 @@ export class AuthService {
   }
 
   async registerAndLogin(data: RegisterAndLoginPayload): Promise<AccessDTO> {
-    const createdUser = await this.usersService.createUser(data);
+    const { user_email, user_name, id } =
+      await this.usersService.createUser(data);
 
     const { access_token } = await this.getAccessToken(
-      createdUser.id,
-      createdUser.user_email,
-      createdUser.user_name,
+      id,
+      user_email,
+      user_name,
     );
 
     return {
       user: {
-        id: createdUser.id,
-        user_email: createdUser.user_email,
-        user_name: createdUser.user_name,
+        id,
+        user_email,
+        user_name,
       },
       access_token,
     };
