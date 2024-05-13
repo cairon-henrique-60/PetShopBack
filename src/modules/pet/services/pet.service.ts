@@ -117,23 +117,7 @@ export class PetService {
 
     const petItem = this.petRepository.create();
 
-    Object.assign(petItem, {
-      pet_name: payload.pet_name ?? petToUpdate.pet_name,
-      pet_breed: payload.pet_breed ?? petToUpdate.pet_breed,
-      date_of_birth: payload.date_of_birth ?? petToUpdate.date_of_birth,
-      pet_gender: payload.pet_gender ?? petToUpdate.pet_gender,
-      pet_color: payload.pet_color ?? petToUpdate.pet_color,
-      alergies: payload.alergies ?? petToUpdate.alergies,
-      medical_conditions:
-        payload.medical_conditions ?? petToUpdate.medical_conditions,
-      current_medication:
-        payload.current_medication ?? petToUpdate.current_medication,
-      pet_image_url: payload.pet_image_url ?? petToUpdate.pet_image_url,
-      pet_microship_id:
-        payload.pet_microship_id ?? petToUpdate.pet_microship_id,
-      tutor_id: payload.tutor_id ?? petToUpdate.tutor_id,
-      pet_species_id: payload.pet_species_id ?? petToUpdate.pet_species_id,
-    });
+    Object.assign(petItem, payload);
 
     await this.petRepository.update(id, petItem);
 
