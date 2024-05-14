@@ -51,8 +51,8 @@ async function bootstrap() {
 
     await app.listen(ENV_VARIABLES.PORT);
   } catch (err) {
-    Logger.debug(JSON.stringify({ err }, null, 2));
-    process.exit();
+    Logger.debug(JSON.stringify({ err: err.message }, null, 2));
+    process.exit(1);
   }
 }
 bootstrap();

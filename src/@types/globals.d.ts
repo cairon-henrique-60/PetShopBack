@@ -14,6 +14,7 @@ declare global {
     id: string;
     name: string;
     email: string;
+    user_type: string;
     iat: number;
     exp: number;
   };
@@ -22,6 +23,7 @@ declare global {
     id: string;
     email: string;
     name: string;
+    user_type?: string;
   }
 
   export type PaginationArgs<T extends Record<string, any> = {}> = T &

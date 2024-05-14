@@ -23,7 +23,7 @@ export class Users1710290062140 implements MigrationInterface {
             type: 'varchar',
           },
           {
-            name: 'type_user',
+            name: 'user_type',
             type: 'varchar',
           },
           {
@@ -54,6 +54,6 @@ export class Users1710290062140 implements MigrationInterface {
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.dropTable('user');
+    await queryRunner.dropTable('users');
   }
 }

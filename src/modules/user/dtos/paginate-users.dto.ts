@@ -8,9 +8,9 @@ import {
   optionalEndDateStringSchema,
   optionalDateStringSchema,
   optionalEmailStringSchema,
-  numberInStringSchema,
+  optionalNumberInStringSchema,
 } from 'src/shared/schemas.shared';
-import { TypesUserEnum } from '../enum';
+import { UserTypeEnum } from '../enum/user-type.enum';
 
 export const paginateUsersSchema = z.object({
   page: optionalPaginationParamSchema,
@@ -19,8 +19,8 @@ export const paginateUsersSchema = z.object({
   user_email: optionalEmailStringSchema,
   initialDate: optionalDateStringSchema,
   endDate: optionalEndDateStringSchema,
-  phone_number: numberInStringSchema.optional(),
-  type_user: z.nativeEnum(TypesUserEnum).optional(),
+  phone_number: optionalNumberInStringSchema,
+  user_type: z.nativeEnum(UserTypeEnum).optional(),
 });
 
 export type PaginateUsersPayload = z.infer<typeof paginateUsersSchema>;
@@ -71,5 +71,5 @@ export class PaginateUsersDTO extends createZodDto(paginateUsersSchema) {
    *@example ADMIN | COMMOM | COMPANY
    */
   @ApiPropertyOptional()
-  type_user?: TypesUserEnum;
+  user_type?: UserTypeEnum;
 }

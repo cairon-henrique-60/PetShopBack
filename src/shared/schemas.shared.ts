@@ -130,7 +130,7 @@ export const optionalOrderParamSchema = orderParamSchema
   .nullable()
   .transform((value) => (isNullableValue(value) ? undefined : value));
 
-export const numberInStringSchema = z
+export const optionalNumberInStringSchema = z
   .string()
   .refine(
     (value) => {

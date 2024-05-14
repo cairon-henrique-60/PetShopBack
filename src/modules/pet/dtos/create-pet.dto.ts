@@ -11,7 +11,7 @@ import {
 
 export const createPetSchema = z.object({
   pet_name: stringSchema,
-  pet_breed: stringSchema,
+  pet_breed_id: uuidSchema,
   date_of_birth: optionalDateStringSchema,
   pet_gender: stringSchema,
   pet_color: stringSchema,
@@ -37,9 +37,9 @@ export class CreatePetDTO extends createZodDto(createPetSchema) {
   pet_name: string;
   /**
    * Breed of the pet.
-   * @example Labrador Retriever
+   * @example 123e4567-e89b-12d3-a456-426614174000
    */
-  pet_breed: string;
+  pet_breed_id: string;
   /**
    * Date of birth of the pet.
    * @example 2020-01-15

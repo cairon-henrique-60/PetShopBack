@@ -4,14 +4,12 @@ import { compare } from 'bcrypt';
 import { Base } from 'src/lib/database/entities/base.entity';
 import { Pet } from 'src/modules/pet/entities/pet.entity';
 
+import { createHashedPassword } from 'src/utils/password.utils';
 import { UnauthorizedError } from 'src/lib/http-exceptions/errors/types/unauthorized-error';
 import { BadRequestError } from 'src/lib/http-exceptions/errors/types/bad-request-error';
 
-import { createHashedPassword } from 'src/utils/password.utils';
-
-import { type CreateUserPayload } from '../dtos/create-user.dto';
-
 import { type UpdateUserType } from '../dtos/update-user.to';
+import { type CreateUserPayload } from '../dtos/create-user.dto';
 
 @Entity('users')
 export class User extends Base {
@@ -26,7 +24,7 @@ export class User extends Base {
   user_email: string;
 
   @Column('varchar')
-  type_user: string;
+  user_type: string;
 
   @Column('varchar', { nullable: true })
   phone_number: string;
@@ -40,6 +38,7 @@ export class User extends Base {
 
     Object.assign(userItem, data);
     userItem.hashed_password = passwordHashed;
+
     return userItem;
   }
 
@@ -53,6 +52,7 @@ export class User extends Base {
 
     if (previous_password !== undefined && rest.new_password !== undefined) {
       const isMatch = await compare(previous_password, userPassword);
+
       if (!isMatch) {
         throw new UnauthorizedError('Password is not valid');
       }

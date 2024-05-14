@@ -7,12 +7,11 @@ import {
   optionalUuidSchema,
   optionalOrderParamSchema,
 } from 'src/shared/schemas.shared';
-import type { Params } from 'src/shared/decorators/api-pagination-query.decorator';
 
 export const paginatePetsQuerysSchema = z.object({
   page: optionalPaginationParamSchema,
   limit: optionalPaginationParamSchema,
-  pet_breed: optionalStringSchema,
+  pet_breed_id: optionalUuidSchema,
   pet_name: optionalStringSchema,
   pet_gender: optionalStringSchema,
   pet_color: optionalStringSchema,
@@ -22,21 +21,6 @@ export const paginatePetsQuerysSchema = z.object({
 });
 
 export type PaginatePetsQuerysType = z.infer<typeof paginatePetsQuerysSchema>;
-
-export const swaggerFields: Params = [
-  {
-    name: 'order_by_created_at',
-    description: 'Order pets by created date.',
-    required: false,
-    type: String,
-  },
-  {
-    name: 'order_by_updated_at',
-    description: 'Order pets by updated date',
-    required: false,
-    type: String,
-  },
-];
 
 export class PaginatePetsQuerysDTO extends createZodDto(
   paginatePetsQuerysSchema,
@@ -48,9 +32,9 @@ export class PaginatePetsQuerysDTO extends createZodDto(
   pet_name?: string;
   /**
    * Breed of the pet.
-   * @example Labrador Retriever
+   * @example 123e4567-e89b-12d3-a456-426614174000
    */
-  pet_breed?: string;
+  pet_breed_id?: string;
   /**
    * Gender of the pet.
    * @example Female

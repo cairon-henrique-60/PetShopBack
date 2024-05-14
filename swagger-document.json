@@ -120,7 +120,7 @@
             }
           },
           {
-            "name": "type_user",
+            "name": "user_type",
             "required": false,
             "in": "query",
             "description": "Type of the user.",
@@ -311,7 +311,7 @@
             }
           },
           {
-            "name": "type_user",
+            "name": "user_type",
             "required": false,
             "in": "query",
             "description": "Type of the user.",
@@ -390,11 +390,11 @@
             }
           },
           {
-            "name": "pet_breed",
+            "name": "pet_breed_id",
             "required": false,
             "in": "query",
             "description": "Breed of the pet.",
-            "example": "Labrador Retriever",
+            "example": "123e4567-e89b-12d3-a456-426614174000",
             "schema": {
               "type": "string"
             }
@@ -433,7 +433,7 @@
             "name": "order_by_created_at",
             "required": false,
             "in": "query",
-            "description": "Order pets by created date.",
+            "description": "Order by created date.",
             "example": "ASC",
             "schema": {
               "type": "string"
@@ -443,7 +443,7 @@
             "name": "order_by_updated_at",
             "required": false,
             "in": "query",
-            "description": "Order pets by updated date",
+            "description": "Order by updated date",
             "example": "DESC",
             "schema": {
               "type": "string"
@@ -725,6 +725,238 @@
           "pet-species"
         ]
       }
+    },
+    "/server/pet-breed/paginate": {
+      "get": {
+        "operationId": "PetBreedController_paginateBreeds",
+        "parameters": [
+          {
+            "name": "species_id",
+            "required": false,
+            "in": "query",
+            "description": "Id of the species.",
+            "example": "123e4567-e89b-12d3-a456-426614174000",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "breed_name_name",
+            "required": false,
+            "in": "query",
+            "example": "Golden",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "order_by_created_at",
+            "required": false,
+            "in": "query",
+            "description": "Order by created date.",
+            "example": "ASC",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "order_by_updated_at",
+            "required": false,
+            "in": "query",
+            "description": "Order by updated date",
+            "example": "DESC",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "The limit of items. If not passed the default limit will be 10",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "description": "The Current Page. If not passed the default page will be 1",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "pet-breed"
+        ]
+      }
+    },
+    "/server/pet-breed/{id}": {
+      "get": {
+        "operationId": "PetBreedController_getPetBreedById",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PetBreed"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "pet-breed"
+        ]
+      },
+      "put": {
+        "operationId": "PetBreedController_updateBreed",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdatePetBreedDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PetBreed"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "pet-breed"
+        ]
+      },
+      "delete": {
+        "operationId": "PetBreedController_deleteBreed",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PetBreed"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "pet-breed"
+        ]
+      }
+    },
+    "/server/pet-breed/breeds-by-species/{species_id}": {
+      "get": {
+        "operationId": "PetBreedController_getBreedsBySpeciesId",
+        "parameters": [
+          {
+            "name": "species_id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "pet-breed"
+        ]
+      }
+    },
+    "/server/pet-breed": {
+      "post": {
+        "operationId": "PetBreedController_createBreed",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreatePetBreedDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PetBreed"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "pet-breed"
+        ]
+      }
     }
   },
   "info": {
@@ -740,6 +972,14 @@
     },
     {
       "name": "user",
+      "description": ""
+    },
+    {
+      "name": "pet",
+      "description": ""
+    },
+    {
+      "name": "pet-species",
       "description": ""
     }
   ],
@@ -809,7 +1049,7 @@
           "user_email": {
             "type": "string"
           },
-          "type_user": {
+          "user_type": {
             "type": "string"
           },
           "phone_number": {
@@ -836,9 +1076,41 @@
           "user_name",
           "hashed_password",
           "user_email",
-          "type_user",
+          "user_type",
           "phone_number",
           "pets",
+          "id",
+          "created_at",
+          "updated_at"
+        ]
+      },
+      "PetBreed": {
+        "type": "object",
+        "properties": {
+          "breed_name": {
+            "type": "string"
+          },
+          "species_id": {
+            "type": "string"
+          },
+          "species": {
+            "$ref": "#/components/schemas/PetSpecies"
+          },
+          "id": {
+            "type": "string"
+          },
+          "created_at": {
+            "type": "string"
+          },
+          "updated_at": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "required": [
+          "breed_name",
+          "species_id",
+          "species",
           "id",
           "created_at",
           "updated_at"
@@ -849,6 +1121,12 @@
         "properties": {
           "species_name": {
             "type": "string"
+          },
+          "breeds": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PetBreed"
+            }
           },
           "id": {
             "type": "string"
@@ -863,6 +1141,7 @@
         },
         "required": [
           "species_name",
+          "breeds",
           "id",
           "created_at",
           "updated_at"
@@ -874,7 +1153,10 @@
           "pet_name": {
             "type": "string"
           },
-          "pet_breed": {
+          "pet_breed_id": {
+            "type": "string"
+          },
+          "pet_species_id": {
             "type": "string"
           },
           "date_of_birth": {
@@ -907,17 +1189,17 @@
           "pet_microship_id": {
             "type": "string"
           },
-          "tutor": {
-            "$ref": "#/components/schemas/User"
-          },
           "tutor_id": {
             "type": "string"
+          },
+          "tutor": {
+            "$ref": "#/components/schemas/User"
           },
           "pet_species": {
             "$ref": "#/components/schemas/PetSpecies"
           },
-          "pet_species_id": {
-            "type": "string"
+          "pet_breed": {
+            "$ref": "#/components/schemas/PetBreed"
           },
           "id": {
             "type": "string"
@@ -932,7 +1214,8 @@
         },
         "required": [
           "pet_name",
-          "pet_breed",
+          "pet_breed_id",
+          "pet_species_id",
           "date_of_birth",
           "pet_gender",
           "pet_color",
@@ -941,10 +1224,10 @@
           "current_medication",
           "pet_image_url",
           "pet_microship_id",
-          "tutor",
           "tutor_id",
+          "tutor",
           "pet_species",
-          "pet_species_id",
+          "pet_breed",
           "id",
           "created_at",
           "updated_at"
@@ -972,7 +1255,7 @@
             "description": "Cell Phone of the user.",
             "example": 34991324255
           },
-          "type_user": {
+          "user_type": {
             "type": "string",
             "description": "Type of the user.",
             "example": "ADMIN | COMMOM | COMPANY",
@@ -986,12 +1269,46 @@
         "required": [
           "user_name",
           "password",
-          "user_email"
+          "user_email",
+          "user_type"
         ]
       },
       "UpdateUserDTO": {
         "type": "object",
-        "properties": {}
+        "properties": {
+          "user_name": {
+            "type": "string",
+            "example": "Paulo Salvatore"
+          },
+          "user_email": {
+            "type": "string",
+            "example": "pauloSalvatore@gmail.com"
+          },
+          "previous_password": {
+            "type": "string",
+            "example": "909090"
+          },
+          "new_password": {
+            "type": "string",
+            "example": "909090"
+          },
+          "phone_number": {
+            "type": "string",
+            "example": "34991324255"
+          },
+          "user_type": {
+            "type": "string",
+            "example": "ADMIN | COMMOM | COMPANY"
+          }
+        },
+        "required": [
+          "user_name",
+          "user_email",
+          "previous_password",
+          "new_password",
+          "phone_number",
+          "user_type"
+        ]
       },
       "CreatePetDTO": {
         "type": "object",
@@ -1001,9 +1318,10 @@
             "description": "Name of the pet.",
             "example": "Luna"
           },
-          "pet_breed": {
+          "pet_breed_id": {
             "type": "string",
-            "description": "Breed of the pet."
+            "description": "Breed of the pet.",
+            "example": "123e4567-e89b-12d3-a456-426614174000"
           },
           "date_of_birth": {
             "format": "date-time",
@@ -1059,7 +1377,7 @@
         },
         "required": [
           "pet_name",
-          "pet_breed",
+          "pet_breed_id",
           "pet_gender",
           "pet_color",
           "tutor_id",
@@ -1074,7 +1392,7 @@
             "description": "Name of the pet.",
             "example": "Luna"
           },
-          "pet_breed": {
+          "pet_breed_id": {
             "type": "string",
             "description": "Breed of the pet.",
             "example": "Labrador Retriever"
@@ -1148,6 +1466,39 @@
         "required": [
           "species_name"
         ]
+      },
+      "CreatePetBreedDTO": {
+        "type": "object",
+        "properties": {
+          "breed_name": {
+            "type": "string",
+            "description": "Name of the pet."
+          },
+          "species_id": {
+            "type": "string",
+            "description": "Id of the species.",
+            "example": "123e4567-e89b-12d3-a456-426614174000"
+          }
+        },
+        "required": [
+          "breed_name",
+          "species_id"
+        ]
+      },
+      "UpdatePetBreedDTO": {
+        "type": "object",
+        "properties": {
+          "breed_name": {
+            "type": "string",
+            "description": "Name of the pet.",
+            "example": "Golden Retriever"
+          },
+          "species_id": {
+            "type": "string",
+            "description": "Name of the pet.",
+            "example": "123e4567-e89b-12d3-a456-426614174000"
+          }
+        }
       }
     }
   },

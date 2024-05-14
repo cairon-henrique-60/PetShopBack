@@ -60,6 +60,7 @@ export class UserService {
         'user_email',
         'user_name',
         'hashed_password',
+        'user_type',
       ],
       loadEagerRelations: false,
     });
@@ -87,7 +88,14 @@ export class UserService {
   async getUserById(id: string): Promise<User> {
     const foundedUser = await this.userRepository.findOne({
       where: { id },
-      select: ['created_at', 'id', 'updated_at', 'user_email', 'user_name'],
+      select: [
+        'created_at',
+        'id',
+        'updated_at',
+        'user_email',
+        'user_name',
+        'user_type',
+      ],
       relations: ['pets'],
       loadEagerRelations: false,
     });
@@ -99,27 +107,19 @@ export class UserService {
     return foundedUser;
   }
 
-  async createUser(params: CreateUserPayload): Promise<User> {
-    const user: CreateUserPayload = {
-      ...params,
-    };
-
-    const userItem = await User.create(user);
+  async createUser(payload: CreateUserPayload): Promise<User> {
+    const userItem = await User.create(payload);
 
     const newUser = await this.userRepository.save(userItem);
 
     return this.getUserById(newUser.id);
   }
 
-  async updateUser(id: string, params: UpdateUserType): Promise<User> {
+  async updateUser(id: string, payload: UpdateUserType): Promise<User> {
     const user = await this.getUserById(id);
     const userEmail = await this.getUserByEmail(user.user_email);
 
-    const userItem: UpdateUserType = {
-      ...params,
-    };
-
-    const newUser = await User.update(userItem, userEmail.hashed_password);
+    const newUser = await User.update(payload, userEmail.hashed_password);
 
     await this.userRepository.update(id, newUser);
 

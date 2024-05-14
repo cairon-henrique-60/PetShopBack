@@ -25,7 +25,7 @@ export class PetService {
     page,
     order_by_created_at,
     order_by_updated_at,
-    pet_breed,
+    pet_breed_id,
     pet_color,
     pet_gender,
     tutor_id,
@@ -34,7 +34,7 @@ export class PetService {
     const petQueryBuilder = this.buildPetQueryBuilder()
       .select([
         'pet.pet_name',
-        'pet.pet_breed',
+        'pet.pet_breed_id',
         'pet.pet_gender',
         'pet.pet_color',
         'pet.tutor_id',
@@ -45,8 +45,8 @@ export class PetService {
         'pet.id',
       ])
       .where(tutor_id ? 'pet.tutor_id = :tutor_id' : '1=1', { tutor_id })
-      .andWhere(pet_breed ? 'pet.pet_breed LIKE :pet_breed' : '1=1', {
-        pet_breed: `%${pet_breed}%`,
+      .andWhere(pet_breed_id ? 'pet.pet_breed_id = :pet_breed_id' : '1=1', {
+        pet_breed_id,
       })
       .andWhere(pet_name ? 'pet.pet_name LIKE :pet_name' : '1=1', {
         pet_name: `%${pet_name}%`,
@@ -75,6 +75,7 @@ export class PetService {
       .where('pet.id = :id', { id })
       .leftJoinAndSelect('pet.pet_species', 'pet_species')
       .leftJoinAndSelect('pet.tutor', 'tutor')
+      .leftJoinAndSelect('pet.pet_breed', 'pet_breed')
       .select([
         'pet.id',
         'pet.pet_name',
@@ -91,6 +92,8 @@ export class PetService {
         'pet.updated_at',
         'pet_species.species_name',
         'pet_species.id',
+        'pet_breed.id',
+        'pet_breed.breed_name',
         'tutor.id',
         'tutor.user_name',
         'tutor.user_email',
