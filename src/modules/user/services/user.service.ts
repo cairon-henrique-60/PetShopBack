@@ -1,5 +1,6 @@
 import {
   Between,
+  DeleteResult,
   LessThanOrEqual,
   Like,
   MoreThanOrEqual,
@@ -7,14 +8,9 @@ import {
 } from 'typeorm';
 import { Inject, Injectable } from '@nestjs/common';
 
-import {
-  createHashedPassword,
-  validatePassword,
-} from 'src/utils/password.utils';
 import { isNullableValue } from 'src/utils/is-nullable-value.util';
 import { PaginationService } from 'src/lib/pagination/pagination.service';
 import { NotFoundError } from 'src/lib/http-exceptions/errors/types/not-found-error';
-import { BadRequestError } from 'src/lib/http-exceptions/errors/types/bad-request-error';
 
 import { User } from '../entities/user.entity';
 import type { UpdateUserType } from '../dtos/update-user.to';
@@ -35,7 +31,14 @@ export class UserService {
 
     const queryBuilder = this.userRepository
       .createQueryBuilder('u')
-      .select(['u.user_name', 'u.user_email', 'u.created_at', 'u.updated_at'])
+      .select([
+        'u.id',
+        'u.user_name',
+        'u.user_email',
+        'u.created_at',
+        'u.updated_at',
+      ])
+      .leftJoinAndSelect('u.pets', 'pets')
       .where(whereClause);
 
     const paginatedHotelsResult =
@@ -51,13 +54,14 @@ export class UserService {
     const foundedUser = await this.userRepository.findOne({
       where: { user_email },
       select: [
-        'created_at',
         'id',
+        'created_at',
         'updated_at',
         'user_email',
         'user_name',
         'hashed_password',
       ],
+      loadEagerRelations: false,
     });
 
     if (!foundedUser) {
@@ -73,6 +77,8 @@ export class UserService {
     const users = await this.userRepository.find({
       where: whereClause,
       select: ['created_at', 'id', 'updated_at', 'user_email', 'user_name'],
+      relations: ['pets'],
+      loadEagerRelations: false,
     });
 
     return users;
@@ -82,6 +88,8 @@ export class UserService {
     const foundedUser = await this.userRepository.findOne({
       where: { id },
       select: ['created_at', 'id', 'updated_at', 'user_email', 'user_name'],
+      relations: ['pets'],
+      loadEagerRelations: false,
     });
 
     if (!foundedUser) {
@@ -91,59 +99,37 @@ export class UserService {
     return foundedUser;
   }
 
-  async createUser({
-    password,
-    user_email,
-    user_name,
-  }: CreateUserPayload): Promise<User> {
-    const hashed_password = await createHashedPassword(password);
+  async createUser(params: CreateUserPayload): Promise<User> {
+    const user: CreateUserPayload = {
+      ...params,
+    };
 
-    const newUser = this.userRepository.create();
+    const userItem = await User.create(user);
 
-    Object.assign(newUser, { user_email, user_name, hashed_password });
+    const newUser = await this.userRepository.save(userItem);
 
-    return this.userRepository.save(newUser);
+    return this.getUserById(newUser.id);
   }
 
-  async updateUser(
-    id: string,
-    updateUserPayload: UpdateUserType,
-  ): Promise<User> {
-    const userToUpdate = await this.getUserById(id);
-
-    const userItem = new User();
-
-    if (updateUserPayload.previous_password) {
-      const passwordsMatch = await validatePassword(
-        updateUserPayload.previous_password,
-        userToUpdate.hashed_password,
-      );
-
-      if (!passwordsMatch) {
-        throw new BadRequestError('Previous password is incorrect');
-      }
-    }
-
-    if (updateUserPayload.new_password) {
-      userItem.hashed_password = await createHashedPassword(
-        updateUserPayload.new_password,
-      );
-    }
-
-    Object.assign(userItem, {
-      user_name: updateUserPayload.user_name ?? userToUpdate.user_name,
-      user_email: updateUserPayload.user_email ?? userToUpdate.user_email,
-    });
-
-    await this.userRepository.update(id, userItem);
-
-    return this.getUserById(userToUpdate.id);
-  }
-
-  async deleteUser(id: string): Promise<void> {
+  async updateUser(id: string, params: UpdateUserType): Promise<User> {
     const user = await this.getUserById(id);
+    const userEmail = await this.getUserByEmail(user.user_email);
 
-    await this.userRepository.remove(user);
+    const userItem: UpdateUserType = {
+      ...params,
+    };
+
+    const newUser = await User.update(userItem, userEmail.hashed_password);
+
+    await this.userRepository.update(id, newUser);
+
+    return this.getUserById(id);
+  }
+
+  async deleteUser(id: string): Promise<DeleteResult> {
+    await this.getUserById(id);
+
+    return this.userRepository.delete(id);
   }
 
   // private metods

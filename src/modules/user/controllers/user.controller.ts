@@ -9,6 +9,7 @@ import {
   Query,
   UseInterceptors,
 } from '@nestjs/common';
+import { Pagination } from 'nestjs-typeorm-paginate';
 
 import { Public } from 'src/shared/decorators/auth.decorator';
 import { UuidParam } from 'src/shared/decorators/uuid-param.decorator';
@@ -21,26 +22,29 @@ import { UpdateUserDTO } from '../dtos/update-user.to';
 import { UserService } from '../services/user.service';
 import { CreateUserDTO } from '../dtos/create-user.dto';
 import { PaginateUsersDTO } from '../dtos/paginate-users.dto';
+import { DeleteResult } from 'typeorm';
 
 @ApiTags('user')
 @Controller('user')
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
-  @Get()
-  async list(@Query() querys: ListUsersDTO) {
-    return this.userService.listUser(querys);
-  }
-
   @Get('paginate')
   @ApiPaginationQuery()
-  async paginateUsers(@Query() querys: PaginateUsersDTO) {
+  async paginateUsers(
+    @Query() querys: PaginateUsersDTO,
+  ): Promise<Pagination<User>> {
     return this.userService.paginateUsers(querys);
   }
 
   @Get(':id')
-  async getUserById(@UuidParam('id') id: string) {
+  async getUserById(@UuidParam('id') id: string): Promise<User> {
     return this.userService.getUserById(id);
+  }
+
+  @Get()
+  async list(@Query() querys: ListUsersDTO): Promise<User[]> {
+    return this.userService.listUser(querys);
   }
 
   @Public()
@@ -52,12 +56,15 @@ export class UserController {
 
   @Put(':id')
   @UseInterceptors(DataBaseInterceptor)
-  async updateUser(@UuidParam('id') id: string, @Body() data: UpdateUserDTO) {
+  async updateUser(
+    @UuidParam('id') id: string,
+    @Body() data: UpdateUserDTO,
+  ): Promise<User> {
     return this.userService.updateUser(id, data);
   }
 
   @Delete(':id')
-  async deleteUser(@UuidParam('id') id: string) {
+  async deleteUser(@UuidParam('id') id: string): Promise<DeleteResult> {
     return this.userService.deleteUser(id);
   }
 }

@@ -129,3 +129,17 @@ export const optionalOrderParamSchema = orderParamSchema
   .optional()
   .nullable()
   .transform((value) => (isNullableValue(value) ? undefined : value));
+
+export const numberInStringSchema = z
+  .string()
+  .refine(
+    (value) => {
+      return /^\d+$/.test(value);
+    },
+    {
+      message: 'A string deve conter apenas números',
+    },
+  )
+  .optional()
+  .nullable()
+  .transform((value) => (isNullableValue(value) ? undefined : value));

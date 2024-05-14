@@ -7,13 +7,17 @@ import {
   optionalDateStringSchema,
   optionalStringSchema,
   optionalEmailStringSchema,
+  numberInStringSchema,
 } from 'src/shared/schemas.shared';
+import { TypesUserEnum } from '../enum';
 
 export const listUsersSchema = z.object({
   user_name: optionalStringSchema,
   user_email: optionalEmailStringSchema,
   initialDate: optionalDateStringSchema,
   endDate: optionalEndDateStringSchema,
+  phone_number: numberInStringSchema.optional(),
+  type_user: z.nativeEnum(TypesUserEnum).optional(),
 });
 
 export type ListUsersPayload = z.infer<typeof listUsersSchema>;
@@ -43,4 +47,16 @@ export class ListUsersDTO extends createZodDto(listUsersSchema) {
    */
   @ApiPropertyOptional()
   endDate?: Date;
+  /**
+   *Cell Phone of the user.
+   *@example 34991324255
+   */
+  @ApiPropertyOptional()
+  phone_number?: string;
+  /**
+   *Type of the user.
+   *@example ADMIN | COMMOM | COMPANY
+   */
+  @ApiPropertyOptional()
+  type_user?: TypesUserEnum;
 }

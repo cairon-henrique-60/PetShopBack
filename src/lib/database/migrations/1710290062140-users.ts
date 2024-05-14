@@ -23,6 +23,16 @@ export class Users1710290062140 implements MigrationInterface {
             type: 'varchar',
           },
           {
+            name: 'type_user',
+            type: 'varchar',
+          },
+          {
+            name: 'phone_number',
+            type: 'varchar',
+            isUnique: true,
+            isNullable: true,
+          },
+          {
             name: 'user_email',
             type: 'varchar',
             isUnique: true,

@@ -63,102 +63,6 @@
         ]
       }
     },
-    "/server/user": {
-      "get": {
-        "operationId": "UserController_list",
-        "parameters": [
-          {
-            "name": "user_name",
-            "required": false,
-            "in": "query",
-            "description": "Name of the user.",
-            "example": "Paulo Salvatore",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "user_email",
-            "required": false,
-            "in": "query",
-            "description": "Email of the user.",
-            "example": "pauloSalvatore@gmail.com",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "initialDate",
-            "required": false,
-            "in": "query",
-            "description": "Initial Date created at of the user.",
-            "example": "2024-10-10",
-            "schema": {
-              "format": "date-time",
-              "type": "string"
-            }
-          },
-          {
-            "name": "endDate",
-            "required": false,
-            "in": "query",
-            "description": "End Date created at of the user.",
-            "example": "2024-11-10",
-            "schema": {
-              "format": "date-time",
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/User"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "tags": [
-          "user"
-        ]
-      },
-      "post": {
-        "operationId": "UserController_create",
-        "parameters": [],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/CreateUserDTO"
-              }
-            }
-          }
-        },
-        "responses": {
-          "201": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/User"
-                }
-              }
-            }
-          }
-        },
-        "tags": [
-          "user"
-        ]
-      }
-    },
     "/server/user/paginate": {
       "get": {
         "operationId": "UserController_paginateUsers",
@@ -202,6 +106,31 @@
             "example": "2024-11-10",
             "schema": {
               "format": "date-time",
+              "type": "string"
+            }
+          },
+          {
+            "name": "phone_number",
+            "required": false,
+            "in": "query",
+            "description": "Cell Phone of the user.",
+            "example": 34991324255,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "type_user",
+            "required": false,
+            "in": "query",
+            "description": "Type of the user.",
+            "example": "ADMIN | COMMOM | COMPANY",
+            "schema": {
+              "enum": [
+                "COMMOM",
+                "COMPANY",
+                "ADMIN"
+              ],
               "type": "string"
             }
           },
@@ -318,6 +247,127 @@
         "responses": {
           "200": {
             "description": ""
+          }
+        },
+        "tags": [
+          "user"
+        ]
+      }
+    },
+    "/server/user": {
+      "get": {
+        "operationId": "UserController_list",
+        "parameters": [
+          {
+            "name": "user_name",
+            "required": false,
+            "in": "query",
+            "description": "Name of the user.",
+            "example": "Paulo Salvatore",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "user_email",
+            "required": false,
+            "in": "query",
+            "description": "Email of the user.",
+            "example": "pauloSalvatore@gmail.com",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "initialDate",
+            "required": false,
+            "in": "query",
+            "description": "Initial Date created at of the user.",
+            "example": "2024-10-10",
+            "schema": {
+              "format": "date-time",
+              "type": "string"
+            }
+          },
+          {
+            "name": "endDate",
+            "required": false,
+            "in": "query",
+            "description": "End Date created at of the user.",
+            "example": "2024-11-10",
+            "schema": {
+              "format": "date-time",
+              "type": "string"
+            }
+          },
+          {
+            "name": "phone_number",
+            "required": false,
+            "in": "query",
+            "description": "Cell Phone of the user.",
+            "example": 34991324255,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "type_user",
+            "required": false,
+            "in": "query",
+            "description": "Type of the user.",
+            "example": "ADMIN | COMMOM | COMPANY",
+            "schema": {
+              "enum": [
+                "COMMOM",
+                "COMPANY",
+                "ADMIN"
+              ],
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/User"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "user"
+        ]
+      },
+      "post": {
+        "operationId": "UserController_create",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateUserDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/User"
+                }
+              }
+            }
           }
         },
         "tags": [
@@ -759,6 +809,12 @@
           "user_email": {
             "type": "string"
           },
+          "type_user": {
+            "type": "string"
+          },
+          "phone_number": {
+            "type": "string"
+          },
           "pets": {
             "type": "array",
             "items": {
@@ -780,6 +836,8 @@
           "user_name",
           "hashed_password",
           "user_email",
+          "type_user",
+          "phone_number",
           "pets",
           "id",
           "created_at",
@@ -908,6 +966,21 @@
             "type": "string",
             "description": "Email of the user.",
             "example": "pauloSalvatore@gmail.com"
+          },
+          "phone_number": {
+            "type": "string",
+            "description": "Cell Phone of the user.",
+            "example": 34991324255
+          },
+          "type_user": {
+            "type": "string",
+            "description": "Type of the user.",
+            "example": "ADMIN | COMMOM | COMPANY",
+            "enum": [
+              "COMMOM",
+              "COMPANY",
+              "ADMIN"
+            ]
           }
         },
         "required": [
