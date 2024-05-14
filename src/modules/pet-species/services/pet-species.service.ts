@@ -1,5 +1,5 @@
 import { Repository } from 'typeorm';
-import { Inject, Injectable } from '@nestjs/common';
+import { ForbiddenException, Inject, Injectable } from '@nestjs/common';
 
 import { NotFoundError } from 'src/lib/http-exceptions/errors/types/not-found-error';
 
@@ -16,6 +16,15 @@ export class PetSpeciesService {
     return this.petSpeciesRepository.find();
   }
 
+  async getPetSpeciesByName(species_name: string) {
+    const foundedPetSpecies = await this.petSpeciesRepository.findOne({
+      where: { species_name },
+      select: { species_name: true },
+    });
+
+    return foundedPetSpecies;
+  }
+
   async getPetSpecies(id: string) {
     const foundedPetSpecies = await this.petSpeciesRepository.findOne({
       where: { id },
@@ -29,6 +38,13 @@ export class PetSpeciesService {
   }
 
   async createPetSpecies(species_name: string): Promise<PetSpecies> {
+    const isThereSpeciesWithSameName =
+      await this.getPetSpeciesByName(species_name);
+
+    if (isThereSpeciesWithSameName) {
+      throw new ForbiddenException('Já existe uma especie com o mesmo nome');
+    }
+
     const speciesToCreate = this.petSpeciesRepository.create();
 
     speciesToCreate.species_name = species_name;

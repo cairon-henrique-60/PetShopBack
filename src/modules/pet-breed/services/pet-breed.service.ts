@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { ForbiddenException, Inject, Injectable } from '@nestjs/common';
 import { Repository } from 'typeorm';
 
 import { PaginationService } from 'src/lib/pagination/pagination.service';
@@ -77,6 +77,17 @@ export class PetBreedService {
     return breed;
   }
 
+  async getBreedByName(
+    breed_name: string,
+  ): Promise<Pick<PetBreed, 'breed_name' | 'id'> | null> {
+    const breed = await this.petBreedRepository.findOne({
+      where: { breed_name },
+      select: ['breed_name', 'id'],
+    });
+
+    return breed;
+  }
+
   async getBreedsBySpeciesId(
     species_id: string,
   ): Promise<Pick<PetBreed, 'breed_name' | 'id'>[]> {
@@ -89,6 +100,15 @@ export class PetBreedService {
   }
 
   async createPetBreed(payload: CreatePetBreedPayload) {
+    const isThereBreedWithSameName = await this.getBreedByName(
+      payload.breed_name,
+    );
+
+    if (isThereBreedWithSameName) {
+      throw new ForbiddenException('Já há uma raca com esse nome');
+    }
+
+    // validates if species_id is valid in the database
     await this.petSpeciesService.getPetSpecies(payload.species_id);
 
     const petBreedItem = this.petBreedRepository.create();

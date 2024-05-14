@@ -37,8 +37,8 @@ export class UserService {
         'u.user_email',
         'u.created_at',
         'u.updated_at',
+        'u.user_type',
       ])
-      .leftJoinAndSelect('u.pets', 'pets')
       .where(whereClause);
 
     const paginatedHotelsResult =
