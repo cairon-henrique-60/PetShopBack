@@ -1,22 +1,18 @@
 import { MigrationInterface, QueryRunner, Table } from 'typeorm';
 
+import { baseColumns } from '../entities/base-columns';
+
 export class Users1710290062140 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.createTable(
       new Table({
         name: 'users',
         columns: [
-          {
-            name: 'id',
-            type: 'uuid',
-            generationStrategy: 'uuid',
-            isPrimary: true,
-            default: 'uuid_generate_v4()',
-          },
+          ...baseColumns,
           {
             name: 'hashed_password',
             type: 'varchar',
-            length: '255',
+            isNullable: true,
           },
           {
             name: 'user_name',
@@ -24,6 +20,10 @@ export class Users1710290062140 implements MigrationInterface {
           },
           {
             name: 'user_type',
+            type: 'varchar',
+          },
+          {
+            name: 'user_auth_provider',
             type: 'varchar',
           },
           {
@@ -38,15 +38,9 @@ export class Users1710290062140 implements MigrationInterface {
             isUnique: true,
           },
           {
-            name: 'created_at',
-            type: 'timestamp',
-            default: 'CURRENT_TIMESTAMP',
-          },
-          {
-            name: 'updated_at',
-            type: 'timestamp',
-            default: 'CURRENT_TIMESTAMP',
-            onUpdate: 'CURRENT_TIMESTAMP',
+            name: 'is_email_verified',
+            type: 'boolean',
+            default: false,
           },
         ],
       }),

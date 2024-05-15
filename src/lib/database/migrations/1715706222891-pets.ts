@@ -1,18 +1,14 @@
 import { MigrationInterface, QueryRunner, Table } from 'typeorm';
 
+import { baseColumns } from '../entities/base-columns';
+
 export class Pets1715706222891 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.createTable(
       new Table({
         name: 'pets',
         columns: [
-          {
-            name: 'id',
-            type: 'uuid',
-            generationStrategy: 'uuid',
-            isPrimary: true,
-            default: 'uuid_generate_v4()',
-          },
+          ...baseColumns,
           {
             name: 'pet_name',
             type: 'varchar',
@@ -66,17 +62,6 @@ export class Pets1715706222891 implements MigrationInterface {
           {
             name: 'tutor_id',
             type: 'uuid',
-          },
-          {
-            name: 'created_at',
-            type: 'timestamp',
-            default: 'CURRENT_TIMESTAMP',
-          },
-          {
-            name: 'updated_at',
-            type: 'timestamp',
-            default: 'CURRENT_TIMESTAMP',
-            onUpdate: 'CURRENT_TIMESTAMP',
           },
         ],
         foreignKeys: [

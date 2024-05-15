@@ -5,16 +5,27 @@ import {
   stringSchema,
   emailStringSchema,
   optionalNumberInStringSchema,
+  optionalStringSchema,
+  optionalUrlStringSchema,
 } from 'src/shared/schemas.shared';
 
 import { UserTypeEnum } from '../enum/user-type.enum';
+import { UserAuthProviders } from '../enum/user-auth-providers.enum';
+
+export const userAuthProviderSchema = z
+  .nativeEnum(UserAuthProviders)
+  .optional()
+  .default(UserAuthProviders.EMAIL);
 
 export const createUserSchema = z.object({
   user_name: stringSchema.max(255),
   user_email: emailStringSchema,
-  password: stringSchema,
+  password: optionalStringSchema,
   phone_number: optionalNumberInStringSchema,
   user_type: z.nativeEnum(UserTypeEnum).optional().default(UserTypeEnum.COMMOM),
+  user_auth_provider: userAuthProviderSchema,
+  user_photo_url: optionalUrlStringSchema,
+  is_email_verified: z.boolean().default(false),
 });
 
 export type CreateUserPayload = z.infer<typeof createUserSchema>;
@@ -29,7 +40,7 @@ export class CreateUserDTO extends createZodDto(createUserSchema) {
    * Password of the user.
    * @example 909090
    */
-  password: string;
+  password?: string;
   /**
    *Email of the user.
    *@example pauloSalvatore@gmail.com

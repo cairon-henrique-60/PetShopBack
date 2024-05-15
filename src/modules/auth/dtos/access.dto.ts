@@ -3,6 +3,9 @@ interface userAuthentica {
   user_name: string;
   user_email: string;
   user_type?: string;
+  is_email_verified?: boolean;
+  created_at: string;
+  phone_number: string;
 }
 
 export interface AccessDTO {
