@@ -957,6 +957,20 @@
           "pet-breed"
         ]
       }
+    },
+    "/server/mail": {
+      "patch": {
+        "operationId": "MailController_verifiEmailUser",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "mail"
+        ]
+      }
     }
   },
   "info": {
@@ -980,6 +994,10 @@
     },
     {
       "name": "pet-species",
+      "description": ""
+    },
+    {
+      "name": "mail",
       "description": ""
     }
   ],

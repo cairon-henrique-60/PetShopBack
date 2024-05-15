@@ -24,6 +24,7 @@ export const swaggerConfig = new DocumentBuilder()
   .addTag('user')
   .addTag('pet')
   .addTag('pet-species')
+  .addTag('mail')
   .addBearerAuth()
   .addSecurityRequirements('bearer')
   .build();
