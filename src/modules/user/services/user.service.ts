@@ -11,6 +11,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { isNullableValue } from 'src/utils/is-nullable-value.util';
 import { PaginationService } from 'src/lib/pagination/pagination.service';
 import { NotFoundError } from 'src/lib/http-exceptions/errors/types/not-found-error';
+import { BadRequestError } from 'src/lib/http-exceptions/errors/types/bad-request-error';
 
 import { User } from '../entities/user.entity';
 import type { UpdateUserType } from '../dtos/update-user.to';
@@ -50,7 +51,7 @@ export class UserService {
     return Promise.resolve(paginatedHotelsResult);
   }
 
-  async getUserByEmail(user_email: string): Promise<User> {
+  async getUserByEmail(user_email: string) {
     const foundedUser = await this.userRepository.findOne({
       where: { user_email },
       select: [
@@ -61,13 +62,11 @@ export class UserService {
         'user_name',
         'hashed_password',
         'user_type',
+        'is_email_verified',
+        'phone_number',
       ],
       loadEagerRelations: false,
     });
-
-    if (!foundedUser) {
-      throw new NotFoundError('Usuario não encontrado');
-    }
 
     return foundedUser;
   }
@@ -85,17 +84,18 @@ export class UserService {
     return users;
   }
 
-  async getUserById(id: string): Promise<User> {
+  async getUserById(id: string, selectPassword?: boolean): Promise<User> {
     const foundedUser = await this.userRepository.findOne({
       where: { id },
-      select: [
-        'created_at',
-        'id',
-        'updated_at',
-        'user_email',
-        'user_name',
-        'user_type',
-      ],
+      select: {
+        created_at: true,
+        id: true,
+        updated_at: true,
+        user_email: true,
+        user_name: true,
+        user_type: true,
+        hashed_password: selectPassword,
+      },
       relations: ['pets'],
       loadEagerRelations: false,
     });
@@ -108,18 +108,24 @@ export class UserService {
   }
 
   async createUser(payload: CreateUserPayload): Promise<User> {
+    const isThereUserWithSameEmail = await this.userRepository.findOne({
+      where: { user_email: payload.user_email },
+      select: ['id'],
+    });
+
+    if (isThereUserWithSameEmail) {
+      throw new BadRequestError('Já existe um usuario com o mesmo email');
+    }
+
     const userItem = await User.create(payload);
 
-    const newUser = await this.userRepository.save(userItem);
-
-    return this.getUserById(newUser.id);
+    return this.userRepository.save(userItem);
   }
 
   async updateUser(id: string, payload: UpdateUserType): Promise<User> {
-    const user = await this.getUserById(id);
-    const userEmail = await this.getUserByEmail(user.user_email);
+    const user = await this.getUserById(id, true);
 
-    const newUser = await User.update(payload, userEmail.hashed_password);
+    const newUser = await User.update(payload, user.hashed_password);
 
     await this.userRepository.update(id, newUser);
 

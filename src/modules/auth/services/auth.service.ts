@@ -5,10 +5,11 @@ import { ENV_VARIABLES } from 'src/config/env.config';
 import { validatePassword } from 'src/utils/password.utils';
 import { UserTypeEnum } from 'src/modules/user/enum/user-type.enum';
 import { UserService } from 'src/modules/user/services/user.service';
-import { UnauthorizedError } from 'src/lib/http-exceptions/errors/types/unauthorized-error';
+import { UserAuthProviders } from 'src/modules/user/enum/user-auth-providers.enum';
+import { BadRequestError } from 'src/lib/http-exceptions/errors/types/bad-request-error';
 
+import type { AuthPayload } from '../dtos/auth.dto';
 import type { AccessDTO } from '../dtos/access.dto';
-import type { RegisterAndLoginPayload } from '../dtos/register-and-login.dto';
 
 @Injectable()
 export class AuthService {
@@ -17,23 +18,58 @@ export class AuthService {
     private readonly jwtService: JwtService,
   ) {}
 
-  async validateUser(email: string, password: string) {
+  async handleUserSignIn({
+    email,
+    password,
+    provider,
+    user_name,
+    user_photo_url,
+    phone_number,
+  }: AuthPayload) {
     const user = await this.usersService.getUserByEmail(email);
 
-    const isMatch = await validatePassword(password, user.hashed_password);
+    const isGoggleAuth = provider === UserAuthProviders.GOOGLE;
 
-    if (!isMatch) {
-      throw new UnauthorizedError('Password is not valid');
+    if (!user) {
+      if (!isGoggleAuth && !password)
+        throw new BadRequestError('Senha é obrigatória');
+
+      return this.usersService.createUser({
+        user_email: email,
+        user_name: user_name || '',
+        user_type: UserTypeEnum.COMMOM,
+        password,
+        phone_number,
+        user_photo_url,
+        is_email_verified: isGoggleAuth,
+        user_auth_provider: UserAuthProviders[provider.toUpperCase()],
+      });
+    }
+
+    if (password && user.hashed_password) {
+      const isValidPassword = await validatePassword(
+        password,
+        user.hashed_password,
+      );
+
+      if (!isValidPassword) {
+        throw new BadRequestError('Senha incorreta, tente novamente');
+      }
     }
 
     return user;
   }
 
-  async signIn(email: string, pass: string): Promise<AccessDTO> {
-    const { id, user_email, user_name, user_type } = await this.validateUser(
-      email,
-      pass,
-    );
+  async signIn(payload: AuthPayload): Promise<AccessDTO> {
+    const {
+      id,
+      user_email,
+      user_name,
+      user_type,
+      created_at,
+      is_email_verified,
+      phone_number,
+    } = await this.handleUserSignIn(payload);
 
     const { access_token } = await this.getAccessToken({
       id,
@@ -48,31 +84,9 @@ export class AuthService {
         user_name,
         user_email,
         user_type,
-      },
-      access_token,
-    };
-  }
-
-  async registerAndLogin(data: RegisterAndLoginPayload): Promise<AccessDTO> {
-    const { user_email, user_name, id, user_type } =
-      await this.usersService.createUser({
-        ...data,
-        user_type: UserTypeEnum.COMMOM,
-      });
-
-    const { access_token } = await this.getAccessToken({
-      id,
-      email: user_email,
-      name: user_name,
-      user_type,
-    });
-
-    return {
-      user: {
-        id,
-        user_email,
-        user_name,
-        user_type,
+        created_at,
+        is_email_verified,
+        phone_number,
       },
       access_token,
     };
