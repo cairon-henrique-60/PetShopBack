@@ -17,8 +17,8 @@ export class User extends Base {
   @Column('varchar')
   user_name: string;
 
-  @Column({ length: 255 })
-  hashed_password: string;
+  @Column('varchar', { nullable: true })
+  hashed_password: string | null;
 
   @Column('varchar')
   user_email: string;
@@ -26,15 +26,23 @@ export class User extends Base {
   @Column('varchar')
   user_type: string;
 
+  @Column('varchar')
+  user_auth_provider: string;
+
   @Column('varchar', { nullable: true })
   phone_number: string;
+
+  @Column('boolean', { default: false })
+  is_email_verified: boolean;
 
   @OneToMany(() => Pet, (pet) => pet.tutor)
   pets: Pet[];
 
   static async create(data: CreateUserPayload): Promise<User> {
     const userItem = new User();
-    const passwordHashed = await createHashedPassword(data.password);
+    const passwordHashed = data.password
+      ? await createHashedPassword(data.password)
+      : null;
 
     Object.assign(userItem, data);
     userItem.hashed_password = passwordHashed;
@@ -44,21 +52,25 @@ export class User extends Base {
 
   static async update(
     data: UpdateUserType,
-    userPassword: string,
+    userPassword: string | null,
   ): Promise<User> {
     const userItem = new User();
 
     const { previous_password, ...rest } = data;
 
-    if (previous_password !== undefined && rest.new_password !== undefined) {
+    if (
+      previous_password !== undefined &&
+      rest.new_password !== undefined &&
+      userPassword !== null
+    ) {
       const isMatch = await compare(previous_password, userPassword);
 
       if (!isMatch) {
         throw new UnauthorizedError('Password is not valid');
       }
     } else if (
-      previous_password !== undefined ||
-      rest.new_password !== undefined
+      (previous_password !== undefined || rest.new_password !== undefined) &&
+      userPassword !== null
     ) {
       throw new BadRequestError(
         'Both current_password and password are required!',

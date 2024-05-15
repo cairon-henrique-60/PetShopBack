@@ -1,11 +1,19 @@
-import { Body, Controller, HttpCode, HttpStatus, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  HttpCode,
+  HttpStatus,
+  Patch,
+  Post,
+  UseGuards,
+} from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 
 import { Public } from 'src/shared/decorators/auth.decorator';
 
 import { AuthUserDTO } from '../dtos/auth.dto';
 import { AuthService } from '../services/auth.service';
-import { RegisterAndLoginDTO } from '../dtos/register-and-login.dto';
+import { GoogleOauthGuard } from '../guards/google-outh.guard';
 
 @ApiTags('auth')
 @Controller('auth')
@@ -16,13 +24,23 @@ export class AuthController {
   @HttpCode(HttpStatus.OK)
   @Post('login')
   async signIn(@Body() signInDto: AuthUserDTO) {
-    return this.authService.signIn(signInDto.email, signInDto.password);
+    return this.authService.signIn(signInDto);
   }
 
   @Public()
   @HttpCode(HttpStatus.OK)
   @Post('register')
-  async registerAndLogin(@Body() registerDTO: RegisterAndLoginDTO) {
-    return this.authService.registerAndLogin(registerDTO);
+  async registerAndLogin(@Body() registerDTO: AuthUserDTO) {
+    return this.authService.signIn(registerDTO);
   }
+
+  @Public()
+  @UseGuards(GoogleOauthGuard)
+  @Patch('google/login')
+  async handleGoogleLogin() {}
+
+  @Public()
+  @UseGuards(GoogleOauthGuard)
+  @Patch('google/redirect')
+  async handleGoogleRedirect() {}
 }

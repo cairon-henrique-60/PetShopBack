@@ -41,7 +41,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/RegisterAndLoginDTO"
+                "$ref": "#/components/schemas/AuthUserDTO"
               }
             }
           }
@@ -56,6 +56,34 @@
                 }
               }
             }
+          }
+        },
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/server/auth/google/login": {
+      "patch": {
+        "operationId": "AuthController_handleGoogleLogin",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/server/auth/google/redirect": {
+      "patch": {
+        "operationId": "AuthController_handleGoogleRedirect",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
           }
         },
         "tags": [
@@ -1023,34 +1051,15 @@
             "type": "string",
             "description": "Password of the user.",
             "example": "909090"
+          },
+          "user_name": {
+            "type": "string",
+            "description": "Name of the user.",
+            "example": "Gugu"
           }
         },
         "required": [
           "email",
-          "password"
-        ]
-      },
-      "RegisterAndLoginDTO": {
-        "type": "object",
-        "properties": {
-          "user_email": {
-            "type": "string",
-            "description": "Email of the user.",
-            "example": "levis@gmail.com"
-          },
-          "password": {
-            "type": "string",
-            "description": "Password of the user.",
-            "example": "909090"
-          },
-          "user_name": {
-            "type": "string",
-            "description": "User Name.",
-            "example": "Gu"
-          }
-        },
-        "required": [
-          "user_email",
           "password",
           "user_name"
         ]
@@ -1062,7 +1071,8 @@
             "type": "string"
           },
           "hashed_password": {
-            "type": "string"
+            "type": "string",
+            "nullable": true
           },
           "user_email": {
             "type": "string"
@@ -1070,8 +1080,14 @@
           "user_type": {
             "type": "string"
           },
+          "user_auth_provider": {
+            "type": "string"
+          },
           "phone_number": {
             "type": "string"
+          },
+          "is_email_verified": {
+            "type": "boolean"
           },
           "pets": {
             "type": "array",
@@ -1095,7 +1111,9 @@
           "hashed_password",
           "user_email",
           "user_type",
+          "user_auth_provider",
           "phone_number",
+          "is_email_verified",
           "pets",
           "id",
           "created_at",
@@ -1261,7 +1279,7 @@
           "password": {
             "type": "string",
             "description": "Password of the user.",
-            "example": "909090"
+            "example": 909090
           },
           "user_email": {
             "type": "string",
@@ -1286,7 +1304,6 @@
         },
         "required": [
           "user_name",
-          "password",
           "user_email",
           "user_type"
         ]

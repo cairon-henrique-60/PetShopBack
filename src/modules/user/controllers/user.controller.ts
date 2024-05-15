@@ -9,6 +9,7 @@ import {
   Query,
   UseInterceptors,
 } from '@nestjs/common';
+import { DeleteResult } from 'typeorm';
 import { Pagination } from 'nestjs-typeorm-paginate';
 
 import { Public } from 'src/shared/decorators/auth.decorator';
@@ -22,7 +23,6 @@ import { UpdateUserDTO } from '../dtos/update-user.to';
 import { UserService } from '../services/user.service';
 import { CreateUserDTO } from '../dtos/create-user.dto';
 import { PaginateUsersDTO } from '../dtos/paginate-users.dto';
-import { DeleteResult } from 'typeorm';
 
 @ApiTags('user')
 @Controller('user')
