@@ -37,10 +37,14 @@ export class AuthController {
   @Public()
   @UseGuards(GoogleOauthGuard)
   @Patch('google/login')
-  async handleGoogleLogin() {}
+  async handleGoogleLogin() {
+    return { ok: true };
+  }
 
   @Public()
   @UseGuards(GoogleOauthGuard)
   @Patch('google/redirect')
-  async handleGoogleRedirect() {}
+  async handleGoogleRedirect() {
+    return { ok: true };
+  }
 }

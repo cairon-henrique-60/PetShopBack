@@ -999,6 +999,206 @@
           "mail"
         ]
       }
+    },
+    "/server/activity-type/paginate": {
+      "get": {
+        "operationId": "ActivityTypeController_paginate",
+        "parameters": [
+          {
+            "name": "activity_name",
+            "required": false,
+            "in": "query",
+            "description": "activity_name.",
+            "example": "Feriado",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "activity_description",
+            "required": false,
+            "in": "query",
+            "description": "activity_description",
+            "example": "Sei la",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "order_by_created_at",
+            "required": false,
+            "in": "query",
+            "description": "Order by created date.",
+            "example": "ASC",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "order_by_updated_at",
+            "required": false,
+            "in": "query",
+            "description": "Order by updated date",
+            "example": "DESC",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "The limit of items. If not passed the default limit will be 10",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "description": "The Current Page. If not passed the default page will be 1",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "activity-type"
+        ]
+      }
+    },
+    "/server/activity-type/{id}": {
+      "get": {
+        "operationId": "ActivityTypeController_getById",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ActivityType"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "activity-type"
+        ]
+      },
+      "put": {
+        "operationId": "ActivityTypeController_update",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateActivityTypeDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ActivityType"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "activity-type"
+        ]
+      },
+      "delete": {
+        "operationId": "ActivityTypeController_delete",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ActivityType"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "activity-type"
+        ]
+      }
+    },
+    "/server/activity-type": {
+      "post": {
+        "operationId": "ActivityTypeController_create",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateActivityTypeDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ActivityType"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "activity-type"
+        ]
+      }
     }
   },
   "info": {
@@ -1532,6 +1732,67 @@
             "type": "string",
             "description": "Name of the pet.",
             "example": "123e4567-e89b-12d3-a456-426614174000"
+          }
+        }
+      },
+      "ActivityType": {
+        "type": "object",
+        "properties": {
+          "activity_name": {
+            "type": "string"
+          },
+          "activity_description": {
+            "type": "string"
+          },
+          "id": {
+            "type": "string"
+          },
+          "created_at": {
+            "type": "string"
+          },
+          "updated_at": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "required": [
+          "activity_name",
+          "activity_description",
+          "id",
+          "created_at",
+          "updated_at"
+        ]
+      },
+      "CreateActivityTypeDTO": {
+        "type": "object",
+        "properties": {
+          "activity_name": {
+            "type": "string",
+            "description": "activity_name.",
+            "example": "Feriado"
+          },
+          "activity_description": {
+            "type": "string",
+            "description": "activity_description"
+          }
+        },
+        "required": [
+          "activity_name",
+          "activity_description"
+        ]
+      },
+      "UpdateActivityTypeDTO": {
+        "type": "object",
+        "properties": {
+          "activity_name": {
+            "type": "string",
+            "description": "activity_name.",
+            "example": "Feriado"
+          },
+          "activity_description": {
+            "type": "string",
+            "description": "activity_description",
+            "example": "Sei la"
           }
         }
       }
