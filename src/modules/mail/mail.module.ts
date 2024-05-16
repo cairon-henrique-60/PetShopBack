@@ -13,8 +13,8 @@ import { MailService } from './services/mail.service';
           port: 587,
           secure: true,
           auth: {
-            user: 'caironevanessa2017@gmail.com',
-            pass: 'anajuliaeraissa2017',
+            user: 'qualquer.com',
+            pass: 'quaquer',
           },
         },
       }),
