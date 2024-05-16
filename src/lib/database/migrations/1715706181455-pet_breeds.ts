@@ -20,6 +20,7 @@ export class PetSpecies1715706181455 implements MigrationInterface {
         ],
         foreignKeys: [
           {
+            name: 'FK_pet_breeds_species_id',
             columnNames: ['species_id'],
             referencedTableName: 'pet_species',
             referencedColumnNames: ['id'],
@@ -31,6 +32,7 @@ export class PetSpecies1715706181455 implements MigrationInterface {
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
+    await queryRunner.dropForeignKey('pet_breeds', 'FK_pet_breeds_species_id');
     await queryRunner.dropTable('pet_breeds');
   }
 }

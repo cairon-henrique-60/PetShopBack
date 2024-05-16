@@ -1,9 +1,17 @@
-import { Column, Entity, Index, JoinColumn, ManyToOne } from 'typeorm';
+import {
+  Column,
+  Entity,
+  Index,
+  JoinColumn,
+  ManyToOne,
+  OneToMany,
+} from 'typeorm';
 
 import { Base } from 'src/lib/database/entities/base.entity';
 import { User } from 'src/modules/user/entities/user.entity';
-import { PetSpecies } from 'src/modules/pet-species/entities/pet-species.entity';
+import { Activity } from 'src/modules/activity/entities/activity.entity';
 import { PetBreed } from 'src/modules/pet-breed/entities/pet-breed.entity';
+import { PetSpecies } from 'src/modules/pet-species/entities/pet-species.entity';
 
 @Entity('pets')
 export class Pet extends Base {
@@ -58,4 +66,7 @@ export class Pet extends Base {
   @ManyToOne(() => PetBreed, { eager: true })
   @JoinColumn({ name: 'pet_breed_id' })
   pet_breed: PetBreed;
+
+  @OneToMany(() => Activity, activity => activity.pet)
+  activities: Activity[];
 }

@@ -66,18 +66,21 @@ export class Pets1715706222891 implements MigrationInterface {
         ],
         foreignKeys: [
           {
+            name: 'FK_pets_tutor',
             columnNames: ['tutor_id'],
             referencedTableName: 'users',
             referencedColumnNames: ['id'],
             onDelete: 'CASCADE',
           },
           {
+            name: 'FK_pets_pet_species',
             columnNames: ['pet_species_id'],
             referencedTableName: 'pet_species',
             referencedColumnNames: ['id'],
             onDelete: 'SET NULL',
           },
           {
+            name: 'FK_pets_pet_breed',
             columnNames: ['pet_breed_id'],
             referencedTableName: 'pet_breeds',
             referencedColumnNames: ['id'],
@@ -89,6 +92,11 @@ export class Pets1715706222891 implements MigrationInterface {
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
+    // Drop foreign keys
+    await queryRunner.dropForeignKey('pets', 'FK_pets_tutor');
+    await queryRunner.dropForeignKey('pets', 'FK_pets_pet_species');
+    await queryRunner.dropForeignKey('pets', 'FK_pets_pet_breed');
+
     await queryRunner.dropTable('pets');
   }
 }

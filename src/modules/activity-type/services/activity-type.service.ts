@@ -63,18 +63,9 @@ export class ActivityTypeService {
     return activityTypesQueryBuilder;
   }
 
-  async getAllActivityTypes({
-    activity_description,
-    activity_name,
-    order_by_created_at,
-    order_by_updated_at,
-  }: ActivityTypesFilters) {
-    const activityTypesQueryBuilder = this.handleActivityTypeSearchFilters({
-      activity_description,
-      activity_name,
-      order_by_created_at,
-      order_by_updated_at,
-    });
+  async getAllActivityTypes(fiters: ActivityTypesFilters) {
+    const activityTypesQueryBuilder =
+      this.handleActivityTypeSearchFilters(fiters);
 
     return activityTypesQueryBuilder.getMany();
   }
@@ -82,17 +73,10 @@ export class ActivityTypeService {
   async paginateActivityTypes({
     limit,
     page,
-    activity_description,
-    activity_name,
-    order_by_created_at,
-    order_by_updated_at,
+    ...params
   }: PaginateActivityTypesPayload) {
-    const activityTypesQueryBuilder = this.handleActivityTypeSearchFilters({
-      activity_description,
-      activity_name,
-      order_by_created_at,
-      order_by_updated_at,
-    });
+    const activityTypesQueryBuilder =
+      this.handleActivityTypeSearchFilters(params);
 
     return this.paginationService.paginateWithQueryBuilder(
       activityTypesQueryBuilder,
