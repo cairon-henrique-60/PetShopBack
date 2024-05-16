@@ -31,9 +31,7 @@ export class GoogleOauthStrategy extends PassportStrategy(Strategy) {
   ): Promise<any> {
     const user_email = emails?.at(0)?.value;
 
-    if (!user_email) {
-      throw new BadRequestError('Email invalido');
-    }
+    if (!user_email) throw new BadRequestError('Email invalido');
 
     const user_name = `${name?.givenName} ${name?.familyName}`;
     const user_photo_url = photos?.at(0)?.value;
