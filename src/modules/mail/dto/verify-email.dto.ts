@@ -3,15 +3,15 @@ import { createZodDto } from 'nestjs-zod';
 
 import { stringSchema } from 'src/shared/schemas.shared';
 
-export const verifiEmailSchema = z.object({
+export const verifyEmailSchema = z.object({
   user_email: stringSchema,
   notification: stringSchema,
-  code_verification: stringSchema,
+  verfication_code: stringSchema,
 });
 
-export type VerifiEmailPayload = z.infer<typeof verifiEmailSchema>;
+export type VerifyEmailPayload = z.infer<typeof verifyEmailSchema>;
 
-export class VerifyEmailDTO extends createZodDto(verifiEmailSchema) {
+export class VerifyEmailDTO extends createZodDto(verifyEmailSchema) {
   /**
    *Email of the user.
    *@example pauloSalvatore@gmail.com
@@ -26,5 +26,5 @@ export class VerifyEmailDTO extends createZodDto(verifiEmailSchema) {
    * Code verify email.
    * @example a2B5ac
    */
-  code_verification: string;
+  verfication_code: string;
 }

@@ -3,9 +3,11 @@ import { MailerModule } from '@nestjs-modules/mailer';
 
 import { MailController } from './controller/mail.controller';
 import { MailService } from './services/mail.service';
+import { UserModule } from '../user/user.module';
 
 @Module({
   imports: [
+    UserModule,
     MailerModule.forRootAsync({
       useFactory: () => ({
         transport: {
