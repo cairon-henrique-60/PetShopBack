@@ -1,6 +1,5 @@
 import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
 
-import { Pet } from 'src/modules/pet/entities/pet.entity';
 import { Base } from 'src/lib/database/entities/base.entity';
 import { ActivityType } from 'src/modules/activity-type/entities/activity-type.entity';
 
@@ -28,10 +27,6 @@ export class Activity extends Base {
 
   @Column('uuid')
   activity_type_id: string;
-
-  @ManyToOne(() => Pet, (pet) => pet.activities, { eager: true })
-  @JoinColumn({ name: 'pet_id' })
-  pet: Pet;
 
   @ManyToOne(() => ActivityType, (activity_type) => activity_type.activities, {
     eager: true,
