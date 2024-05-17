@@ -7,6 +7,7 @@ import { NotFoundError } from 'src/lib/http-exceptions/errors/types/not-found-er
 import { UserService } from 'src/modules/user/services/user.service';
 import { PetBreedService } from 'src/modules/pet-breed/services/pet-breed.service';
 import { PetSpeciesService } from 'src/modules/pet-species/services/pet-species.service';
+import { BadRequestError } from 'src/lib/http-exceptions/errors/types/bad-request-error';
 
 import { Pet } from '../entities/pet.entity';
 import type { UpdatePetPayload } from '../dtos/update-pet.dto';
@@ -170,10 +171,16 @@ export class PetService {
 
   async createPet(payload: CreatePetPayload, userId: string): Promise<Pet> {
     await Promise.all([
-      this.userService.getUserById(userId),
       this.petBreedService.getBreedById(payload.pet_breed_id),
       this.petSpeciesService.getPetSpecies(payload.pet_species_id),
-    ]);
+      this.userService.getUserById(userId),
+    ]).then(([breed, species]) => {
+      if (species.id !== breed.species_id) {
+        throw new BadRequestError(
+          "The species ID does not match the breed's species ID.",
+        );
+      }
+    });
 
     const petItem = Pet.create({ tutor_id: userId, ...payload });
 
