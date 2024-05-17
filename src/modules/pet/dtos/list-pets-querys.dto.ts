@@ -2,29 +2,22 @@ import { z } from 'nestjs-zod/z';
 import { createZodDto } from 'nestjs-zod';
 
 import {
-  optionalPaginationParamSchema,
   optionalStringSchema,
   optionalUuidSchema,
-  optionalOrderParamSchema,
 } from 'src/shared/schemas.shared';
 
-export const paginatePetsQuerysSchema = z.object({
-  page: optionalPaginationParamSchema,
-  limit: optionalPaginationParamSchema,
+export const listPetsQuerysSchema = z.object({
+  id: optionalUuidSchema,
   pet_breed_id: optionalUuidSchema,
   pet_species_id: optionalUuidSchema,
   pet_name: optionalStringSchema,
   pet_gender: optionalStringSchema,
   pet_color: optionalStringSchema,
-  order_by_created_at: optionalOrderParamSchema,
-  order_by_updated_at: optionalOrderParamSchema,
 });
 
-export type PaginatePetsQuerysType = z.infer<typeof paginatePetsQuerysSchema>;
+export type ListPetsQuerysType = z.infer<typeof listPetsQuerysSchema>;
 
-export class PaginatePetsQuerysDTO extends createZodDto(
-  paginatePetsQuerysSchema,
-) {
+export class ListPetsQuerysDTO extends createZodDto(listPetsQuerysSchema) {
   /**
    * Name of the pet.
    * @example Luna
@@ -50,14 +43,4 @@ export class PaginatePetsQuerysDTO extends createZodDto(
    * @example Golden
    */
   pet_color?: string;
-  /**
-   * Order pets by created date.
-   * @example ASC
-   */
-  order_by_created_at?: 'ASC' | 'DESC';
-  /**
-   * Order pets by updated date.
-   * @example DESC
-   */
-  order_by_updated_at?: 'ASC' | 'DESC';
 }

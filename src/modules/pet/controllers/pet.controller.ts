@@ -10,7 +10,6 @@ import {
 import { ApiTags } from '@nestjs/swagger';
 
 import { orderByFields } from 'src/config/swagger.config';
-import { Public } from 'src/shared/decorators/auth.decorator';
 import { UuidParam } from 'src/shared/decorators/uuid-param.decorator';
 import { DecodedToken } from 'src/shared/decorators/decoded-token.decorator';
 import { ApiPaginationQuery } from 'src/shared/decorators/api-pagination-query.decorator';
@@ -18,6 +17,7 @@ import { ApiPaginationQuery } from 'src/shared/decorators/api-pagination-query.d
 import { PetService } from '../services/pet.service';
 import { CreatePetDTO } from '../dtos/create-pet.dto';
 import { UpdatePetDTO } from '../dtos/update-pet.dto';
+import { ListPetsQuerysDTO } from '../dtos/list-pets-querys.dto';
 import { PaginatePetsQuerysDTO } from '../dtos/paginate-pets-querys.dto';
 
 @ApiTags('pet')
@@ -25,21 +25,34 @@ import { PaginatePetsQuerysDTO } from '../dtos/paginate-pets-querys.dto';
 export class PetController {
   constructor(private readonly petService: PetService) {}
 
-  @Public()
   @Get('paginate')
   @ApiPaginationQuery(orderByFields)
-  async paginatePets(@Query() querys: PaginatePetsQuerysDTO) {
-    return this.petService.paginatePets(querys);
+  async paginatePets(
+    @Query() querys: PaginatePetsQuerysDTO,
+    @DecodedToken() decoded_token: DecodedTokenType,
+  ) {
+    return this.petService.paginatePets(querys, decoded_token);
+  }
+
+  @Get('list')
+  async getListPet(
+    @Query() query: ListPetsQuerysDTO,
+    @DecodedToken() decoded_token: DecodedTokenType,
+  ) {
+    return this.petService.list(query, decoded_token);
   }
 
   @Get(':id')
   async getPet(@UuidParam('id') id: string) {
-    return this.petService.getPet(id);
+    return this.petService.getPetById(id);
   }
 
   @Post()
-  async createPet(@Body() payload: CreatePetDTO) {
-    return this.petService.createPet(payload);
+  async createPet(
+    @Body() payload: CreatePetDTO,
+    @DecodedToken() decoded_token: DecodedTokenType,
+  ) {
+    return this.petService.createPet(payload, decoded_token.id);
   }
 
   @Put(':id')

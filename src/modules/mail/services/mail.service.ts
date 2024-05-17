@@ -27,7 +27,7 @@ export class MailService {
 
     await this.mailerService.sendMail({
       to: userToSendVerificationEmail.user_email,
-      from: 'caironevanessa2017@gmail.com',
+      from: 'cairo@gmail.com',
       subject: 'Verificação de email',
       text: `${notification}: ${verfication_code}`,
       html: '<h1>teste</h1>',

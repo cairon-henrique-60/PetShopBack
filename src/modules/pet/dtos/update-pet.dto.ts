@@ -4,20 +4,19 @@ import { z } from 'nestjs-zod/z';
 import {
   optionalStringSchema,
   optionalDateStringSchema,
-  optionalUrlStringSchema,
   optionalUuidSchema,
+  oneCharStringSchema,
 } from 'src/shared/schemas.shared';
 
 export const updatePetSchema = z.object({
   pet_name: optionalStringSchema,
   pet_breed_id: optionalUuidSchema,
   date_of_birth: optionalDateStringSchema,
-  pet_gender: optionalStringSchema,
+  pet_gender: oneCharStringSchema.optional(),
   pet_color: optionalStringSchema,
   alergies: optionalStringSchema,
   medical_conditions: optionalStringSchema,
   current_medication: optionalStringSchema,
-  pet_image_url: optionalUrlStringSchema,
   pet_microship_id: optionalStringSchema,
   tutor_id: optionalUuidSchema,
   pet_species_id: optionalUuidSchema,
@@ -43,7 +42,7 @@ export class UpdatePetDTO extends createZodDto(updatePetSchema) {
   date_of_birth?: Date;
   /**
    * Gender of the pet.
-   * @example Female
+   * @example F | M
    */
   pet_gender?: string;
   /**
@@ -66,11 +65,6 @@ export class UpdatePetDTO extends createZodDto(updatePetSchema) {
    * @example None
    */
   current_medication?: string;
-  /**
-   * URL of the pet's image.
-   * @example https://example.com/pet.jpg
-   */
-  pet_image_url?: string;
   /**
    * Microchip ID of the pet.
    * @example A123456789

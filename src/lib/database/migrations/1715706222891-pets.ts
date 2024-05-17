@@ -28,7 +28,7 @@ export class Pets1715706222891 implements MigrationInterface {
           },
           {
             name: 'pet_gender',
-            type: 'varchar',
+            type: 'char',
           },
           {
             name: 'pet_color',
@@ -46,11 +46,6 @@ export class Pets1715706222891 implements MigrationInterface {
           },
           {
             name: 'current_medication',
-            type: 'varchar',
-            isNullable: true,
-          },
-          {
-            name: 'pet_image_url',
             type: 'varchar',
             isNullable: true,
           },

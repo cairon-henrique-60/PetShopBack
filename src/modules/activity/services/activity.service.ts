@@ -17,31 +17,39 @@ export class ActivityService {
     private readonly paginationService: PaginationService,
   ) {}
 
+  // private createActivityQueryBuilder() {
+  //   return this.activityRepository
+  //     .createQueryBuilder('activity')
+  //     .leftJoinAndSelect('activity.pet', 'pet')
+  //     .leftJoinAndSelect('activity.activity_type', 'activity_type')
+  //     // .leftJoinAndSelect('pet.tutor', 'tutor')
+  //     .select([
+  //       'activity.id',
+  //       'activity.created_at',
+  //       'activity.updated_at',
+  //       'activity.activity_title',
+  //       'activity.activity_description',
+  //       'activity.activity_location',
+  //       'activity.activity_date',
+  //       'activity.activity_time',
+  //       'pet.id',
+  //       'pet.pet_name',
+  //       'pet.pet_image_url',
+  //       'activity_type.id',
+  //       'activity_type.activity_name',
+  //       'activity_type.activity_description',
+  //       // 'tutor.id',
+  //       // 'tutor.user_name',
+  //       // 'tutor.user_email',
+  //     ]);
+  // }
+
   private createActivityQueryBuilder() {
     return this.activityRepository
       .createQueryBuilder('activity')
-      .leftJoinAndSelect('activity.pet', 'pet')
-      .leftJoinAndSelect('activity.activity_type', 'activity_type')
-      // .leftJoinAndSelect('pet.tutor', 'tutor')
-      .select([
-        'activity.id',
-        'activity.created_at',
-        'activity.updated_at',
-        'activity.activity_title',
-        'activity.activity_description',
-        'activity.activity_location',
-        'activity.activity_date',
-        'activity.activity_time',
-        'pet.id',
-        'pet.pet_name',
-        'pet.pet_image_url',
-        'activity_type.id',
-        'activity_type.activity_name',
-        'activity_type.activity_description',
-        // 'tutor.id',
-        // 'tutor.user_name',
-        // 'tutor.user_email',
-      ]);
+      .select(['activity', 'pet', 'activity_type'])
+      .leftJoin('activity.pet', 'pet')
+      .leftJoinAndSelect('a.tutor.id', 'a');
   }
 
   private handleActivitySearchFilters({

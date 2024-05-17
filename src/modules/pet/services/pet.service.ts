@@ -4,9 +4,14 @@ import { Inject, Injectable, ForbiddenException } from '@nestjs/common';
 import { PaginationService } from 'src/lib/pagination/pagination.service';
 import { NotFoundError } from 'src/lib/http-exceptions/errors/types/not-found-error';
 
+import { UserService } from 'src/modules/user/services/user.service';
+import { PetBreedService } from 'src/modules/pet-breed/services/pet-breed.service';
+import { PetSpeciesService } from 'src/modules/pet-species/services/pet-species.service';
+
 import { Pet } from '../entities/pet.entity';
 import type { UpdatePetPayload } from '../dtos/update-pet.dto';
 import type { CreatePetPayload } from '../dtos/create-pet.dto';
+import type { ListPetsQuerysDTO } from '../dtos/list-pets-querys.dto';
 import type { PaginatePetsQuerysType } from '../dtos/paginate-pets-querys.dto';
 
 @Injectable()
@@ -14,40 +19,50 @@ export class PetService {
   constructor(
     @Inject('PET_REPOSITORY') private petRepository: Repository<Pet>,
     private readonly paginationService: PaginationService,
+    private readonly userService: UserService,
+    private readonly petBreedService: PetBreedService,
+    private readonly petSpeciesService: PetSpeciesService,
   ) {}
 
-  private buildPetQueryBuilder() {
-    return this.petRepository.createQueryBuilder('pet');
-  }
+  async paginatePets(
+    {
+      limit,
+      page,
+      order_by_created_at,
+      order_by_updated_at,
+      pet_breed_id,
+      pet_species_id,
+      pet_color,
+      pet_gender,
+      pet_name,
+    }: PaginatePetsQuerysType,
+    decoded_token: DecodedTokenType,
+  ) {
+    const isCommomUser = decoded_token.user_type.toUpperCase() !== 'ADMIN';
 
-  async paginatePets({
-    limit,
-    page,
-    order_by_created_at,
-    order_by_updated_at,
-    pet_breed_id,
-    pet_color,
-    pet_gender,
-    tutor_id,
-    pet_name,
-  }: PaginatePetsQuerysType) {
-    const petQueryBuilder = this.buildPetQueryBuilder()
+    const petQueryBuilder = this.petRepository
+      .createQueryBuilder('pet')
       .select([
-        'pet.pet_name',
-        'pet.pet_breed_id',
-        'pet.pet_gender',
-        'pet.pet_color',
-        'pet.tutor_id',
-        'pet.pet_image_url',
-        'pet.pet_species_id',
-        'pet.created_at',
-        'pet.updated_at',
-        'pet.id',
+        'pet',
+        't.id',
+        't.user_name',
+        't.user_email',
+        't.phone_number',
+        't.is_email_verified',
       ])
-      .where(tutor_id ? 'pet.tutor_id = :tutor_id' : '1=1', { tutor_id })
+      .leftJoin('pet.tutor', 't')
+      .where(isCommomUser ? 'pet.tutor_id = :tutor_id' : '1=1', {
+        tutor_id: decoded_token.id,
+      })
       .andWhere(pet_breed_id ? 'pet.pet_breed_id = :pet_breed_id' : '1=1', {
         pet_breed_id,
       })
+      .andWhere(
+        pet_species_id ? 'pet.pet_species_id = :pet_species_id' : '1=1',
+        {
+          pet_species_id,
+        },
+      )
       .andWhere(pet_name ? 'pet.pet_name LIKE :pet_name' : '1=1', {
         pet_name: `%${pet_name}%`,
       })
@@ -70,67 +85,121 @@ export class PetService {
     });
   }
 
-  async getPet(id: string): Promise<Pet> {
-    const foundedPet = await this.buildPetQueryBuilder()
-      .where('pet.id = :id', { id })
-      .leftJoinAndSelect('pet.pet_species', 'pet_species')
-      .leftJoinAndSelect('pet.tutor', 'tutor')
-      .leftJoinAndSelect('pet.pet_breed', 'pet_breed')
+  async getPetById(id: string): Promise<Pet> {
+    const foundedPet = await this.petRepository
+      .createQueryBuilder('p')
       .select([
-        'pet.id',
-        'pet.pet_name',
-        'pet.pet_breed',
-        'pet.date_of_birth',
-        'pet.pet_gender',
-        'pet.pet_color',
-        'pet.alergies',
-        'pet.medical_conditions',
-        'pet.current_medication',
-        'pet.pet_image_url',
-        'pet.pet_microship_id',
-        'pet.created_at',
-        'pet.updated_at',
-        'pet_species.species_name',
-        'pet_species.id',
-        'pet_breed.id',
-        'pet_breed.breed_name',
-        'tutor.id',
-        'tutor.user_name',
-        'tutor.user_email',
+        'p',
+        'e',
+        'b',
+        't.id',
+        't.user_name',
+        't.user_email',
+        't.phone_number',
+        't.is_email_verified',
       ])
+      .leftJoin('p.tutor', 't')
+      .leftJoin('p.pet_species', 'e')
+      .leftJoin('p.pet_breed', 'b')
+      .where('pet.id = :id', { id })
       .getOne();
 
     if (!foundedPet) {
-      throw new NotFoundError('Pet Não encontrado');
+      throw new NotFoundError('Not Found');
     }
 
     return foundedPet;
   }
 
-  async createPet(payload: CreatePetPayload): Promise<Pet> {
-    const petItem = this.petRepository.create();
+  async list(
+    {
+      pet_breed_id,
+      pet_species_id,
+      pet_color,
+      pet_gender,
+      pet_name,
+      id,
+    }: ListPetsQuerysDTO,
+    decoded_token: DecodedTokenType,
+  ): Promise<Pet[]> {
+    const isCommomUser = decoded_token.user_type.toUpperCase() !== 'ADMIN';
 
-    Object.assign(petItem, payload);
+    const petQueryBuilder = this.petRepository
+      .createQueryBuilder('pet')
+      .select([
+        'pet',
+        'e',
+        'b',
+        't.id',
+        't.user_name',
+        't.user_email',
+        't.phone_number',
+        't.is_email_verified',
+      ])
+      .leftJoin('pet.tutor', 't')
+      .leftJoin('pet.pet_species', 'e')
+      .leftJoin('pet.pet_breed', 'b')
+      .where(isCommomUser ? 'pet.tutor_id = :tutor_id' : '1=1', {
+        tutor_id: decoded_token.id,
+      })
+      .andWhere(id ? 'pet.id = :id' : '1=1', {
+        id,
+      })
+      .andWhere(pet_breed_id ? 'pet.pet_breed_id = :pet_breed_id' : '1=1', {
+        pet_breed_id,
+      })
+      .andWhere(
+        pet_species_id ? 'pet.pet_species_id = :pet_species_id' : '1=1',
+        {
+          pet_species_id,
+        },
+      )
+      .andWhere(pet_name ? 'pet.pet_name LIKE :pet_name' : '1=1', {
+        pet_name: `%${pet_name}%`,
+      })
+      .andWhere(pet_color ? 'pet.pet_color LIKE :pet_color' : '1=1', {
+        pet_color: `%${pet_color}%`,
+      })
+      .andWhere(pet_gender ? 'pet.pet_gender LIKE :pet_gender' : '1=1', {
+        pet_gender: `%${pet_gender}%`,
+      })
+      .getMany();
+
+    return petQueryBuilder;
+  }
+
+  async createPet(payload: CreatePetPayload, userId: string): Promise<Pet> {
+    await Promise.all([
+      this.userService.getUserById(userId),
+      this.petBreedService.getBreedById(payload.pet_breed_id),
+      this.petSpeciesService.getPetSpecies(payload.pet_species_id),
+    ]);
+
+    const petItem = Pet.create({ tutor_id: userId, ...payload });
 
     return this.petRepository.save(petItem);
   }
 
-  async updatePet(id: string, tutor_id: string, payload: UpdatePetPayload) {
-    const petToUpdate = await this.getPet(id);
+  async updatePet(id: string, user_id: string, payload: UpdatePetPayload) {
+    await this.getPetById(id);
 
-    this.checkIfTutorOwnsCurrentPet(petToUpdate, tutor_id);
+    if (payload.pet_breed_id) {
+      await this.petBreedService.getBreedById(payload.pet_breed_id);
+    }
 
-    const petItem = this.petRepository.create();
+    if (payload.pet_breed_id) {
+      await this.petBreedService.getBreedById(payload.pet_breed_id);
+    }
 
-    Object.assign(petItem, payload);
+    const petItem = Pet.update({ tutor_id: user_id, ...payload });
 
     await this.petRepository.update(id, petItem);
 
-    return this.getPet(petToUpdate.id);
+    return this.getPetById(id);
   }
 
   async deletePet(id: string, current_user_id: string) {
-    const petToDelete = await this.getPet(id);
+    const petToDelete = await this.getPetById(id);
 
     this.checkIfTutorOwnsCurrentPet(petToDelete, current_user_id);
 
@@ -140,7 +209,7 @@ export class PetService {
   private checkIfTutorOwnsCurrentPet(currentPet: Pet, tutor_id: string) {
     if (currentPet.tutor.id !== tutor_id) {
       throw new ForbiddenException(
-        'Não é possivel alterar ou deletar um pet que não é seu',
+        'Não é possivel alterar ou deletar um pet que não é seu!',
       );
     }
   }

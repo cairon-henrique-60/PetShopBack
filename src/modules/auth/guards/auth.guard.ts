@@ -38,7 +38,7 @@ export class AuthGuard implements CanActivate {
           secret: ENV_VARIABLES.JWT_SECRET,
         });
 
-        request['decoded_token'] = payload;
+        if (!request['decoded_token']) request['decoded_token'] = payload;
       }
 
       return true;

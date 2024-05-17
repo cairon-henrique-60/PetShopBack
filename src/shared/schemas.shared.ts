@@ -143,3 +143,7 @@ export const optionalNumberInStringSchema = z
   .optional()
   .nullable()
   .transform((value) => (isNullableValue(value) ? undefined : value));
+
+export const oneCharStringSchema = z
+  .string()
+  .length(1, 'A string deve conter exatamente 1 caractere');
