@@ -30,7 +30,9 @@ export class AuthGuard implements CanActivate {
     const token = this.extractTokenFromHeader(request);
 
     if (!token && !isPublic) {
-      throw new UnauthorizedException();
+      throw new UnauthorizedException(
+        'É necessario ter um token para acessar essa rota protegida',
+      );
     }
 
     try {
@@ -44,7 +46,7 @@ export class AuthGuard implements CanActivate {
 
       return true;
     } catch {
-      throw new UnauthorizedException();
+      throw new UnauthorizedException('Invalid Token!');
     }
   }
 
