@@ -9,6 +9,7 @@ import { JwtService } from '@nestjs/jwt';
 import { type Request } from 'express';
 
 import { IS_PUBLIC_KEY } from 'src/shared/decorators/auth.decorator';
+import { DECODED_TOKEN_KEY } from 'src/shared/decorators/decoded-token.decorator';
 
 import { ENV_VARIABLES } from '../../../config/env.config';
 
@@ -38,7 +39,7 @@ export class AuthGuard implements CanActivate {
           secret: ENV_VARIABLES.JWT_SECRET,
         });
 
-        if (!request['decoded_token']) request['decoded_token'] = payload;
+        if (!request[DECODED_TOKEN_KEY]) request[DECODED_TOKEN_KEY] = payload;
       }
 
       return true;

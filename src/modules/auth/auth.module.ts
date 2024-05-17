@@ -9,7 +9,6 @@ import { ENV_VARIABLES } from 'src/config/env.config';
 import { AuthGuard } from './guards/auth.guard';
 import { AuthService } from './services/auth.service';
 import { AuthController } from './controller/auth.controller';
-import { GoogleOauthStrategy } from './strategies/google-oauth.strategy';
 
 @Module({
   imports: [
@@ -23,7 +22,6 @@ import { GoogleOauthStrategy } from './strategies/google-oauth.strategy';
   controllers: [AuthController],
   providers: [
     AuthService,
-    GoogleOauthStrategy,
     {
       provide: APP_GUARD,
       useClass: AuthGuard,

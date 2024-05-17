@@ -46,6 +46,13 @@ export class Activities1715882744298 implements MigrationInterface {
             referencedColumnNames: ['id'],
             onDelete: 'CASCADE',
           },
+          {
+            name: 'FK_activities_pet',
+            columnNames: ['pet_id'],
+            referencedTableName: 'activity_types',
+            referencedColumnNames: ['id'],
+            onDelete: 'CASCADE',
+          },
         ],
       }),
     );

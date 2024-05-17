@@ -51,7 +51,7 @@ export class UserService {
     return Promise.resolve(paginatedHotelsResult);
   }
 
-  async getUserByEmail(user_email: string) {
+  async getUserByEmail(user_email: string): Promise<User> {
     const foundedUser = await this.userRepository.findOne({
       where: { user_email },
       select: [
@@ -67,6 +67,10 @@ export class UserService {
       ],
       loadEagerRelations: false,
     });
+
+    if (!foundedUser) {
+      throw new BadRequestError('Email não existe no banco de dados');
+    }
 
     return foundedUser;
   }

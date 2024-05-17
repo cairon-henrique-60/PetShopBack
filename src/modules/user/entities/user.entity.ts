@@ -40,12 +40,12 @@ export class User extends Base {
 
   static async create(data: CreateUserPayload): Promise<User> {
     const userItem = new User();
-    const passwordHashed = data.password
+    const hashed_password = data.password
       ? await createHashedPassword(data.password)
       : null;
 
     Object.assign(userItem, data);
-    userItem.hashed_password = passwordHashed;
+    userItem.hashed_password = hashed_password;
 
     return userItem;
   }
