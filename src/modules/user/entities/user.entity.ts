@@ -30,7 +30,7 @@ export class User extends Base {
   user_auth_provider: string;
 
   @Column('varchar', { nullable: true })
-  phone_number: string;
+  phone_number: string | null;
 
   @Column('boolean', { default: false })
   is_email_verified: boolean;

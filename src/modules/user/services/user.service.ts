@@ -112,15 +112,6 @@ export class UserService {
   }
 
   async createUser(payload: CreateUserPayload): Promise<User> {
-    const isThereUserWithSameEmail = await this.userRepository.findOne({
-      where: { user_email: payload.user_email },
-      select: ['id'],
-    });
-
-    if (isThereUserWithSameEmail) {
-      throw new BadRequestError('Já existe um usuario com o mesmo email');
-    }
-
     const userItem = await User.create(payload);
 
     return this.userRepository.save(userItem);

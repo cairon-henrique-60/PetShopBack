@@ -5,7 +5,6 @@ import {
   stringSchema,
   emailStringSchema,
   optionalStringSchema,
-  optionalUrlStringSchema,
   optionalPhoneNumberStringSchema,
 } from 'src/shared/schemas.shared';
 
@@ -24,7 +23,6 @@ export const createUserSchema = z.object({
   phone_number: optionalPhoneNumberStringSchema,
   user_type: z.nativeEnum(UserTypeEnum).optional().default(UserTypeEnum.COMMOM),
   user_auth_provider: userAuthProviderSchema,
-  user_photo_url: optionalUrlStringSchema,
   is_email_verified: z.boolean().default(false),
 });
 

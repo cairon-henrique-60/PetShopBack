@@ -42,7 +42,6 @@ export class AuthService {
     user_email,
     user_name,
     user_auth_provider,
-    user_photo_url,
   }: RegisterPayload) {
     const is_google_provider = user_auth_provider === UserAuthProviders.GOOGLE;
 
@@ -54,7 +53,6 @@ export class AuthService {
       user_type: UserTypeEnum.COMMOM,
       password,
       phone_number,
-      user_photo_url,
     });
 
     const access_token = await this.generateAccessToken(newUser);

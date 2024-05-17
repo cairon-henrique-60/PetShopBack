@@ -5,7 +5,7 @@ interface IUser {
   user_type: string;
   is_email_verified: boolean;
   created_at: string;
-  phone_number: string;
+  phone_number: string | null;
 }
 
 export interface AccessDTO {

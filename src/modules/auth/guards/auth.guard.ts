@@ -2,7 +2,7 @@ import {
   CanActivate,
   ExecutionContext,
   Injectable,
-  Logger,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { JwtService } from '@nestjs/jwt';
@@ -10,14 +10,11 @@ import { type Request } from 'express';
 
 import { IS_PUBLIC_KEY } from 'src/shared/decorators/auth.decorator';
 import { DECODED_TOKEN_KEY } from 'src/shared/decorators/decoded-token.decorator';
-import { UnauthorizedError } from 'src/lib/http-exceptions/errors/types/unauthorized-error';
 
 import { ENV_VARIABLES } from '../../../config/env.config';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
-  private readonly logger = new Logger(AuthGuard.name);
-
   constructor(
     private jwtService: JwtService,
     private reflector: Reflector,
@@ -32,10 +29,7 @@ export class AuthGuard implements CanActivate {
     const request = context.switchToHttp().getRequest<Request>();
     const token = this.extractTokenFromHeader(request);
 
-    if (!token && !isPublic) {
-      this.logger.warn('Unauthorized access attempt without token.');
-      throw new UnauthorizedError();
-    }
+    if (!token && !isPublic) throw new UnauthorizedException();
 
     try {
       if (token) {
@@ -47,10 +41,8 @@ export class AuthGuard implements CanActivate {
       }
 
       return true;
-    } catch (error) {
-      this.logger.error('Invalid Token!', error);
-
-      throw new UnauthorizedError('Invalid Token!');
+    } catch {
+      throw new UnauthorizedException('Invalid Token!');
     }
   }
 

@@ -1,12 +1,11 @@
 import { z } from 'nestjs-zod/z';
 import { createZodDto } from 'nestjs-zod';
-import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { ApiProperty } from '@nestjs/swagger';
 
 import {
   emailStringSchema,
   optionalPhoneNumberStringSchema,
   optionalStringSchema,
-  optionalUrlStringSchema,
   stringSchema,
 } from 'src/shared/schemas.shared';
 import { userAuthProviderSchema } from 'src/modules/user/dtos/create-user.dto';
@@ -19,7 +18,6 @@ export const registerSchema = z
     user_name: stringSchema,
     phone_number: optionalPhoneNumberStringSchema,
     user_auth_provider: userAuthProviderSchema,
-    user_photo_url: optionalUrlStringSchema,
   })
   .refine(
     (data) =>
@@ -55,10 +53,4 @@ export class RegisterDTO extends createZodDto(registerSchema) {
     example: '+551112345678',
   })
   phone_number: string;
-
-  @ApiPropertyOptional({
-    description: 'The photo URL of the user',
-    example: 'https://example.com/photo.jpg',
-  })
-  user_photo_url?: string;
 }
