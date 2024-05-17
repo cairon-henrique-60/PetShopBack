@@ -28,6 +28,7 @@ export const swaggerConfig = new DocumentBuilder()
   .addTag('activity')
   .addTag('activity-type')
   .addTag('mail')
+  .addTag('google')
   .addBearerAuth()
   .addSecurityRequirements('bearer')
   .build();
