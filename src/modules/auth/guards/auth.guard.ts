@@ -1,15 +1,11 @@
-import {
-  CanActivate,
-  ExecutionContext,
-  Injectable,
-  UnauthorizedException,
-} from '@nestjs/common';
+import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { JwtService } from '@nestjs/jwt';
 import { type Request } from 'express';
 
 import { IS_PUBLIC_KEY } from 'src/shared/decorators/auth.decorator';
 import { DECODED_TOKEN_KEY } from 'src/shared/decorators/decoded-token.decorator';
+import { UnauthorizedError } from 'src/lib/http-exceptions/errors/types/unauthorized-error';
 
 import { ENV_VARIABLES } from '../../../config/env.config';
 
@@ -29,11 +25,7 @@ export class AuthGuard implements CanActivate {
     const request = context.switchToHttp().getRequest<Request>();
     const token = this.extractTokenFromHeader(request);
 
-    if (!token && !isPublic) {
-      throw new UnauthorizedException(
-        'É necessario ter um token para acessar essa rota protegida',
-      );
-    }
+    if (!token && !isPublic) throw new UnauthorizedError();
 
     try {
       if (token) {
@@ -46,7 +38,7 @@ export class AuthGuard implements CanActivate {
 
       return true;
     } catch {
-      throw new UnauthorizedException('Invalid Token!');
+      throw new UnauthorizedError('Invalid Token!');
     }
   }
 
