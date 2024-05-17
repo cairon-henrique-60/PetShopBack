@@ -4,9 +4,9 @@ import { createZodDto } from 'nestjs-zod';
 import {
   stringSchema,
   emailStringSchema,
-  optionalNumberInStringSchema,
   optionalStringSchema,
   optionalUrlStringSchema,
+  optionalPhoneNumberStringSchema,
 } from 'src/shared/schemas.shared';
 
 import { UserTypeEnum } from '../enum/user-type.enum';
@@ -21,7 +21,7 @@ export const createUserSchema = z.object({
   user_name: stringSchema.max(255),
   user_email: emailStringSchema,
   password: optionalStringSchema,
-  phone_number: optionalNumberInStringSchema,
+  phone_number: optionalPhoneNumberStringSchema,
   user_type: z.nativeEnum(UserTypeEnum).optional().default(UserTypeEnum.COMMOM),
   user_auth_provider: userAuthProviderSchema,
   user_photo_url: optionalUrlStringSchema,

@@ -40,6 +40,23 @@ export const optionalStringToNumberSchema = optionalStringSchema
 
 export const uuidSchema = stringSchema.uuid();
 
+export const phoneNumberStringSchema = stringSchema.refine(
+  (data) => {
+    const phoneNumberRegex =
+      /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/;
+
+    return phoneNumberRegex.test(data);
+  },
+  {
+    message: 'Invalid phone number format',
+  },
+);
+
+export const optionalPhoneNumberStringSchema = phoneNumberStringSchema
+  .optional()
+  .nullable()
+  .transform((value) => (isNullableValue(value) ? undefined : value));
+
 export const optionalUuidSchema = uuidSchema
   .optional()
   .nullable()
@@ -126,20 +143,6 @@ export const booleanParamSchema = z
 export const orderParamSchema = z.union([z.literal('ASC'), z.literal('DESC')]);
 
 export const optionalOrderParamSchema = orderParamSchema
-  .optional()
-  .nullable()
-  .transform((value) => (isNullableValue(value) ? undefined : value));
-
-export const optionalNumberInStringSchema = z
-  .string()
-  .refine(
-    (value) => {
-      return /^\d+$/.test(value);
-    },
-    {
-      message: 'A string deve conter apenas números',
-    },
-  )
   .optional()
   .nullable()
   .transform((value) => (isNullableValue(value) ? undefined : value));

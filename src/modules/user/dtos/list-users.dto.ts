@@ -7,7 +7,7 @@ import {
   optionalDateStringSchema,
   optionalStringSchema,
   optionalEmailStringSchema,
-  optionalNumberInStringSchema,
+  optionalPhoneNumberStringSchema,
 } from 'src/shared/schemas.shared';
 import { UserTypeEnum } from '../enum/user-type.enum';
 
@@ -16,7 +16,7 @@ export const listUsersSchema = z.object({
   user_email: optionalEmailStringSchema,
   initialDate: optionalDateStringSchema,
   endDate: optionalEndDateStringSchema,
-  phone_number: optionalNumberInStringSchema,
+  phone_number: optionalPhoneNumberStringSchema,
   user_type: z.nativeEnum(UserTypeEnum).optional(),
 });
 

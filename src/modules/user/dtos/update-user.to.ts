@@ -3,7 +3,7 @@ import { createZodDto } from 'nestjs-zod';
 import { ApiProperty } from '@nestjs/swagger';
 
 import {
-  optionalNumberInStringSchema,
+  optionalPhoneNumberStringSchema,
   optionalEmailStringSchema,
   optionalStringSchema,
 } from 'src/shared/schemas.shared';
@@ -15,7 +15,7 @@ export const updateUserSchema = z.object({
   user_name: optionalStringSchema,
   previous_password: optionalStringSchema,
   new_password: optionalStringSchema,
-  phone_number: optionalNumberInStringSchema,
+  phone_number: optionalPhoneNumberStringSchema,
   user_type: z.nativeEnum(UserTypeEnum).optional(),
 });
 
