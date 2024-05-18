@@ -31,6 +31,15 @@ export class AuthService {
       await this.handleEmailSignIn(user, password);
     }
 
+    if (
+      auth_provider === UserAuthProviders.GOOGLE &&
+      user.user_auth_provider !== UserAuthProviders.GOOGLE
+    ) {
+      throw new BadRequestError(
+        'Seu cadastro foi feito outra forma tente novamente',
+      );
+    }
+
     const access_token = await this.generateAccessToken(user);
 
     return this.buildAccessDTO(user, access_token);
