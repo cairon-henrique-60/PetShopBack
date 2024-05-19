@@ -12,6 +12,7 @@ export class Pet1715467984518 implements MigrationInterface {
           {
             name: 'species_name',
             type: 'varchar',
+            isUnique: true,
           },
         ],
       }),
