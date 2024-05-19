@@ -3,11 +3,7 @@ import { ApiQuery, type ApiQueryOptions } from '@nestjs/swagger';
 export type Params = ApiQueryOptions[];
 
 export function ApiPaginationQuery(params?: Params): MethodDecorator {
-  return (
-    target: any,
-    key: string | symbol,
-    descriptor: PropertyDescriptor,
-  ) => {
+  return (target, key, descriptor) => {
     ApiQuery({
       type: 'number',
       description:
