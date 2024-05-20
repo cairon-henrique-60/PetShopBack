@@ -27,6 +27,7 @@ export const swaggerConfig = new DocumentBuilder()
   .addTag('pet-breed')
   .addTag('mail')
   .addTag('google')
+  .addTag('calendar')
   .addBearerAuth()
   .addSecurityRequirements('bearer')
   .build();

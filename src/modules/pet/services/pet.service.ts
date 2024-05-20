@@ -169,11 +169,11 @@ export class PetService {
     return petQueryBuilder;
   }
 
-  async createPet(payload: CreatePetPayload, userId: string): Promise<Pet> {
+  async createPet(payload: CreatePetPayload, tutor_id: string): Promise<Pet> {
     await Promise.all([
       this.petBreedService.getBreedById(payload.pet_breed_id),
       this.petSpeciesService.getPetSpecies(payload.pet_species_id),
-      this.userService.getUserById(userId),
+      this.userService.getUserById(tutor_id),
     ]).then(([breed, species]) => {
       if (species.id !== breed.species_id) {
         throw new BadRequestError(
@@ -182,7 +182,7 @@ export class PetService {
       }
     });
 
-    const petItem = Pet.create({ tutor_id: userId, ...payload });
+    const petItem = Pet.create({ tutor_id, ...payload });
 
     return this.petRepository.save(petItem);
   }

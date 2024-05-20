@@ -1,10 +1,10 @@
 import { Entity, Column, Index, OneToMany } from 'typeorm';
 import { compare } from 'bcrypt';
 
-import { Base } from 'src/lib/database/entities/base.entity';
 import { Pet } from 'src/modules/pet/entities/pet.entity';
-
+import { Base } from 'src/lib/database/entities/base.entity';
 import { createHashedPassword } from 'src/utils/password.utils';
+import { Calendar } from 'src/modules/calendar/entities/calendar.entity';
 import { UnauthorizedError } from 'src/lib/http-exceptions/errors/types/unauthorized-error';
 import { BadRequestError } from 'src/lib/http-exceptions/errors/types/bad-request-error';
 
@@ -37,6 +37,9 @@ export class User extends Base {
 
   @OneToMany(() => Pet, (pet) => pet.tutor)
   pets: Pet[];
+
+  @OneToMany(() => Calendar, (calendar) => calendar.user)
+  calendars: Calendar[];
 
   static async create(data: CreateUserPayload): Promise<User> {
     const userItem = new User();

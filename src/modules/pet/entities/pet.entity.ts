@@ -4,10 +4,12 @@ import {
   Index,
   JoinColumn,
   ManyToOne,
+  OneToMany,
 } from 'typeorm';
 
 import { Base } from 'src/lib/database/entities/base.entity';
 import { User } from 'src/modules/user/entities/user.entity';
+import { Calendar } from 'src/modules/calendar/entities/calendar.entity';
 import { PetBreed } from 'src/modules/pet-breed/entities/pet-breed.entity';
 import { PetSpecies } from 'src/modules/pet-species/entities/pet-species.entity';
 
@@ -67,6 +69,9 @@ export class Pet extends Base {
   @ManyToOne(() => PetBreed, { eager: true })
   @JoinColumn({ name: 'pet_breed_id' })
   pet_breed: PetBreed;
+
+  @OneToMany(() => Calendar, (calendar) => calendar.pet)
+  calendar: Calendar[];
 
   static create(params: CreatePetParams): Pet {
     const petItem = new Pet();
