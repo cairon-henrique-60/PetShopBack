@@ -40,7 +40,7 @@ export class PetSpeciesService {
     return foundedPetSpecies;
   }
 
-  async getPetSpecies(id: string) {
+  async getPetSpeciesById(id: string) {
     const foundedPetSpecies = await this.petSpeciesRepository.findOne({
       where: { id },
     });
@@ -62,7 +62,7 @@ export class PetSpeciesService {
     id: string,
     new_species_name: string,
   ): Promise<PetSpecies> {
-    await this.getPetSpecies(id);
+    await this.getPetSpeciesById(id);
 
     const speciesItem = PetSpecies.createOrUpdate({
       species_name: new_species_name,
@@ -70,11 +70,11 @@ export class PetSpeciesService {
 
     await this.petSpeciesRepository.update(id, speciesItem);
 
-    return this.getPetSpecies(id);
+    return this.getPetSpeciesById(id);
   }
 
   async deletePetSpecies(id: string): Promise<DeleteResult> {
-    await this.getPetSpecies(id);
+    await this.getPetSpeciesById(id);
 
     return this.petSpeciesRepository.delete(id);
   }

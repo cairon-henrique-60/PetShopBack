@@ -5,6 +5,8 @@ import { PaginationService } from 'src/lib/pagination/pagination.service';
 import { NotFoundError } from 'src/lib/http-exceptions/errors/types/not-found-error';
 
 import { UserService } from 'src/modules/user/services/user.service';
+import { PetBreed } from 'src/modules/pet-breed/entities/pet-breed.entity';
+import { PetSpecies } from 'src/modules/pet-species/entities/pet-species.entity';
 import { PetBreedService } from 'src/modules/pet-breed/services/pet-breed.service';
 import { PetSpeciesService } from 'src/modules/pet-species/services/pet-species.service';
 import { BadRequestError } from 'src/lib/http-exceptions/errors/types/bad-request-error';
@@ -172,7 +174,7 @@ export class PetService {
   async createPet(payload: CreatePetPayload, tutor_id: string): Promise<Pet> {
     await Promise.all([
       this.petBreedService.getBreedById(payload.pet_breed_id),
-      this.petSpeciesService.getPetSpecies(payload.pet_species_id),
+      this.petSpeciesService.getPetSpeciesById(payload.pet_species_id),
       this.userService.getUserById(tutor_id),
     ]).then(([breed, species]) => {
       if (species.id !== breed.species_id) {
@@ -187,22 +189,33 @@ export class PetService {
     return this.petRepository.save(petItem);
   }
 
-  async updatePet(id: string, user_id: string, payload: UpdatePetPayload) {
-    await this.getPetById(id);
+  async updatePet(id: string, tutor_id: string, payload: UpdatePetPayload) {
+    const petToUpdate = await this.getPetById(id);
+
+    let breed: PetBreed | undefined = undefined;
+    let species: PetSpecies | undefined = undefined;
 
     if (payload.pet_breed_id) {
-      await this.petBreedService.getBreedById(payload.pet_breed_id);
+      breed = await this.petBreedService.getBreedById(payload.pet_breed_id);
     }
 
-    if (payload.pet_breed_id) {
-      await this.petBreedService.getBreedById(payload.pet_breed_id);
+    if (payload.pet_species_id) {
+      species = await this.petSpeciesService.getPetSpeciesById(
+        payload.pet_species_id,
+      );
     }
 
-    const petItem = Pet.update({ tutor_id: user_id, ...payload });
+    if (breed && species && species.id !== breed.species_id) {
+      throw new BadRequestError(
+        "The species ID does not match the breed's species ID.",
+      );
+    }
+
+    const petItem = Pet.update({ tutor_id, ...payload });
 
     await this.petRepository.update(id, petItem);
 
-    return this.getPetById(id);
+    return this.getPetById(petToUpdate.id);
   }
 
   async deletePet(id: string, current_user_id: string) {

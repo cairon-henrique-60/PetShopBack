@@ -97,7 +97,7 @@ export class PetBreedService {
   }
 
   async createPetBreed(payload: CreatePetBreedPayload): Promise<PetBreed> {
-    await this.petSpeciesService.getPetSpecies(payload.species_id);
+    await this.petSpeciesService.getPetSpeciesById(payload.species_id);
 
     const petBreedItem = PetBreed.create(payload);
 
@@ -111,7 +111,7 @@ export class PetBreedService {
     await this.getBreedById(breed_id);
 
     if (payload.species_id)
-      await this.petSpeciesService.getPetSpecies(payload.species_id);
+      await this.petSpeciesService.getPetSpeciesById(payload.species_id);
 
     const breedItem = PetBreed.update(payload);
 
