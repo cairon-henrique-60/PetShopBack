@@ -30,7 +30,7 @@ export class Calendar extends Base {
   @Column('varchar', { nullable: true })
   location: string | null;
 
-  @Column('datetime')
+  @Column('timestamp')
   notification_date: Date;
 
   @ManyToOne(() => User, (user) => user.calendars, { eager: true })

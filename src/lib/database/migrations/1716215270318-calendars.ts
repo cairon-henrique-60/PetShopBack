@@ -41,7 +41,7 @@ export class Calendars1716215270318 implements MigrationInterface {
           },
           {
             name: 'notification_date',
-            type: 'datetime',
+            type: 'timestamp',
           },
         ],
       }),
@@ -76,7 +76,7 @@ export class Calendars1716215270318 implements MigrationInterface {
       new TableForeignKey({
         columnNames: ['user_id'],
         referencedColumnNames: ['id'],
-        referencedTableName: 'user',
+        referencedTableName: 'users',
         onDelete: 'CASCADE',
       }),
     );
@@ -86,7 +86,7 @@ export class Calendars1716215270318 implements MigrationInterface {
       new TableForeignKey({
         columnNames: ['pet_id'],
         referencedColumnNames: ['id'],
-        referencedTableName: 'pet',
+        referencedTableName: 'pets',
         onDelete: 'CASCADE',
       }),
     );
