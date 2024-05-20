@@ -37,7 +37,7 @@ export class Calendar extends Base {
   @JoinColumn({ name: 'user_id' })
   user: User;
 
-  @ManyToOne(() => Pet, (pet) => pet.calendar, { eager: true })
+  @ManyToOne(() => Pet, (pet) => pet.calendars, { eager: true })
   @JoinColumn({ name: 'pet_id' })
   pet: Pet;
 

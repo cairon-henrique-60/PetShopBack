@@ -71,7 +71,7 @@ export class Pet extends Base {
   pet_breed: PetBreed;
 
   @OneToMany(() => Calendar, (calendar) => calendar.pet)
-  calendar: Calendar[];
+  calendars: Calendar[];
 
   static create(params: CreatePetParams): Pet {
     const petItem = new Pet();
