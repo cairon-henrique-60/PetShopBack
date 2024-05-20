@@ -1,9 +1,11 @@
-import { Repository } from 'typeorm';
+import { DeleteResult, Repository } from 'typeorm';
 import { Inject, Injectable } from '@nestjs/common';
 
 import { NotFoundError } from 'src/lib/http-exceptions/errors/types/not-found-error';
 
 import { PetSpecies } from '../entities/pet-species.entity';
+
+import { ListSpeciesPayload } from '../dtos/list.dto';
 
 @Injectable()
 export class PetSpeciesService {
@@ -13,14 +15,27 @@ export class PetSpeciesService {
   ) {}
 
   async getAllSpecies(): Promise<PetSpecies[]> {
-    return this.petSpeciesRepository.find();
+    return this.petSpeciesRepository.find({
+      relations: ['breeds'],
+      loadEagerRelations: false,
+    });
   }
 
-  async getPetSpeciesByName(species_name: string) {
-    const foundedPetSpecies = await this.petSpeciesRepository.findOne({
-      where: { species_name },
-      select: { species_name: true },
-    });
+  async list({ id, species_name }: ListSpeciesPayload) {
+    const foundedPetSpecies = await this.petSpeciesRepository
+      .createQueryBuilder('species')
+      .select(['species', 'breeds'])
+      .leftJoinAndSelect('species.breeds', 'breeds')
+      .where(id ? 'species.id = :id' : '1=1', {
+        id,
+      })
+      .andWhere(
+        species_name ? 'breed.species_name LIKE :species_name' : '1=1',
+        {
+          species_name: `%${species_name}%`,
+        },
+      )
+      .getMany();
 
     return foundedPetSpecies;
   }
@@ -38,28 +53,29 @@ export class PetSpeciesService {
   }
 
   async createPetSpecies(species_name: string): Promise<PetSpecies> {
-    const speciesToCreate = this.petSpeciesRepository.create();
-
-    speciesToCreate.species_name = species_name;
+    const speciesToCreate = PetSpecies.createOrUpdate({ species_name });
 
     return this.petSpeciesRepository.save(speciesToCreate);
   }
 
-  async updatePetSpecies(id: string, new_species_name: string) {
-    const speciesToUpdate = await this.getPetSpecies(id);
+  async updatePetSpecies(
+    id: string,
+    new_species_name: string,
+  ): Promise<PetSpecies> {
+    await this.getPetSpecies(id);
 
-    const speciesItem = new PetSpecies();
-
-    speciesItem.species_name = new_species_name;
+    const speciesItem = PetSpecies.createOrUpdate({
+      species_name: new_species_name,
+    });
 
     await this.petSpeciesRepository.update(id, speciesItem);
 
-    return this.getPetSpecies(speciesToUpdate.id);
+    return this.getPetSpecies(id);
   }
 
-  async deletePetSpecies(id: string) {
-    const speciesToDelete = await this.getPetSpecies(id);
+  async deletePetSpecies(id: string): Promise<DeleteResult> {
+    await this.getPetSpecies(id);
 
-    return this.petSpeciesRepository.remove(speciesToDelete);
+    return this.petSpeciesRepository.delete(id);
   }
 }

@@ -6,6 +6,7 @@ import {
   Post,
   Put,
   Query,
+  UseInterceptors,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 
@@ -19,6 +20,7 @@ import { CreatePetDTO } from '../dtos/create-pet.dto';
 import { UpdatePetDTO } from '../dtos/update-pet.dto';
 import { ListPetsQuerysDTO } from '../dtos/list-pets-querys.dto';
 import { PaginatePetsQuerysDTO } from '../dtos/paginate-pets-querys.dto';
+import { DataBaseInterceptor } from 'src/lib/http-exceptions/errors/interceptors/database.interceptor';
 
 @ApiTags('pet')
 @Controller('pet')
@@ -48,6 +50,7 @@ export class PetController {
   }
 
   @Post()
+  @UseInterceptors(DataBaseInterceptor)
   async createPet(
     @Body() payload: CreatePetDTO,
     @DecodedToken() decoded_token: DecodedTokenType,
@@ -56,6 +59,7 @@ export class PetController {
   }
 
   @Put(':id')
+  @UseInterceptors(DataBaseInterceptor)
   async updatePet(
     @UuidParam('id') id: string,
     @Body() payload: UpdatePetDTO,

@@ -37,16 +37,15 @@ export class UserController {
     return this.userService.paginateUsers(querys);
   }
 
-  @Get(':id')
-  async getUserById(@UuidParam('id') id: string): Promise<User> {
-    return this.userService.getUserById(id);
-  }
-
-  @Get()
+  @Get('list')
   async list(@Query() querys: ListUsersDTO): Promise<User[]> {
     return this.userService.listUser(querys);
   }
 
+  @Get(':id')
+  async getUserById(@UuidParam('id') id: string): Promise<User> {
+    return this.userService.getUserById(id);
+  }
   @Public()
   @Post()
   @UseInterceptors(DataBaseInterceptor)

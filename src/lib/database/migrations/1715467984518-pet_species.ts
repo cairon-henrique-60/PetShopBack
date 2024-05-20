@@ -17,9 +17,18 @@ export class Pet1715467984518 implements MigrationInterface {
         ],
       }),
     );
+
+    await queryRunner.query(`
+    CREATE UNIQUE INDEX "IDX_species_name_unique_case_insensitive"
+      ON "pet_species" (LOWER("species_name"));
+    `);
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
+    await queryRunner.dropIndex(
+      'pet_breeds',
+      'IDX_breed_name_unique_case_insensitive',
+    );
     await queryRunner.dropTable('pet_species');
   }
 }

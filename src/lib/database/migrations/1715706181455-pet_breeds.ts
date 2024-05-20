@@ -16,6 +16,7 @@ export class PetSpecies1715706181455 implements MigrationInterface {
           {
             name: 'species_id',
             type: 'uuid',
+            isUnique: true,
           },
         ],
         foreignKeys: [
@@ -29,9 +30,18 @@ export class PetSpecies1715706181455 implements MigrationInterface {
         ],
       }),
     );
+
+    await queryRunner.query(`
+      CREATE UNIQUE INDEX "IDX_breed_name_unique_case_insensitive"
+      ON "pet_breeds" (LOWER("breed_name"));
+    `);
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
+    await queryRunner.dropIndex(
+      'pet_breeds',
+      'IDX_breed_name_unique_case_insensitive',
+    );
     await queryRunner.dropForeignKey('pet_breeds', 'FK_pet_breeds_species_id');
     await queryRunner.dropTable('pet_breeds');
   }

@@ -6,6 +6,7 @@ import {
   Post,
   Put,
   Query,
+  UseInterceptors,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 
@@ -18,6 +19,7 @@ import { PetBreedService } from '../services/pet-breed.service';
 import { CreatePetBreedDTO } from '../dtos/create-pet-breed.dto';
 import { UpdatePetBreedDTO } from '../dtos/update-pet-breed.dto';
 import { PaginatePetBreedDTO } from '../dtos/paginate-pet-breed.dto';
+import { DataBaseInterceptor } from 'src/lib/http-exceptions/errors/interceptors/database.interceptor';
 
 @ApiTags('pet-breed')
 @Controller('pet-breed')
@@ -45,11 +47,13 @@ export class PetBreedController {
 
   @Public()
   @Post()
+  @UseInterceptors(DataBaseInterceptor)
   async createBreed(@Body() payload: CreatePetBreedDTO) {
     return this.petBreedService.createPetBreed(payload);
   }
 
   @Put(':id')
+  @UseInterceptors(DataBaseInterceptor)
   async updateBreed(
     @UuidParam('id') id: string,
     @Body() payload: UpdatePetBreedDTO,
