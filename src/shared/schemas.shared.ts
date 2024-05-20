@@ -96,6 +96,15 @@ export const optionalPaginationParamSchema = paginationParamSchema
   .nullable()
   .transform((value) => (isNullableValue(value) ? undefined : value));
 
+export const datetimeStringSchema = stringSchema
+  .datetime()
+  .transform((value) => new Date(value));
+
+export const optionalDatetimeStringSchema = datetimeStringSchema
+  .optional()
+  .nullable()
+  .transform((value) => (isNullableValue(value) ? undefined : value));
+
 export const dateStringSchema = stringSchema
   .refine(
     (value) => {

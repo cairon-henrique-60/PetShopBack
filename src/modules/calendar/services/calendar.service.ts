@@ -5,6 +5,7 @@ import { PaginationService } from 'src/lib/pagination/pagination.service';
 import { NotFoundError } from 'src/lib/http-exceptions/errors/types/not-found-error';
 
 import { Calendar } from '../entities/calendar.entity';
+import type { ListCalendarsPayload } from '../dtos/list-calendars.dto';
 import type { CreateCalendarPayload } from '../dtos/create-calendar.dto';
 import type { UpdateCalendarPayload } from '../dtos/update-calendar.dto';
 import type { PaginateCalendarsPayload } from '../dtos/paginate-calendars.dto';
@@ -34,9 +35,7 @@ export class CalendarService {
       ]);
   }
 
-  async paginateCalendars({
-    limit,
-    page,
+  private handleCalendarsFilters({
     description,
     order_by_created_at,
     order_by_end_date,
@@ -44,14 +43,23 @@ export class CalendarService {
     order_by_updated_at,
     pet_id,
     user_id,
-  }: PaginateCalendarsPayload) {
+    end_date,
+    initial_date,
+  }: ListCalendarsPayload) {
     const queryBuilder = this.createCalendarQueryBuilder()
       .andWhere(
         description ? 'calendar.description LIKE :description' : '1=1',
         { description: `%${description}%` },
       )
       .andWhere(pet_id ? 'pet.id = :pet_id' : '1=1', { pet_id })
-      .andWhere(user_id ? 'user.id = :user_id' : '1=1', { user_id });
+      .andWhere(user_id ? 'user.id = :user_id' : '1=1', { user_id })
+      .andWhere(
+        initial_date ? 'calendar.initial_date >= :initial_date' : '1=1',
+        { initial_date },
+      )
+      .andWhere(end_date ? 'calendar.end_date <= :end_date' : '1=1', {
+        end_date,
+      });
 
     if (order_by_created_at)
       queryBuilder.addOrderBy('calendar.created_at', order_by_created_at);
@@ -64,6 +72,20 @@ export class CalendarService {
 
     if (order_by_updated_at)
       queryBuilder.addOrderBy('calendar.updated_at', order_by_updated_at);
+
+    return queryBuilder;
+  }
+
+  async listCalendars(payload: ListCalendarsPayload) {
+    return this.handleCalendarsFilters(payload).getMany();
+  }
+
+  async paginateCalendars({
+    limit,
+    page,
+    ...payload
+  }: PaginateCalendarsPayload) {
+    const queryBuilder = this.handleCalendarsFilters(payload);
 
     return this.paginationService.paginateWithQueryBuilder(queryBuilder, {
       limit,
@@ -82,6 +104,18 @@ export class CalendarService {
   }
 
   async createCalendar(payload: CreateCalendarPayload): Promise<Calendar> {
+    const calendars = await this.listCalendars({
+      pet_id: payload.pet_id,
+      end_date: payload.end_date,
+      initial_date: payload.initial_date,
+    });
+
+    if (calendars.length > 0) {
+      throw new ForbiddenException(
+        'Já existe um evendo para esse pet nessa data',
+      );
+    }
+
     const calendarToCreate = Calendar.create(payload);
 
     return this.calendarRepository.save(calendarToCreate);

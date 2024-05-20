@@ -14,6 +14,7 @@ import { UuidParam } from 'src/shared/decorators/uuid-param.decorator';
 import { DecodedToken } from 'src/shared/decorators/decoded-token.decorator';
 import { ApiPaginationQuery } from 'src/shared/decorators/api-pagination-query.decorator';
 
+import { ListCalendarsDTO } from '../dtos/list-calendars.dto';
 import { CalendarService } from '../services/calendar.service';
 import { CreateCalendarDTO } from '../dtos/create-calendar.dto';
 import { UpdateCalendarDTO } from '../dtos/update-calendar.dto';
@@ -23,6 +24,11 @@ import { PaginateCalendarsDTO } from '../dtos/paginate-calendars.dto';
 @Controller('calendar')
 export class CalendarController {
   constructor(private readonly calendarService: CalendarService) {}
+
+  @Get()
+  getAll(@Query() querys: ListCalendarsDTO) {
+    return this.calendarService.listCalendars(querys);
+  }
 
   @Get('paginate')
   @ApiPaginationQuery(orderByFields)
