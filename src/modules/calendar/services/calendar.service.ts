@@ -108,13 +108,16 @@ export class CalendarService {
     return foundedCalendar;
   }
 
-  async createCalendar(payload: CreateCalendarPayload): Promise<Calendar> {
-    await Promise.all([
-      this.useService.getUserById(payload.user_id),
+  async createCalendar(
+    payload: CreateCalendarPayload,
+    user_id: string,
+  ): Promise<Calendar> {
+    await Promise.allSettled([
+      this.useService.getUserById(user_id),
       this.petService.getPetById(payload.pet_id),
     ]);
 
-    const calendarToCreate = Calendar.create(payload);
+    const calendarToCreate = Calendar.create({ ...payload, user_id });
 
     return this.calendarRepository.save(calendarToCreate);
   }

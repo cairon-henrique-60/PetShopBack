@@ -28,12 +28,6 @@ export class PetSpeciesController {
   constructor(private readonly petSpeciesService: PetSpeciesService) {}
 
   @Public()
-  @Get()
-  async getAll(): Promise<PetSpecies[]> {
-    return this.petSpeciesService.getAllSpecies();
-  }
-
-  @Public()
   @Get('list')
   async list(@Query() querys: ListSpeciesDTO): Promise<PetSpecies[]> {
     return this.petSpeciesService.list(querys);

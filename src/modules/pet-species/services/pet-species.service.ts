@@ -14,13 +14,6 @@ export class PetSpeciesService {
     private petSpeciesRepository: Repository<PetSpecies>,
   ) {}
 
-  async getAllSpecies(): Promise<PetSpecies[]> {
-    return this.petSpeciesRepository.find({
-      relations: ['breeds'],
-      loadEagerRelations: false,
-    });
-  }
-
   async list({ id, species_name }: ListSpeciesPayload) {
     const foundedPetSpecies = await this.petSpeciesRepository
       .createQueryBuilder('species')

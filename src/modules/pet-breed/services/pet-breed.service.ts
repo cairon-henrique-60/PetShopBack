@@ -30,8 +30,7 @@ export class PetBreedService {
   }: PaginatePetBreedPayload) {
     const petBreedQueryBuilder = this.petBreedRepository
       .createQueryBuilder('breed')
-      .select(['breed', 'species'])
-      .leftJoinAndSelect('breed.species', 'species')
+      .select(['breed'])
       .where(species_id ? 'breed.species_id = :species_id' : '1=1', {
         species_id,
       })
@@ -54,7 +53,13 @@ export class PetBreedService {
   async getBreedById(id: string) {
     const breed = await this.petBreedRepository
       .createQueryBuilder('breed')
-      .select(['breed', 'species'])
+      .select([
+        'breed.id',
+        'breed.breed_name',
+        'breed.created_at',
+        'breed.updated_at',
+        'species',
+      ])
       .leftJoinAndSelect('breed.species', 'species')
       .where('breed.id = :id', { id })
       .getOne();

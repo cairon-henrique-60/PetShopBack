@@ -90,26 +90,33 @@ export class PetService {
 
   async getPetById(id: string): Promise<Pet> {
     const foundedPet = await this.petRepository
-      .createQueryBuilder('p')
+      .createQueryBuilder('pet')
+      .leftJoinAndSelect('pet.tutor', 'tutor')
+      .leftJoinAndSelect('pet.pet_species', 'species')
+      .leftJoinAndSelect('pet.pet_breed', 'breed')
       .select([
-        'p',
-        'e',
-        'b',
-        't.id',
-        't.user_name',
-        't.user_email',
-        't.phone_number',
-        't.is_email_verified',
+        'pet.id',
+        'pet.created_at',
+        'pet.updated_at',
+        'pet.pet_name',
+        'pet.date_of_birth',
+        'pet.pet_gender',
+        'pet.pet_color',
+        'pet.alergies',
+        'pet.medical_conditions',
+        'pet.current_medication',
+        'pet.pet_microship_id',
+        'tutor.id',
+        'tutor.user_name',
+        'tutor.user_email',
+        'tutor.is_email_verified',
+        'species',
+        'breed',
       ])
-      .leftJoin('p.tutor', 't')
-      .leftJoin('p.pet_species', 'e')
-      .leftJoin('p.pet_breed', 'b')
       .where('pet.id = :id', { id })
       .getOne();
 
-    if (!foundedPet) {
-      throw new NotFoundError('Not Found');
-    }
+    if (!foundedPet) throw new NotFoundError('Not Found');
 
     return foundedPet;
   }

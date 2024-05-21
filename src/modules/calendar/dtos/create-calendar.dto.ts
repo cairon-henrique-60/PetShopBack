@@ -3,7 +3,6 @@ import { z } from 'nestjs-zod/z';
 
 import {
   datetimeStringSchema,
-  optionalDateStringSchema,
   stringSchema,
   optionalStringSchema,
   uuidSchema,
@@ -17,7 +16,7 @@ export const createCalendarSchema = z
     end_date: datetimeStringSchema,
     pet_id: uuidSchema,
     location: optionalStringSchema,
-    notification_date: optionalDateStringSchema,
+    notification_date: datetimeStringSchema,
   })
   .refine(
     ({ end_date, initial_date }) => {
@@ -34,9 +33,7 @@ export const createCalendarSchema = z
     },
   );
 
-export type CreateCalendarPayload = z.infer<typeof createCalendarSchema> & {
-  user_id: string;
-};
+export type CreateCalendarPayload = z.infer<typeof createCalendarSchema>
 
 /**
  * DTO for creating a new event.
@@ -72,9 +69,4 @@ export class CreateCalendarDTO extends createZodDto(createCalendarSchema) {
    * @example 2024-08-10T07:30:00Z
    */
   notification_date: Date;
-   /**
-   * Tutor id of the event.
-   * @example 123e4567-e89b-12d3-a456-426614174000
-   */
-  user_id: string;
 }
