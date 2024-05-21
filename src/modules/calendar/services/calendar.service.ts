@@ -112,7 +112,7 @@ export class CalendarService {
     payload: CreateCalendarPayload,
     user_id: string,
   ): Promise<Calendar> {
-    await Promise.allSettled([
+    await Promise.all([
       this.useService.getUserById(user_id),
       this.petService.getPetById(payload.pet_id),
     ]);
