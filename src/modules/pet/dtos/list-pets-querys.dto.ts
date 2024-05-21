@@ -4,6 +4,7 @@ import { createZodDto } from 'nestjs-zod';
 import {
   optionalStringSchema,
   optionalUuidSchema,
+  optionalGenderStringSchema,
 } from 'src/shared/schemas.shared';
 
 export const listPetsQuerysSchema = z.object({
@@ -11,7 +12,7 @@ export const listPetsQuerysSchema = z.object({
   pet_breed_id: optionalUuidSchema,
   pet_species_id: optionalUuidSchema,
   pet_name: optionalStringSchema,
-  pet_gender: optionalStringSchema,
+  pet_gender: optionalGenderStringSchema,
   pet_color: optionalStringSchema,
 });
 
@@ -37,7 +38,7 @@ export class ListPetsQuerysDTO extends createZodDto(listPetsQuerysSchema) {
    * Gender of the pet.
    * @example Female
    */
-  pet_gender?: string;
+  pet_gender?: 'F' | 'M';
   /**
    * Color of the pet.
    * @example Golden

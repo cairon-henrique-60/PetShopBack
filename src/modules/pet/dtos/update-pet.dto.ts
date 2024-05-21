@@ -5,14 +5,14 @@ import {
   optionalStringSchema,
   optionalDateStringSchema,
   optionalUuidSchema,
-  oneCharStringSchema,
+  optionalGenderStringSchema,
 } from 'src/shared/schemas.shared';
 
 export const updatePetSchema = z.object({
   pet_name: optionalStringSchema,
   pet_breed_id: optionalUuidSchema,
   date_of_birth: optionalDateStringSchema,
-  pet_gender: oneCharStringSchema.optional(),
+  pet_gender: optionalGenderStringSchema,
   pet_color: optionalStringSchema,
   alergies: optionalStringSchema,
   medical_conditions: optionalStringSchema,
@@ -44,7 +44,7 @@ export class UpdatePetDTO extends createZodDto(updatePetSchema) {
    * Gender of the pet.
    * @example F | M
    */
-  pet_gender?: string;
+  pet_gender?: 'F' | 'M';
   /**
    * Color of the pet.
    * @example Golden

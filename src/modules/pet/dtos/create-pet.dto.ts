@@ -6,14 +6,14 @@ import {
   optionalDateStringSchema,
   optionalStringSchema,
   uuidSchema,
+  optionalGenderStringSchema
 } from 'src/shared/schemas.shared';
-import { PetGenderEnum } from '../enum/pet-gender.enum';
 
 export const createPetSchema = z.object({
   pet_name: stringSchema,
   pet_breed_id: uuidSchema,
   date_of_birth: optionalDateStringSchema,
-  pet_gender: z.nativeEnum(PetGenderEnum),
+  pet_gender: optionalGenderStringSchema,
   pet_color: stringSchema,
   alergies: optionalStringSchema,
   medical_conditions: optionalStringSchema,
@@ -47,7 +47,7 @@ export class CreatePetDTO extends createZodDto(createPetSchema) {
    * Gender of the pet.
    * @example F | M
    */
-  pet_gender: PetGenderEnum;
+  pet_gender: 'F' | 'M';
   /**
    * Color of the pet.
    * @example Golden

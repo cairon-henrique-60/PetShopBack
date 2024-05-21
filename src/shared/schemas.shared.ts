@@ -107,30 +107,14 @@ export const optionalDatetimeStringSchema = datetimeStringSchema
   .transform((value) => (isNullableValue(value) ? undefined : value));
 
 export const dateStringSchema = stringSchema
-  .refine(
-    (value) => {
-      const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
-
-      return dateRegex.test(value);
-    },
-    { message: 'Invalid Date!' },
-  )
+  .date()
   .transform((value) => new Date(value));
 
-export const endDateStringSchema = stringSchema
-  .refine(
-    (value) => {
-      const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
-
-      return dateRegex.test(value);
-    },
-    { message: 'Invalid Date!' },
-  )
-  .transform((value) => {
-    const endDate = new Date(value);
-    endDate.setDate(endDate.getDate() + 1);
-    return endDate;
-  });
+export const endDateStringSchema = dateStringSchema.transform((value) => {
+  const endDate = new Date(value);
+  endDate.setDate(endDate.getDate() + 1);
+  return endDate;
+});
 
 export const optionalEndDateStringSchema = endDateStringSchema
   .optional()
@@ -157,7 +141,9 @@ export const optionalOrderParamSchema = orderParamSchema
   .nullable()
   .transform((value) => (isNullableValue(value) ? undefined : value));
 
-export const oneCharStringSchema = stringSchema.length(
-  1,
-  'A string deve conter exatamente 1 caractere',
-);
+export const genderStringSchema = z.enum(['M', 'F']);
+
+export const optionalGenderStringSchema = genderStringSchema
+  .optional()
+  .nullable()
+  .transform((value) => (isNullableValue(value) ? undefined : value));

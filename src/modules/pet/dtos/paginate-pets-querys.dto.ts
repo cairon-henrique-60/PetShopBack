@@ -6,6 +6,7 @@ import {
   optionalStringSchema,
   optionalUuidSchema,
   optionalOrderParamSchema,
+  optionalGenderStringSchema,
 } from 'src/shared/schemas.shared';
 
 export const paginatePetsQuerysSchema = z.object({
@@ -14,7 +15,7 @@ export const paginatePetsQuerysSchema = z.object({
   pet_breed_id: optionalUuidSchema,
   pet_species_id: optionalUuidSchema,
   pet_name: optionalStringSchema,
-  pet_gender: optionalStringSchema,
+  pet_gender: optionalGenderStringSchema,
   pet_color: optionalStringSchema,
   order_by_created_at: optionalOrderParamSchema,
   order_by_updated_at: optionalOrderParamSchema,
@@ -44,7 +45,7 @@ export class PaginatePetsQuerysDTO extends createZodDto(
    * Gender of the pet.
    * @example Female
    */
-  pet_gender?: string;
+  pet_gender?: 'F' | 'M';
   /**
    * Color of the pet.
    * @example Golden
