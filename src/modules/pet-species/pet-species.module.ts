@@ -4,9 +4,11 @@ import { PetSpeciesService } from './services/pet-species.service';
 import { petSpeciesProvider } from './providers/pet-species.provider';
 import { PetSpeciesController } from './controllers/pet-species.controller';
 
+const providers = [...petSpeciesProvider, PetSpeciesService];
+
 @Module({
-  providers: [...petSpeciesProvider, PetSpeciesService],
-  exports: [...petSpeciesProvider, PetSpeciesService],
+  providers,
+  exports: providers,
   controllers: [PetSpeciesController],
 })
 export class PetSpeciesModule {}

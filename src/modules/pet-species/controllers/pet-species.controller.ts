@@ -19,7 +19,7 @@ import { DataBaseInterceptor } from 'src/lib/http-exceptions/errors/interceptors
 import { PetSpecies } from '../entities/pet-species.entity';
 import { PetSpeciesService } from '../services/pet-species.service';
 
-import { ListSpeciesDTO } from '../dtos/list.dto';
+import { ListSpeciesDTO } from '../dtos/list-species.dto';
 import { CreateOrUpdateSpeciesDTO } from '../dtos/create-or-update-pet-species.dto';
 
 @ApiTags('pet-species')

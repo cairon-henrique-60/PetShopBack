@@ -5,7 +5,7 @@ import { NotFoundError } from 'src/lib/http-exceptions/errors/types/not-found-er
 
 import { PetSpecies } from '../entities/pet-species.entity';
 
-import { ListSpeciesPayload } from '../dtos/list.dto';
+import { ListSpeciesPayload } from '../dtos/list-species.dto';
 
 @Injectable()
 export class PetSpeciesService {
