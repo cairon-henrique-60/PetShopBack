@@ -157,6 +157,7 @@ export const optionalOrderParamSchema = orderParamSchema
   .nullable()
   .transform((value) => (isNullableValue(value) ? undefined : value));
 
-export const oneCharStringSchema = z
-  .string()
-  .length(1, 'A string deve conter exatamente 1 caractere');
+export const oneCharStringSchema = stringSchema.length(
+  1,
+  'A string deve conter exatamente 1 caractere',
+);
