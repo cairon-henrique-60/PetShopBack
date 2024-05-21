@@ -29,7 +29,14 @@ export class CalendarService {
       .leftJoin('calendar.pet', 'pet')
       .leftJoin('calendar.user', 'user')
       .select([
-        'calendar',
+        'calendar.id',
+        'calendar.created_at',
+        'calendar.updated_at',
+        'calendar.description',
+        'calendar.initial_date',
+        'calendar.end_date',
+        'calendar.location',
+        'calendar.notification_date',
         'pet.id',
         'pet.pet_name',
         'pet.pet_breed_id',
