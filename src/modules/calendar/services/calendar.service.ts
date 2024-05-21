@@ -4,6 +4,9 @@ import { ForbiddenException, Inject, Injectable } from '@nestjs/common';
 import { PaginationService } from 'src/lib/pagination/pagination.service';
 import { NotFoundError } from 'src/lib/http-exceptions/errors/types/not-found-error';
 
+import { PetService } from 'src/modules/pet/services/pet.service';
+import { UserService } from 'src/modules/user/services/user.service';
+
 import { Calendar } from '../entities/calendar.entity';
 import type { ListCalendarsPayload } from '../dtos/list-calendars.dto';
 import type { CreateCalendarPayload } from '../dtos/create-calendar.dto';
@@ -15,6 +18,8 @@ export class CalendarService {
   constructor(
     @Inject('CALENDAR_REPOSITORY')
     private calendarRepository: Repository<Calendar>,
+    private readonly petService: PetService,
+    private readonly useService: UserService,
     private readonly paginationService: PaginationService,
   ) {}
 
@@ -104,17 +109,9 @@ export class CalendarService {
   }
 
   async createCalendar(payload: CreateCalendarPayload): Promise<Calendar> {
-    const calendars = await this.listCalendars({
-      pet_id: payload.pet_id,
-      end_date: payload.end_date,
-      initial_date: payload.initial_date,
-    });
+    await this.useService.getUserById(payload.user_id);
 
-    if (calendars.length > 0) {
-      throw new ForbiddenException(
-        'Já existe um evendo para esse pet nessa data',
-      );
-    }
+    await this.petService.getPetById(payload.pet_id);
 
     const calendarToCreate = Calendar.create(payload);
 
@@ -133,7 +130,9 @@ export class CalendarService {
       current_user_id,
     );
 
-    const calendarItem = Calendar.update(calendarToUpdate, payload);
+    if (payload.pet_id) this.petService.getPetById(payload.pet_id);
+
+    const calendarItem = Calendar.update(payload);
 
     await this.calendarRepository.update(id, calendarItem);
 

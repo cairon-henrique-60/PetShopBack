@@ -41,7 +41,7 @@ export class Calendar extends Base {
   @JoinColumn({ name: 'pet_id' })
   pet: Pet;
 
-  static create(payload: CreateCalendarPayload) {
+  static create(payload: CreateCalendarPayload): Calendar {
     const item = new Calendar();
 
     Object.assign(item, payload);
@@ -49,9 +49,11 @@ export class Calendar extends Base {
     return item;
   }
 
-  static update(entity: Calendar, payload: UpdateCalendarPayload) {
-    Object.assign(entity, payload);
+  static update(payload: UpdateCalendarPayload): Calendar {
+    const item = new Calendar();
 
-    return entity;
+    Object.assign(item, payload);
+
+    return item;
   }
 }

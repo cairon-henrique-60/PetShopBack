@@ -5,6 +5,7 @@ import {
   datetimeStringSchema,
   optionalDateStringSchema,
   stringSchema,
+  optionalStringSchema,
   uuidSchema,
 } from 'src/shared/schemas.shared';
 import { today } from 'src/utils/date.utils';
@@ -15,7 +16,7 @@ export const createCalendarSchema = z
     initial_date: datetimeStringSchema,
     end_date: datetimeStringSchema,
     pet_id: uuidSchema,
-    location: stringSchema,
+    location: optionalStringSchema,
     notification_date: optionalDateStringSchema,
   })
   .refine(
@@ -37,4 +38,43 @@ export type CreateCalendarPayload = z.infer<typeof createCalendarSchema> & {
   user_id: string;
 };
 
-export class CreateCalendarDTO extends createZodDto(createCalendarSchema) {}
+/**
+ * DTO for creating a new event.
+ */
+export class CreateCalendarDTO extends createZodDto(createCalendarSchema) {
+  /**
+   * Description of the event.
+   * @example Pet vaccination
+   */
+  description: string;
+  /**
+   * Initial date of the event.
+   * @example 2024-08-10T08:00:00Z
+   */
+  initial_date: Date;
+  /**
+   * End date date of the event.
+   * @example 2024-08-10T10:00:00Z
+   */
+  end_date: Date;
+  /**
+   * Pet of the event.
+   * @example 123e4567-e89b-12d3-a456-426614174000
+   */
+  pet_id: string;
+  /**
+   * Location of the event.
+   * @example Veterinarian
+   */
+  location?: string;
+  /**
+   * Notification of the event.
+   * @example 2024-08-10T07:30:00Z
+   */
+  notification_date: Date;
+   /**
+   * Tutor id of the event.
+   * @example 123e4567-e89b-12d3-a456-426614174000
+   */
+  user_id: string;
+}

@@ -36,4 +36,40 @@ export const updateCalendarSchema = z
 
 export type UpdateCalendarPayload = z.infer<typeof updateCalendarSchema>;
 
-export class UpdateCalendarDTO extends createZodDto(updateCalendarSchema) {}
+export class UpdateCalendarDTO extends createZodDto(updateCalendarSchema) {
+  /**
+   * Description of the event.
+   * @example Pet vaccination
+   */
+  description?: string;
+  /**
+   * Initial date of the event.
+   * @example 2024-08-10T08:00:00Z
+   */
+  initial_date?: Date;
+  /**
+   * End date date of the event.
+   * @example 2024-08-10T10:00:00Z
+   */
+  end_date?: Date;
+  /**
+   * Pet of the event.
+   * @example 123e4567-e89b-12d3-a456-426614174000
+   */
+  pet_id?: string;
+  /**
+   * Location of the event.
+   * @example Veterinarian
+   */
+  location?: string;
+  /**
+   * Notification of the event.
+   * @example 2024-08-10T07:30:00Z
+   */
+  notification_date?: Date;
+  /**
+   * Tutor id of the event.
+   * @example 123e4567-e89b-12d3-a456-426614174000
+   */
+  user_id?: string;
+}
