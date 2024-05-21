@@ -109,9 +109,10 @@ export class CalendarService {
   }
 
   async createCalendar(payload: CreateCalendarPayload): Promise<Calendar> {
-    await this.useService.getUserById(payload.user_id);
-
-    await this.petService.getPetById(payload.pet_id);
+    await Promise.all([
+      this.useService.getUserById(payload.user_id),
+      this.petService.getPetById(payload.pet_id),
+    ]);
 
     const calendarToCreate = Calendar.create(payload);
 
