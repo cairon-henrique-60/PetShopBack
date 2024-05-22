@@ -1,29 +1,24 @@
 import { Module } from '@nestjs/common';
 
 import { PetSpeciesService } from '../pet-species/services/pet-species.service';
-import { petSpeciesProvider } from '../pet-species/providers/pet-species.provider';
 
 import { PetBreedService } from '../pet-breed/services/pet-breed.service';
-import { petBreedProvider } from '../pet-breed/providers/pet-breed.provider';
 
 import { UserService } from '../user/services/user.service';
-import { userProvider } from '../user/providers/user.provider';
 
 import { PetService } from './services/pet.service';
 import { petProvider } from './providers/pet.provider';
 import { PetController } from './controllers/pet.controller';
+import { PetSpeciesModule } from '../pet-species/pet-species.module';
+import { PetBreedModule } from '../pet-breed/pet-breed.module';
+import { UserModule } from '../user/user.module';
+
+const providers = [...petProvider, PetService]
+
 @Module({
-  providers: [
-    ...petProvider,
-    PetService,
-    ...userProvider,
-    UserService,
-    ...petSpeciesProvider,
-    PetSpeciesService,
-    ...petBreedProvider,
-    PetBreedService,
-  ],
-  exports: [...petProvider, PetService],
+  providers,
+  exports: providers,
   controllers: [PetController],
+  imports: [PetSpeciesModule, PetBreedModule, UserModule]
 })
 export class PetModule {}
