@@ -32,6 +32,12 @@
 $ pnpm install
 ```
 
+## Clearing Cash (if necessary)
+
+```bash
+$ pnpm store prune
+```
+
 ## Running the app
 
 ```bash
