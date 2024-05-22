@@ -10,6 +10,7 @@
     "sourceMap": true,
     "outDir": "./dist",
     "baseUrl": "./",
+    "rootDir": "./src",
     "incremental": true,
     "skipLibCheck": true,
     "strictNullChecks": true,
@@ -18,10 +19,5 @@
     "forceConsistentCasingInFileNames": false,
     "noFallthroughCasesInSwitch": false,
     "noUncheckedIndexedAccess": true,
-    "resolveJsonModule": true,
-  },
-  "ts-node": {
-    "files": true
-  },
-  "include": ["src/modules", "jest.config.ts"],
+  }
 }

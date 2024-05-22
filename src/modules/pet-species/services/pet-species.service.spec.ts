@@ -55,6 +55,7 @@ describe('PetSpeciesService', () => {
   describe('list', () => {
     it('should return a list of pet species', async () => {
       const queryResult = [mockPetSpeciesEntity];
+
       mockPetSpeciesRepository
         .createQueryBuilder()
         .getMany.mockResolvedValue(queryResult);
@@ -78,6 +79,7 @@ describe('PetSpeciesService', () => {
       );
 
       expect(result).toEqual(mockPetSpeciesEntity);
+
       expect(mockPetSpeciesRepository.findOne).toBeCalledWith({
         where: { id: mockPetSpeciesEntity.id },
       });
@@ -89,6 +91,7 @@ describe('PetSpeciesService', () => {
       await expect(
         petSpeciesService.getPetSpeciesById('non-existing-id'),
       ).rejects.toThrow(NotFoundError);
+
       expect(mockPetSpeciesRepository.findOne).toBeCalledWith({
         where: { id: 'non-existing-id' },
       });
@@ -137,12 +140,15 @@ describe('PetSpeciesService', () => {
         ...mockPetSpeciesEntity,
         species_name: newSpeciesName,
       });
+
       expect(petSpeciesService.getPetSpeciesById).toBeCalledWith(
         mockPetSpeciesEntity.id,
       );
+
       expect(PetSpecies.createOrUpdate).toBeCalledWith({
         species_name: newSpeciesName,
       });
+
       expect(mockPetSpeciesRepository.update).toBeCalledWith(
         mockPetSpeciesEntity.id,
         {
@@ -158,6 +164,7 @@ describe('PetSpeciesService', () => {
       jest
         .spyOn(petSpeciesService, 'getPetSpeciesById')
         .mockResolvedValue(mockPetSpeciesEntity);
+
       mockPetSpeciesRepository.delete.mockResolvedValue({} as any);
 
       const result = await petSpeciesService.deletePetSpecies(
@@ -165,9 +172,11 @@ describe('PetSpeciesService', () => {
       );
 
       expect(result).toEqual({});
+
       expect(petSpeciesService.getPetSpeciesById).toBeCalledWith(
         mockPetSpeciesEntity.id,
       );
+
       expect(mockPetSpeciesRepository.delete).toBeCalledWith(
         mockPetSpeciesEntity.id,
       );

@@ -20,6 +20,7 @@ yarn-error.log*
 lerna-debug.log*
 pnpm-lock.yml
 .docker
+tsconfig.tsbuildinfo
 
 # OS
 .DS_Store
