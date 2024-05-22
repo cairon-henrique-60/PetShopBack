@@ -6,7 +6,7 @@ import {
   MoreThanOrEqual,
   Repository,
 } from 'typeorm';
-import { Inject, Injectable } from '@nestjs/common';
+import { ForbiddenException, Inject, Injectable } from '@nestjs/common';
 
 import { isNullableValue } from 'src/utils/is-nullable-value.util';
 import { PaginationService } from 'src/lib/pagination/pagination.service';
@@ -117,8 +117,14 @@ export class UserService {
     return this.userRepository.save(userItem);
   }
 
-  async updateUser(id: string, payload: UpdateUserType): Promise<User> {
+  async updateUser(
+    id: string,
+    payload: UpdateUserType,
+    logged_in_user_id: string,
+  ): Promise<User> {
     const user = await this.getUserById(id, true);
+
+    this.checkUserPermission(user.id, logged_in_user_id);
 
     const newUser = await User.update(payload, user.hashed_password);
 
@@ -127,10 +133,23 @@ export class UserService {
     return this.getUserById(id);
   }
 
-  async deleteUser(id: string): Promise<DeleteResult> {
-    await this.getUserById(id);
+  async deleteUser(
+    id: string,
+    logged_in_user_id: string,
+  ): Promise<DeleteResult> {
+    const userToDelete = await this.getUserById(id);
 
-    return this.userRepository.delete(id);
+    this.checkUserPermission(userToDelete.id, logged_in_user_id);
+
+    return this.userRepository.delete(userToDelete.id);
+  }
+
+  private checkUserPermission(incoming_id: string, logged_in_user_id: string) {
+    if (incoming_id !== logged_in_user_id) {
+      throw new ForbiddenException(
+        'Não é permitido alterar ou deletar um usuario que não é seu',
+      );
+    }
   }
 
   // private metods

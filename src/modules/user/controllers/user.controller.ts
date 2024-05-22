@@ -14,6 +14,7 @@ import { Pagination } from 'nestjs-typeorm-paginate';
 
 import { Public } from 'src/shared/decorators/auth.decorator';
 import { UuidParam } from 'src/shared/decorators/uuid-param.decorator';
+import { DecodedToken } from 'src/shared/decorators/decoded-token.decorator';
 import { ApiPaginationQuery } from 'src/shared/decorators/api-pagination-query.decorator';
 import { DataBaseInterceptor } from 'src/lib/http-exceptions/errors/interceptors/database.interceptor';
 
@@ -46,6 +47,7 @@ export class UserController {
   async getUserById(@UuidParam('id') id: string): Promise<User> {
     return this.userService.getUserById(id);
   }
+
   @Public()
   @Post()
   @UseInterceptors(DataBaseInterceptor)
@@ -58,12 +60,16 @@ export class UserController {
   async updateUser(
     @UuidParam('id') id: string,
     @Body() data: UpdateUserDTO,
+    @DecodedToken() decoded_token: DecodedTokenType,
   ): Promise<User> {
-    return this.userService.updateUser(id, data);
+    return this.userService.updateUser(id, data, decoded_token.id);
   }
 
   @Delete(':id')
-  async deleteUser(@UuidParam('id') id: string): Promise<DeleteResult> {
-    return this.userService.deleteUser(id);
+  async deleteUser(
+    @UuidParam('id') id: string,
+    @DecodedToken() decoded_token: DecodedTokenType,
+  ): Promise<DeleteResult> {
+    return this.userService.deleteUser(id, decoded_token.id);
   }
 }
