@@ -1,18 +1,25 @@
 import { Test, TestingModule } from '@nestjs/testing';
 
+import { NotFoundError } from 'src/lib/http-exceptions/errors/types/not-found-error';
+
 import { PetSpeciesService } from './pet-species.service';
 import { PetSpecies } from '../entities/pet-species.entity';
 
 describe('PetSpeciesService', () => {
   let petSpeciesService: PetSpeciesService;
 
-  const mockService = {
-    createQueryBuilder: jest.fn(),
-    list: jest.fn(),
-    getPetSpeciesById: jest.fn(),
-    createPetSpecies: jest.fn(),
-    updatePetSpecies: jest.fn(),
-    deletePetSpecies: jest.fn(),
+  const mockPetSpeciesRepository = {
+    createQueryBuilder: jest.fn(() => ({
+      select: jest.fn().mockReturnThis(),
+      leftJoinAndSelect: jest.fn().mockReturnThis(),
+      where: jest.fn().mockReturnThis(),
+      andWhere: jest.fn().mockReturnThis(),
+      getMany: jest.fn(),
+    })),
+    findOne: jest.fn(),
+    save: jest.fn(),
+    update: jest.fn(),
+    delete: jest.fn(),
   };
 
   const mockPetSpeciesEntity = new PetSpecies();
@@ -26,7 +33,10 @@ describe('PetSpeciesService', () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         PetSpeciesService,
-        { provide: 'PET_SPECIES_REPOSITORY', useValue: mockService },
+        {
+          provide: 'PET_SPECIES_REPOSITORY',
+          useValue: mockPetSpeciesRepository,
+        },
       ],
     }).compile();
 
@@ -42,20 +52,125 @@ describe('PetSpeciesService', () => {
     expect(petSpeciesService).toBeDefined();
   });
 
-  // describe('list', () => {
-  //   it('should list pet species', async () => {
-  //     const params: ListSpeciesPayload = {
-  //       id: undefined,
-  //       species_name: undefined,
-  //     };
+  describe('list', () => {
+    it('should return a list of pet species', async () => {
+      const queryResult = [mockPetSpeciesEntity];
+      mockPetSpeciesRepository
+        .createQueryBuilder()
+        .getMany.mockResolvedValue(queryResult);
 
-  //     jest.spyOn(mockService, 'list').mockReturnValue({
-  //       select: jest.fn().mockReturnThis(),
-  //       leftJoin: jest.fn().mockReturnThis(),
-  //       where: jest.fn().mockReturnThis(),
-  //     });
+      const result = await petSpeciesService.list({
+        id: undefined,
+        species_name: undefined,
+      });
 
-  //     await petSpeciesService.list(params);
-  //   });
-  // });
+      expect(result).toEqual(queryResult);
+      expect(mockPetSpeciesRepository.createQueryBuilder).toBeCalled();
+    });
+  });
+
+  describe('getPetSpeciesById', () => {
+    it('should return a pet species by id', async () => {
+      mockPetSpeciesRepository.findOne.mockResolvedValue(mockPetSpeciesEntity);
+
+      const result = await petSpeciesService.getPetSpeciesById(
+        mockPetSpeciesEntity.id,
+      );
+
+      expect(result).toEqual(mockPetSpeciesEntity);
+      expect(mockPetSpeciesRepository.findOne).toBeCalledWith({
+        where: { id: mockPetSpeciesEntity.id },
+      });
+    });
+
+    it('should throw NotFoundError if pet species is not found', async () => {
+      mockPetSpeciesRepository.findOne.mockResolvedValue(null);
+
+      await expect(
+        petSpeciesService.getPetSpeciesById('non-existing-id'),
+      ).rejects.toThrow(NotFoundError);
+      expect(mockPetSpeciesRepository.findOne).toBeCalledWith({
+        where: { id: 'non-existing-id' },
+      });
+    });
+  });
+
+  describe('createPetSpecies', () => {
+    it('should create and return a new pet species', async () => {
+      const speciesName = 'Gato';
+      const newPetSpecies = new PetSpecies();
+      newPetSpecies.species_name = speciesName;
+
+      jest.spyOn(PetSpecies, 'createOrUpdate').mockReturnValue(newPetSpecies);
+      mockPetSpeciesRepository.save.mockResolvedValue(newPetSpecies);
+
+      const result = await petSpeciesService.createPetSpecies(speciesName);
+
+      expect(result).toEqual(newPetSpecies);
+      expect(PetSpecies.createOrUpdate).toBeCalledWith({
+        species_name: speciesName,
+      });
+      expect(mockPetSpeciesRepository.save).toBeCalledWith(newPetSpecies);
+    });
+  });
+
+  describe('updatePetSpecies', () => {
+    it('should update and return an existing pet species', async () => {
+      const newSpeciesName = 'Gato';
+
+      jest
+        .spyOn(petSpeciesService, 'getPetSpeciesById')
+        .mockResolvedValue(mockPetSpeciesEntity);
+      jest.spyOn(PetSpecies, 'createOrUpdate').mockReturnValue({
+        ...mockPetSpeciesEntity,
+        species_name: newSpeciesName,
+      });
+
+      mockPetSpeciesRepository.update.mockResolvedValue({} as any);
+
+      const result = await petSpeciesService.updatePetSpecies(
+        mockPetSpeciesEntity.id,
+        newSpeciesName,
+      );
+
+      expect(result).toEqual({
+        ...mockPetSpeciesEntity,
+        species_name: newSpeciesName,
+      });
+      expect(petSpeciesService.getPetSpeciesById).toBeCalledWith(
+        mockPetSpeciesEntity.id,
+      );
+      expect(PetSpecies.createOrUpdate).toBeCalledWith({
+        species_name: newSpeciesName,
+      });
+      expect(mockPetSpeciesRepository.update).toBeCalledWith(
+        mockPetSpeciesEntity.id,
+        {
+          ...mockPetSpeciesEntity,
+          species_name: newSpeciesName,
+        },
+      );
+    });
+  });
+
+  describe('deletePetSpecies', () => {
+    it('should delete a pet species by id', async () => {
+      jest
+        .spyOn(petSpeciesService, 'getPetSpeciesById')
+        .mockResolvedValue(mockPetSpeciesEntity);
+      mockPetSpeciesRepository.delete.mockResolvedValue({} as any);
+
+      const result = await petSpeciesService.deletePetSpecies(
+        mockPetSpeciesEntity.id,
+      );
+
+      expect(result).toEqual({});
+      expect(petSpeciesService.getPetSpeciesById).toBeCalledWith(
+        mockPetSpeciesEntity.id,
+      );
+      expect(mockPetSpeciesRepository.delete).toBeCalledWith(
+        mockPetSpeciesEntity.id,
+      );
+    });
+  });
 });
