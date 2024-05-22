@@ -42,13 +42,10 @@ export class UserService {
       ])
       .where(whereClause);
 
-    const paginatedHotelsResult =
-      await this.paginationService.paginateWithQueryBuilder(queryBuilder, {
-        limit,
-        page,
-      });
-
-    return Promise.resolve(paginatedHotelsResult);
+    return this.paginationService.paginateWithQueryBuilder(queryBuilder, {
+      limit,
+      page,
+    });
   }
 
   async getUserByEmail(user_email: string): Promise<User> {
