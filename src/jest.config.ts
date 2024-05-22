@@ -1,6 +1,7 @@
 import type { Config } from '@jest/types';
 
 const config: Config.InitialOptions = {
+  preset: 'ts-jest',
   moduleFileExtensions: ['js', 'json', 'ts'],
   modulePaths: ['.'],
   testRegex: '.*\\.spec\\.ts$',
@@ -11,6 +12,7 @@ const config: Config.InitialOptions = {
   coveragePathIgnorePatterns: ['src/lib/database/migrations'],
   coverageDirectory: 'coverage',
   testEnvironment: 'node',
+  transformIgnorePatterns: ['<rootDir>/node_modules/'],
 };
 
 export default config;

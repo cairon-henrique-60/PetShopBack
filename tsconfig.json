@@ -19,6 +19,6 @@
     "noFallthroughCasesInSwitch": false,
     "noUncheckedIndexedAccess": true,
     "incremental": false,
-    "composite": false
+    "composite": false,
   },
 }
