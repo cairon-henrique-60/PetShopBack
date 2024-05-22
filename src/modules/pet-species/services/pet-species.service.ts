@@ -33,14 +33,13 @@ export class PetSpeciesService {
     return foundedPetSpecies;
   }
 
-  async getPetSpeciesById(id: string) {
+  async getPetSpeciesById(id: string): Promise<PetSpecies> {
     const foundedPetSpecies = await this.petSpeciesRepository.findOne({
       where: { id },
     });
 
-    if (!foundedPetSpecies) {
+    if (!foundedPetSpecies)
       throw new NotFoundError('Especie de pet não encontrada');
-    }
 
     return foundedPetSpecies;
   }

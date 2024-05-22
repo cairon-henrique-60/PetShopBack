@@ -18,6 +18,10 @@
     "forceConsistentCasingInFileNames": false,
     "noFallthroughCasesInSwitch": false,
     "noUncheckedIndexedAccess": true,
-    "resolveJsonModule": true
-  }
+    "resolveJsonModule": true,
+  },
+  "ts-node": {
+    "files": true
+  },
+  "include": ["src/modules", "jest.config.ts"],
 }
