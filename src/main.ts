@@ -16,7 +16,7 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
   // deletes the file that will prevent the app from running again
-  fs.unlink('tsconfig.tsbuildinfo', (err) => console.log(err));
+  fs.unlink('tsconfig.tsbuildinfo', () => {});
 
   try {
     app.enableCors();
