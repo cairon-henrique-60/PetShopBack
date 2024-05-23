@@ -6,14 +6,14 @@ import {
   optionalDateStringSchema,
   optionalStringSchema,
   uuidSchema,
-  optionalGenderStringSchema
+  genderStringSchema,
 } from 'src/shared/schemas.shared';
 
 export const createPetSchema = z.object({
   pet_name: stringSchema,
   pet_breed_id: uuidSchema,
   date_of_birth: optionalDateStringSchema,
-  pet_gender: optionalGenderStringSchema,
+  pet_gender: genderStringSchema,
   pet_color: stringSchema,
   alergies: optionalStringSchema,
   medical_conditions: optionalStringSchema,
