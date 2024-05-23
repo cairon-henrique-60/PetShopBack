@@ -23,6 +23,7 @@ const dataSource = new DataSource({
   synchronize: false,
   migrationsRun: true,
   logging: hasDatabaseHost,
+  
 });
 
 export const databaseProviders = [
