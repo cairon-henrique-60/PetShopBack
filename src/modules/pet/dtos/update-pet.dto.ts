@@ -8,19 +8,29 @@ import {
   optionalGenderStringSchema,
 } from 'src/shared/schemas.shared';
 
-export const updatePetSchema = z.object({
-  pet_name: optionalStringSchema,
-  pet_breed_id: optionalUuidSchema,
-  date_of_birth: optionalDateStringSchema,
-  pet_gender: optionalGenderStringSchema,
-  pet_color: optionalStringSchema,
-  alergies: optionalStringSchema,
-  medical_conditions: optionalStringSchema,
-  current_medication: optionalStringSchema,
-  pet_microship_id: optionalStringSchema,
-  tutor_id: optionalUuidSchema,
-  pet_species_id: optionalUuidSchema,
-});
+export const updatePetSchema = z
+  .object({
+    pet_name: optionalStringSchema,
+    pet_breed_id: optionalUuidSchema,
+    date_of_birth: optionalDateStringSchema,
+    pet_gender: optionalGenderStringSchema,
+    pet_color: optionalStringSchema,
+    alergies: optionalStringSchema,
+    medical_conditions: optionalStringSchema,
+    current_medication: optionalStringSchema,
+    pet_microship_id: optionalStringSchema,
+    tutor_id: optionalUuidSchema,
+    pet_species_id: optionalUuidSchema,
+  })
+  .refine(
+    ({ pet_species_id, pet_breed_id }) => {
+      if (pet_species_id && !pet_breed_id) return false;
+    },
+    {
+      message: 'Caso queira mudar a especie insira uma raça!',
+      path: ['pet_breed_id'],
+    },
+  );
 
 export type UpdatePetPayload = z.infer<typeof updatePetSchema>;
 

@@ -27,6 +27,33 @@ export class PetService {
     private readonly petSpeciesService: PetSpeciesService,
   ) {}
 
+  private createPetQueryBuilder() {
+    return this.petRepository
+      .createQueryBuilder('pet')
+      .leftJoinAndSelect('pet.tutor', 'tutor')
+      .leftJoinAndSelect('pet.pet_species', 'species')
+      .leftJoinAndSelect('pet.pet_breed', 'breed')
+      .select([
+        'pet.id',
+        'pet.created_at',
+        'pet.updated_at',
+        'pet.pet_name',
+        'pet.date_of_birth',
+        'pet.pet_gender',
+        'pet.pet_color',
+        'pet.alergies',
+        'pet.medical_conditions',
+        'pet.current_medication',
+        'pet.pet_microship_id',
+        'tutor.id',
+        'tutor.user_name',
+        'tutor.user_email',
+        'tutor.is_email_verified',
+        'species',
+        'breed',
+      ]);
+  }
+
   async paginatePets(
     {
       limit,
@@ -43,17 +70,7 @@ export class PetService {
   ) {
     const isCommomUser = decoded_token.user_type.toUpperCase() !== 'ADMIN';
 
-    const petQueryBuilder = this.petRepository
-      .createQueryBuilder('pet')
-      .select([
-        'pet',
-        't.id',
-        't.user_name',
-        't.user_email',
-        't.phone_number',
-        't.is_email_verified',
-      ])
-      .leftJoin('pet.tutor', 't')
+    const petQueryBuilder = this.createPetQueryBuilder()
       .where(isCommomUser ? 'pet.tutor_id = :tutor_id' : '1=1', {
         tutor_id: decoded_token.id,
       })
@@ -89,30 +106,7 @@ export class PetService {
   }
 
   async getPetById(id: string): Promise<Pet> {
-    const foundedPet = await this.petRepository
-      .createQueryBuilder('pet')
-      .leftJoinAndSelect('pet.tutor', 'tutor')
-      .leftJoinAndSelect('pet.pet_species', 'species')
-      .leftJoinAndSelect('pet.pet_breed', 'breed')
-      .select([
-        'pet.id',
-        'pet.created_at',
-        'pet.updated_at',
-        'pet.pet_name',
-        'pet.date_of_birth',
-        'pet.pet_gender',
-        'pet.pet_color',
-        'pet.alergies',
-        'pet.medical_conditions',
-        'pet.current_medication',
-        'pet.pet_microship_id',
-        'tutor.id',
-        'tutor.user_name',
-        'tutor.user_email',
-        'tutor.is_email_verified',
-        'species',
-        'breed',
-      ])
+    const foundedPet = await this.createPetQueryBuilder()
       .where('pet.id = :id', { id })
       .getOne();
 
@@ -134,21 +128,7 @@ export class PetService {
   ): Promise<Pet[]> {
     const isCommomUser = decoded_token.user_type.toUpperCase() !== 'ADMIN';
 
-    const petQueryBuilder = this.petRepository
-      .createQueryBuilder('pet')
-      .select([
-        'pet',
-        'e',
-        'b',
-        't.id',
-        't.user_name',
-        't.user_email',
-        't.phone_number',
-        't.is_email_verified',
-      ])
-      .leftJoin('pet.tutor', 't')
-      .leftJoin('pet.pet_species', 'e')
-      .leftJoin('pet.pet_breed', 'b')
+    const petQueryBuilder = this.createPetQueryBuilder()
       .where(isCommomUser ? 'pet.tutor_id = :tutor_id' : '1=1', {
         tutor_id: decoded_token.id,
       })
@@ -164,14 +144,14 @@ export class PetService {
           pet_species_id,
         },
       )
+      .andWhere(pet_gender ? 'pet.pet_gender = :pet_gender' : '1=1', {
+        pet_gender,
+      })
       .andWhere(pet_name ? 'pet.pet_name LIKE :pet_name' : '1=1', {
         pet_name: `%${pet_name}%`,
       })
       .andWhere(pet_color ? 'pet.pet_color LIKE :pet_color' : '1=1', {
         pet_color: `%${pet_color}%`,
-      })
-      .andWhere(pet_gender ? 'pet.pet_gender LIKE :pet_gender' : '1=1', {
-        pet_gender: `%${pet_gender}%`,
       })
       .getMany();
 
