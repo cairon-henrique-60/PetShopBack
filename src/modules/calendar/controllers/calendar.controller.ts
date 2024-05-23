@@ -28,14 +28,20 @@ export class CalendarController {
   constructor(private readonly calendarService: CalendarService) {}
 
   @Get()
-  getAll(@Query() querys: ListCalendarsDTO) {
-    return this.calendarService.listCalendars(querys);
+  getAll(
+    @Query() querys: ListCalendarsDTO,
+    @DecodedToken() decoded_token: DecodedTokenType,
+  ) {
+    return this.calendarService.listCalendars(querys, decoded_token.id);
   }
 
   @Get('paginate')
   @ApiPaginationQuery(orderByFields)
-  paginate(@Query() querys: PaginateCalendarsDTO) {
-    return this.calendarService.paginateCalendars(querys);
+  paginate(
+    @Query() querys: PaginateCalendarsDTO,
+    @DecodedToken() decoded_token: DecodedTokenType,
+  ) {
+    return this.calendarService.paginateCalendars(querys, decoded_token.id);
   }
 
   @Get(':id')

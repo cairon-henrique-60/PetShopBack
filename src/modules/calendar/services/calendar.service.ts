@@ -23,81 +23,15 @@ export class CalendarService {
     private readonly paginationService: PaginationService,
   ) {}
 
-  private createCalendarQueryBuilder() {
-    return this.calendarRepository
-      .createQueryBuilder('calendar')
-      .leftJoin('calendar.pet', 'pet')
-      .leftJoin('calendar.user', 'user')
-      .select([
-        'calendar.id',
-        'calendar.created_at',
-        'calendar.updated_at',
-        'calendar.description',
-        'calendar.initial_date',
-        'calendar.end_date',
-        'calendar.location',
-        'calendar.notification_date',
-        'pet.id',
-        'pet.pet_name',
-        'pet.pet_breed_id',
-        'pet.pet_species_id',
-        'user.id',
-        'user.user_name',
-        'user.user_email',
-      ]);
+  async listCalendars(payload: ListCalendarsPayload, user_id: string) {
+    return this.handleCalendarsFilters(payload, user_id).getMany();
   }
 
-  private handleCalendarsFilters({
-    description,
-    order_by_created_at,
-    order_by_end_date,
-    order_by_initial_date,
-    order_by_updated_at,
-    pet_id,
-    user_id,
-    end_date,
-    initial_date,
-  }: ListCalendarsPayload) {
-    const queryBuilder = this.createCalendarQueryBuilder()
-      .andWhere(
-        description ? 'calendar.description LIKE :description' : '1=1',
-        { description: `%${description}%` },
-      )
-      .andWhere(pet_id ? 'pet.id = :pet_id' : '1=1', { pet_id })
-      .andWhere(user_id ? 'user.id = :user_id' : '1=1', { user_id })
-      .andWhere(
-        initial_date ? 'calendar.initial_date >= :initial_date' : '1=1',
-        { initial_date },
-      )
-      .andWhere(end_date ? 'calendar.end_date <= :end_date' : '1=1', {
-        end_date,
-      });
-
-    if (order_by_created_at)
-      queryBuilder.addOrderBy('calendar.created_at', order_by_created_at);
-
-    if (order_by_end_date)
-      queryBuilder.addOrderBy('calendar.end_date', order_by_end_date);
-
-    if (order_by_initial_date)
-      queryBuilder.addOrderBy('calendar.initial_date', order_by_initial_date);
-
-    if (order_by_updated_at)
-      queryBuilder.addOrderBy('calendar.updated_at', order_by_updated_at);
-
-    return queryBuilder;
-  }
-
-  async listCalendars(payload: ListCalendarsPayload) {
-    return this.handleCalendarsFilters(payload).getMany();
-  }
-
-  async paginateCalendars({
-    limit,
-    page,
-    ...payload
-  }: PaginateCalendarsPayload) {
-    const queryBuilder = this.handleCalendarsFilters(payload);
+  async paginateCalendars(
+    { limit, page, ...payload }: PaginateCalendarsPayload,
+    user_id: string,
+  ) {
+    const queryBuilder = this.handleCalendarsFilters(payload, user_id);
 
     return this.paginationService.paginateWithQueryBuilder(queryBuilder, {
       limit,
@@ -170,5 +104,75 @@ export class CalendarService {
         'Não é possivel deletar um calendario que não é seu',
       );
     }
+  }
+
+  private createCalendarQueryBuilder() {
+    return this.calendarRepository
+      .createQueryBuilder('calendar')
+      .select([
+        'calendar.id',
+        'calendar.created_at',
+        'calendar.updated_at',
+        'calendar.description',
+        'calendar.initial_date',
+        'calendar.end_date',
+        'calendar.location',
+        'calendar.notification_date',
+        'pet.id',
+        'pet.pet_name',
+        'pet.pet_breed_id',
+        'pet.pet_species_id',
+        'user.id',
+        'user.user_name',
+        'user.user_email',
+        'pet',
+        'user'
+      ])
+      .leftJoin('calendar.pet', 'pet')
+      .leftJoin('calendar.user', 'user');
+  }
+
+  private handleCalendarsFilters(
+    {
+      description,
+      order_by_created_at,
+      order_by_end_date,
+      order_by_initial_date,
+      order_by_updated_at,
+      pet_id,
+      end_date,
+      initial_date,
+    }: ListCalendarsPayload,
+    user_id: string,
+  ) {
+    const queryBuilder = this.createCalendarQueryBuilder()
+      .where('user.id = :user_id', { user_id })
+      .andWhere(
+        description ? 'calendar.description LIKE :description' : '1=1',
+        { description: `%${description}%` },
+      )
+      .andWhere(pet_id ? 'pet.id = :pet_id' : '1=1', { pet_id });
+
+    if (initial_date)
+      queryBuilder.andWhere('calendar.initial_date >= :initial_date', {
+        initial_date,
+      });
+
+    if (end_date)
+      queryBuilder.andWhere('calendar.end_date <= :end_date', { end_date });
+
+    if (order_by_created_at)
+      queryBuilder.addOrderBy('calendar.created_at', order_by_created_at);
+
+    if (order_by_end_date)
+      queryBuilder.addOrderBy('calendar.end_date', order_by_end_date);
+
+    if (order_by_initial_date)
+      queryBuilder.addOrderBy('calendar.initial_date', order_by_initial_date);
+
+    if (order_by_updated_at)
+      queryBuilder.addOrderBy('calendar.updated_at', order_by_updated_at);
+
+    return queryBuilder;
   }
 }

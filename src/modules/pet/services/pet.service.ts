@@ -184,7 +184,7 @@ export class PetService {
       this.petSpeciesService.getPetSpeciesById(payload.pet_species_id),
       this.userService.getUserById(tutor_id),
     ]).then(([breed, species]) => {
-      if (species.id !== breed.species_id) {
+      if (species.id !== breed.species.id) {
         throw new BadRequestError(
           "The species ID does not match the breed's species ID.",
         );

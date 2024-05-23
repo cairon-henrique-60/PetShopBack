@@ -20,11 +20,11 @@ export class Calendars1716215270318 implements MigrationInterface {
           },
           {
             name: 'initial_date',
-            type: 'date',
+            type: 'timestamp',
           },
           {
             name: 'end_date',
-            type: 'date',
+            type: 'timestamp',
           },
           {
             name: 'pet_id',

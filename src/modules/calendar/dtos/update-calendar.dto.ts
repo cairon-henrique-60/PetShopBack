@@ -2,7 +2,7 @@ import { createZodDto } from 'nestjs-zod';
 import { z } from 'nestjs-zod/z';
 
 import {
-  optionalDateStringSchema,
+  datetimeStringSchema,
   optionalStringSchema,
   optionalUuidSchema,
 } from 'src/shared/schemas.shared';
@@ -11,11 +11,11 @@ import { today } from 'src/utils/date.utils';
 export const updateCalendarSchema = z
   .object({
     description: optionalStringSchema,
-    initial_date: optionalDateStringSchema,
-    end_date: optionalDateStringSchema,
+    initial_date: datetimeStringSchema,
+    end_date: datetimeStringSchema,
     pet_id: optionalUuidSchema,
     location: optionalStringSchema,
-    notification_date: optionalDateStringSchema,
+    notification_date: datetimeStringSchema,
   })
   .refine(
     ({ end_date, initial_date }) => {
@@ -32,6 +32,18 @@ export const updateCalendarSchema = z
         'Initial date must be later or equal to today and end date must be later than initial date',
       path: ['initial_date', 'end_date'],
     },
+  )
+  .refine(
+    ({ initial_date, notification_date }) => {
+      if (notification_date > initial_date) return false;
+
+      return true;
+    },
+    {
+      message:
+        'Initial date must be later or equal to today and notification date must be later than initial date.',
+      path: ['initial_date', 'notification_date'],
+    },
   );
 
 export type UpdateCalendarPayload = z.infer<typeof updateCalendarSchema>;
@@ -46,12 +58,12 @@ export class UpdateCalendarDTO extends createZodDto(updateCalendarSchema) {
    * Initial date of the event.
    * @example 2024-08-10T08:00:00Z
    */
-  initial_date?: Date;
+  initial_date: Date;
   /**
    * End date date of the event.
    * @example 2024-08-10T10:00:00Z
    */
-  end_date?: Date;
+  end_date: Date;
   /**
    * Pet of the event.
    * @example 123e4567-e89b-12d3-a456-426614174000
@@ -66,7 +78,7 @@ export class UpdateCalendarDTO extends createZodDto(updateCalendarSchema) {
    * Notification of the event.
    * @example 2024-08-10T07:30:00Z
    */
-  notification_date?: Date;
+  notification_date: Date;
   /**
    * Tutor id of the event.
    * @example 123e4567-e89b-12d3-a456-426614174000

@@ -2,7 +2,7 @@ import { z } from 'nestjs-zod/z';
 import { createZodDto } from 'nestjs-zod';
 
 import {
-  optionalDatetimeStringSchema,
+  datetimeStringSchema,
   optionalOrderParamSchema,
   optionalStringSchema,
   optionalUuidSchema,
@@ -13,9 +13,8 @@ export const listCalendarsSchema = z
   .object({
     description: optionalStringSchema,
     pet_id: optionalUuidSchema,
-    user_id: optionalUuidSchema,
-    end_date: optionalDatetimeStringSchema,
-    initial_date: optionalDatetimeStringSchema,
+    end_date: datetimeStringSchema.optional(),
+    initial_date: datetimeStringSchema.optional(),
     order_by_created_at: optionalOrderParamSchema,
     order_by_updated_at: optionalOrderParamSchema,
     order_by_initial_date: optionalOrderParamSchema,
@@ -71,11 +70,6 @@ export class ListCalendarsDTO extends createZodDto(listCalendarsSchema) {
    * @example 2024-08-10T07:30:00Z
    */
   notification_date?: Date;
-  /**
-   * Tutor id of the event.
-   * @example 123e4567-e89b-12d3-a456-426614174000
-   */
-  user_id?: string;
   /**
    * Order by createdAt of the event.
    * @example 'ASC' | 'DESC'

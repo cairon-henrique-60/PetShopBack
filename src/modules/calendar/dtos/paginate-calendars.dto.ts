@@ -13,7 +13,6 @@ export const paginateCalendarsSchema = z.object({
   page: optionalPaginationParamSchema,
   description: optionalStringSchema,
   pet_id: optionalUuidSchema,
-  user_id: optionalUuidSchema,
   order_by_created_at: optionalOrderParamSchema,
   order_by_updated_at: optionalOrderParamSchema,
   order_by_initial_date: optionalOrderParamSchema,
@@ -55,11 +54,6 @@ export class PaginateCalendarsDTO extends createZodDto(
    * @example 2024-08-10T07:30:00Z
    */
   notification_date?: Date;
-  /**
-   * Tutor id of the event.
-   * @example 123e4567-e89b-12d3-a456-426614174000
-   */
-  user_id?: string;
   /**
    * Order by createdAt of the event.
    * @example 'ASC' | 'DESC'

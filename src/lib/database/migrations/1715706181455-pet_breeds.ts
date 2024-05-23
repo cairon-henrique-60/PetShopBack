@@ -16,7 +16,6 @@ export class PetSpecies1715706181455 implements MigrationInterface {
           {
             name: 'species_id',
             type: 'uuid',
-            isUnique: true,
           },
         ],
         foreignKeys: [
