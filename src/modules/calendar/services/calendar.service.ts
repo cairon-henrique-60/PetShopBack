@@ -118,18 +118,14 @@ export class CalendarService {
         'calendar.end_date',
         'calendar.location',
         'calendar.notification_date',
+        'calendar.user_id',
+        'pet',
         'pet.id',
         'pet.pet_name',
         'pet.pet_breed_id',
         'pet.pet_species_id',
-        'user.id',
-        'user.user_name',
-        'user.user_email',
-        'pet',
-        'user'
       ])
-      .leftJoin('calendar.pet', 'pet')
-      .leftJoin('calendar.user', 'user');
+      .leftJoin('calendar.pet', 'pet');
   }
 
   private handleCalendarsFilters(
@@ -146,7 +142,7 @@ export class CalendarService {
     user_id: string,
   ) {
     const queryBuilder = this.createCalendarQueryBuilder()
-      .where('user.id = :user_id', { user_id })
+      .where('calendar.user_id = :user_id', { user_id })
       .andWhere(
         description ? 'calendar.description LIKE :description' : '1=1',
         { description: `%${description}%` },
