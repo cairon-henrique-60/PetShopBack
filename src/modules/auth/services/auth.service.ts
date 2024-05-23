@@ -51,7 +51,7 @@ export class AuthService {
     user_email,
     user_name,
     user_auth_provider,
-  }: RegisterPayload) {
+  }: RegisterPayload): Promise<AccessDTO> {
     const is_google_provider = user_auth_provider === UserAuthProviders.GOOGLE;
 
     const newUser = await this.usersService.createUser({

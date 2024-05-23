@@ -13,10 +13,10 @@ export class Calendar extends Base {
   @Column('varchar')
   description: string;
 
-  @Column('date')
+  @Column('timestamp')
   initial_date: Date;
 
-  @Column('date')
+  @Column('timestamp')
   end_date: Date;
 
   @Index()

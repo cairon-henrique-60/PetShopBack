@@ -31,9 +31,21 @@ export const createCalendarSchema = z
         'Initial date must be later or equal to today and end date must be later than initial date',
       path: ['initial_date', 'end_date'],
     },
+  )
+  .refine(
+    ({ initial_date, notification_date }) => {
+      if (notification_date > initial_date) return false;
+
+      return true;
+    },
+    {
+      message:
+        'Initial date must be later or equal to today and notification date must be later than initial date.',
+      path: ['initial_date', 'notification_date'],
+    },
   );
 
-export type CreateCalendarPayload = z.infer<typeof createCalendarSchema>
+export type CreateCalendarPayload = z.infer<typeof createCalendarSchema>;
 
 /**
  * DTO for creating a new event.

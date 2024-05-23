@@ -72,8 +72,8 @@ export class PetService {
       .andWhere(pet_color ? 'pet.pet_color LIKE :pet_color' : '1=1', {
         pet_color: `%${pet_color}%`,
       })
-      .andWhere(pet_gender ? 'pet.pet_gender LIKE :pet_gender' : '1=1', {
-        pet_gender: `%${pet_gender}%`,
+      .andWhere(pet_gender ? 'pet.pet_gender = :pet_gender' : '1=1', {
+        pet_gender,
       });
 
     if (order_by_created_at)

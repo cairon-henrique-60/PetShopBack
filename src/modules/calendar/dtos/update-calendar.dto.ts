@@ -2,20 +2,20 @@ import { createZodDto } from 'nestjs-zod';
 import { z } from 'nestjs-zod/z';
 
 import {
-  datetimeStringSchema,
   optionalStringSchema,
   optionalUuidSchema,
+  optionalDatetimeStringSchema,
 } from 'src/shared/schemas.shared';
 import { today } from 'src/utils/date.utils';
 
 export const updateCalendarSchema = z
   .object({
     description: optionalStringSchema,
-    initial_date: datetimeStringSchema,
-    end_date: datetimeStringSchema,
+    initial_date: optionalDatetimeStringSchema,
+    end_date: optionalDatetimeStringSchema,
     pet_id: optionalUuidSchema,
     location: optionalStringSchema,
-    notification_date: datetimeStringSchema,
+    notification_date: optionalDatetimeStringSchema,
   })
   .refine(
     ({ end_date, initial_date }) => {
@@ -35,7 +35,8 @@ export const updateCalendarSchema = z
   )
   .refine(
     ({ initial_date, notification_date }) => {
-      if (notification_date > initial_date) return false;
+      if (initial_date && notification_date && notification_date > initial_date)
+        return false;
 
       return true;
     },
