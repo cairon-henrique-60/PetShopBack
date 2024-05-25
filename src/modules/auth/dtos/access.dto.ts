@@ -20,7 +20,7 @@ class UserDTO {
   created_at: string;
 
   @ApiProperty({ description: 'The phone number of the user', nullable: true })
-  phone_number: string | null;
+  phone_number: NullableValue<string>;
 }
 
 export class AccessDTO {

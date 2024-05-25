@@ -17,5 +17,5 @@ export class Base {
     type: 'timestamp',
     default: null,
   })
-  updated_at: string | null;
+  updated_at: NullableValue<string>;
 }
