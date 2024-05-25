@@ -110,9 +110,9 @@ export const dateStringSchema = stringSchema
   .date()
   .transform((value) => new Date(value));
 
-export const endDateStringSchema = dateStringSchema.transform((value) => {
-  const endDate = new Date(value);
+export const endDateStringSchema = dateStringSchema.transform((endDate) => {
   endDate.setDate(endDate.getDate() + 1);
+
   return endDate;
 });
 
