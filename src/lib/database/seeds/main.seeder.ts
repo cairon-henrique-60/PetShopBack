@@ -1,6 +1,10 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { DataSource } from 'typeorm';
-import { Seeder, SeederFactoryManager, runSeeder } from 'typeorm-extension';
+import {
+  type Seeder,
+  SeederFactoryManager,
+  runSeeder,
+} from 'typeorm-extension';
 
 import {
   BirdsBreedSeeder,
