@@ -4,7 +4,7 @@ import { Injectable } from '@nestjs/common';
 import { NotFoundError } from 'src/lib/http-exceptions/errors/types/not-found-error';
 
 import { PetSpecies } from '../entities/pet-species.entity';
-import { petSpeciesRepository } from '../repository/petSpecieRepository';
+import { petSpeciesRepository } from '../repository/pet-species.repository';
 
 import { ListSpeciesPayload } from '../dtos/list-species.dto';
 

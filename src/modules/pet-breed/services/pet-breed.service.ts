@@ -6,7 +6,7 @@ import { NotFoundError } from 'src/lib/http-exceptions/errors/types/not-found-er
 import { PetSpeciesService } from 'src/modules/pet-species/services/pet-species.service';
 
 import { PetBreed } from '../entities/pet-breed.entity';
-import { petBreedRepository } from '../repository/petBreedRepository';
+import { petBreedRepository } from '../repository/pet-breed.repository';
 import type { ListPetBreedPayload } from '../dtos/list-pet-breed.dto';
 import type { CreatePetBreedPayload } from '../dtos/create-pet-breed.dto';
 import type { UpdatePetBreedPayload } from '../dtos/update-pet-breed.dto';
@@ -75,7 +75,10 @@ export class PetBreedService {
   ): Promise<Pick<PetBreed, 'breed_name' | 'id'>[]> {
     const breeds = await petBreedRepository.find({
       where: { species_id },
-      select: ['breed_name', 'id'],
+      select: {
+        id: true,
+        breed_name: true,
+      },
     });
 
     return breeds;

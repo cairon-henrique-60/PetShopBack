@@ -11,7 +11,7 @@ import { PetSpeciesService } from 'src/modules/pet-species/services/pet-species.
 import { BadRequestError } from 'src/lib/http-exceptions/errors/types/bad-request-error';
 
 import { Pet } from '../entities/pet.entity';
-import { petRepository } from '../repository/petRepository';
+import { petRepository } from '../repository/pet.repository';
 import type { UpdatePetPayload } from '../dtos/update-pet.dto';
 import type { CreatePetPayload } from '../dtos/create-pet.dto';
 import type { ListPetsQuerysDTO } from '../dtos/list-pets-querys.dto';

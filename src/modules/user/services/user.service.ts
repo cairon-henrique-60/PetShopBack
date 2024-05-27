@@ -13,7 +13,7 @@ import { NotFoundError } from 'src/lib/http-exceptions/errors/types/not-found-er
 import { BadRequestError } from 'src/lib/http-exceptions/errors/types/bad-request-error';
 
 import { User } from '../entities/user.entity';
-import { userRepository } from '../repository/userRepository';
+import { userRepository } from '../repository/user.repository';
 import type { UpdateUserType } from '../dtos/update-user.to';
 import type { ListUsersPayload } from '../dtos/list-users.dto';
 import type { CreateUserPayload } from '../dtos/create-user.dto';

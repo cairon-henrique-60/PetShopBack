@@ -7,7 +7,7 @@ import { PetService } from 'src/modules/pet/services/pet.service';
 import { UserService } from 'src/modules/user/services/user.service';
 
 import { Calendar } from '../entities/calendar.entity';
-import { calendarRepository } from '../repository/calendarRepository';
+import { calendarRepository } from '../repository/calendar.repository';
 import type { ListCalendarsPayload } from '../dtos/list-calendars.dto';
 import type { CreateCalendarPayload } from '../dtos/create-calendar.dto';
 import type { UpdateCalendarPayload } from '../dtos/update-calendar.dto';

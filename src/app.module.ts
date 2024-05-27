@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, OnModuleInit } from '@nestjs/common';
 import { APP_PIPE } from '@nestjs/core';
 import { ConfigModule } from '@nestjs/config';
 import { ZodValidationPipe } from 'nestjs-zod';
@@ -16,12 +16,8 @@ import { PaginationModule } from './lib/pagination/pagination.module';
     },
   ],
 })
-export class AppModule {
-  constructor() {
-    this.initializeAppDataSource();
-  }
-
-  async initializeAppDataSource() {
+export class AppModule implements OnModuleInit {
+  async onModuleInit() {
     try {
       await AppDataSource.initialize();
     } catch (err) {
