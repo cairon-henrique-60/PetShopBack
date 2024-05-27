@@ -77,7 +77,7 @@ $ docker compose exec db bash
 $ typeorm migration:create src/lib/database/migrations/--migration-name--
 
 # running the new migration
-$ pnpm typeorm:migration:run
+$ pnpm migration:run
 
 # Rollbacks
 $ typeorm migration:revert --fake
