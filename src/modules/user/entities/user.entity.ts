@@ -18,7 +18,7 @@ export class User extends Base {
   user_name: string;
 
   @Column('varchar', { nullable: true })
-  hashed_password: string | null;
+  hashed_password: NullableValue<string>;
 
   @Column('varchar')
   user_email: string;
@@ -30,7 +30,7 @@ export class User extends Base {
   user_auth_provider: string;
 
   @Column('varchar', { nullable: true })
-  phone_number: string | null;
+  phone_number: NullableValue<string>;
 
   @Column('boolean', { default: false })
   is_email_verified: boolean;
@@ -55,7 +55,7 @@ export class User extends Base {
 
   static async update(
     data: UpdateUserType,
-    userPassword: string | null,
+    userPassword: NullableValue<string>,
   ): Promise<User> {
     const userItem = new User();
 

@@ -28,7 +28,7 @@ export class Calendar extends Base {
   user_id: string;
 
   @Column('varchar', { nullable: true })
-  location: string | null;
+  location: NullableValue<string>;
 
   @Column('timestamp')
   notification_date: Date;
@@ -41,7 +41,9 @@ export class Calendar extends Base {
   @JoinColumn({ name: 'pet_id' })
   pet: Pet;
 
-  static create(payload: CreateCalendarPayload & { user_id: string }): Calendar {
+  static create(
+    payload: CreateCalendarPayload & { user_id: string },
+  ): Calendar {
     const item = new Calendar();
 
     Object.assign(item, payload);

@@ -59,6 +59,7 @@ export class CalendarController {
   }
 
   @Put(':id')
+  @UseInterceptors(DataBaseInterceptor)
   update(
     @UuidParam('id') id: string,
     @Body() payload: UpdateCalendarDTO,

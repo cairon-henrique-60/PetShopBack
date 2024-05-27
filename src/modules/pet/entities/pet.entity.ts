@@ -34,7 +34,7 @@ export class Pet extends Base {
   pet_species_id: string; // Id da Especie. EX: Cachorro
 
   @Column('date', { nullable: true })
-  date_of_birth: Date | null;
+  date_of_birth: NullableValue<Date>;
 
   @Column('char')
   pet_gender: string;
@@ -43,13 +43,13 @@ export class Pet extends Base {
   pet_color: string;
 
   @Column('varchar', { nullable: true })
-  alergies: string | null;
+  alergies: NullableValue<string>;
 
   @Column('varchar', { nullable: true })
-  medical_conditions: string | null;
+  medical_conditions: NullableValue<string>;
 
   @Column('varchar', { nullable: true })
-  current_medication: string | null;
+  current_medication: NullableValue<string>;
 
   @Column('varchar', { nullable: true })
   pet_microship_id: string;

@@ -11,15 +11,12 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 
-import { Public } from 'src/shared/decorators/auth.decorator';
 import { UuidParam } from 'src/shared/decorators/uuid-param.decorator';
-
 import { DataBaseInterceptor } from 'src/lib/http-exceptions/errors/interceptors/database.interceptor';
 
+import { ListSpeciesDTO } from '../dtos/list-species.dto';
 import { PetSpecies } from '../entities/pet-species.entity';
 import { PetSpeciesService } from '../services/pet-species.service';
-
-import { ListSpeciesDTO } from '../dtos/list-species.dto';
 import { CreateOrUpdateSpeciesDTO } from '../dtos/create-or-update-pet-species.dto';
 
 @ApiTags('pet-species')
@@ -27,13 +24,11 @@ import { CreateOrUpdateSpeciesDTO } from '../dtos/create-or-update-pet-species.d
 export class PetSpeciesController {
   constructor(private readonly petSpeciesService: PetSpeciesService) {}
 
-  @Public()
   @Get('list')
   async list(@Query() querys: ListSpeciesDTO): Promise<PetSpecies[]> {
     return this.petSpeciesService.list(querys);
   }
 
-  @Public()
   @Post()
   @UseInterceptors(DataBaseInterceptor)
   async create(@Body() body: CreateOrUpdateSpeciesDTO): Promise<PetSpecies> {
