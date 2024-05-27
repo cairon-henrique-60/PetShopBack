@@ -20,7 +20,10 @@
     "test:e2e": "jest --config ./test/jest-e2e.json",
     "typeorm": "ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js",
     "typeorm:migration:generate": "npm run typeorm -- migration:generate -n",
-    "typeorm:migration:run": "npm run typeorm -- migration:run"
+    "typeorm:migration:run": "npm run typeorm -- -d src/lib/database/database.providers.ts migration:run",
+    "seed": "ts-node ./node_modules/typeorm-extension/bin/cli.cjs seed:run -d src/lib/database/database.providers.ts",
+    "seed:create": "ts-node ./node_modules/typeorm-extension/bin/cli.cjs seed:create",
+    "seed:run": "ts-node ./node_modules/typeorm-extension/bin/cli.cjs seed:run"
   },
   "dependencies": {
     "@nestjs-modules/mailer": "^2.0.2",
@@ -43,7 +46,8 @@
     "pg": "^8.11.5",
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.1",
-    "typeorm": "^0.3.20"
+    "typeorm": "^0.3.20",
+    "typeorm-extension": "^3.5.1"
   },
   "devDependencies": {
     "@jest/types": "^29.6.3",

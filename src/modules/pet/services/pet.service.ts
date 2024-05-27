@@ -1,5 +1,4 @@
-import { Repository } from 'typeorm';
-import { Inject, Injectable, ForbiddenException } from '@nestjs/common';
+import { Injectable, ForbiddenException } from '@nestjs/common';
 
 import { PaginationService } from 'src/lib/pagination/pagination.service';
 import { NotFoundError } from 'src/lib/http-exceptions/errors/types/not-found-error';
@@ -12,6 +11,7 @@ import { PetSpeciesService } from 'src/modules/pet-species/services/pet-species.
 import { BadRequestError } from 'src/lib/http-exceptions/errors/types/bad-request-error';
 
 import { Pet } from '../entities/pet.entity';
+import { petRepository } from '../repository/petRepository';
 import type { UpdatePetPayload } from '../dtos/update-pet.dto';
 import type { CreatePetPayload } from '../dtos/create-pet.dto';
 import type { ListPetsQuerysDTO } from '../dtos/list-pets-querys.dto';
@@ -20,7 +20,6 @@ import type { PaginatePetsQuerysType } from '../dtos/paginate-pets-querys.dto';
 @Injectable()
 export class PetService {
   constructor(
-    @Inject('PET_REPOSITORY') private petRepository: Repository<Pet>,
     private readonly paginationService: PaginationService,
     private readonly userService: UserService,
     private readonly petBreedService: PetBreedService,
@@ -28,7 +27,7 @@ export class PetService {
   ) {}
 
   private createPetQueryBuilder() {
-    return this.petRepository
+    return petRepository
       .createQueryBuilder('pet')
       .leftJoinAndSelect('pet.tutor', 'tutor')
       .leftJoinAndSelect('pet.pet_species', 'species')
@@ -173,7 +172,7 @@ export class PetService {
 
     const petItem = Pet.create({ tutor_id, ...payload });
 
-    return this.petRepository.save(petItem);
+    return petRepository.save(petItem);
   }
 
   async updatePet(id: string, tutor_id: string, payload: UpdatePetPayload) {
@@ -200,7 +199,7 @@ export class PetService {
 
     const petItem = Pet.update({ tutor_id, ...payload });
 
-    await this.petRepository.update(id, petItem);
+    await petRepository.update(id, petItem);
 
     return this.getPetById(petToUpdate.id);
   }
@@ -210,7 +209,7 @@ export class PetService {
 
     this.checkIfTutorOwnsCurrentPet(petToDelete, current_user_id);
 
-    return this.petRepository.remove(petToDelete);
+    return petRepository.remove(petToDelete);
   }
 
   private checkIfTutorOwnsCurrentPet(currentPet: Pet, tutor_id: string) {

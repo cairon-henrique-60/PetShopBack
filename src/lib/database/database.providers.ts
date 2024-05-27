@@ -1,7 +1,10 @@
-import { DataSource } from 'typeorm';
+import { DataSource, DataSourceOptions } from 'typeorm';
 import * as path from 'path';
 
 import { ENV_VARIABLES } from 'src/config/env.config';
+import { SeederOptions } from 'typeorm-extension';
+
+import { MainSeeder } from './seeds/MainSeeder';
 
 const entitiesPath = path.resolve(__dirname, '../../**/*.entity{.ts,.js}');
 const migrationsPath = path.resolve(
@@ -11,7 +14,7 @@ const migrationsPath = path.resolve(
 
 const hasDatabaseHost = ENV_VARIABLES.DATABASE_HOST === 'localhost';
 
-const dataSource = new DataSource({
+const options: DataSourceOptions & SeederOptions = {
   type: 'postgres',
   port: ENV_VARIABLES.DB_PORT,
   username: ENV_VARIABLES.DB_USER,
@@ -23,14 +26,7 @@ const dataSource = new DataSource({
   synchronize: false,
   migrationsRun: true,
   logging: hasDatabaseHost,
-  
-});
+  seeds: [MainSeeder],
+};
 
-export const databaseProviders = [
-  {
-    provide: 'DATA_SOURCE',
-    useFactory: async () => {
-      return dataSource.initialize();
-    },
-  },
-];
+export const AppDataSource = new DataSource(options);

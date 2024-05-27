@@ -33,7 +33,6 @@ describe('PetBreedService', () => {
     petBreedService = new PetBreedService(
       petBreedRepository,
       paginationService,
-      petSpeciesService,
     );
   });
 

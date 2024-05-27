@@ -1,21 +1,17 @@
-import { DeleteResult, Repository } from 'typeorm';
-import { Inject, Injectable } from '@nestjs/common';
+import { DeleteResult } from 'typeorm';
+import { Injectable } from '@nestjs/common';
 
 import { NotFoundError } from 'src/lib/http-exceptions/errors/types/not-found-error';
 
 import { PetSpecies } from '../entities/pet-species.entity';
+import { petSpeciesRepository } from '../repository/petSpecieRepository';
 
 import { ListSpeciesPayload } from '../dtos/list-species.dto';
 
 @Injectable()
 export class PetSpeciesService {
-  constructor(
-    @Inject('PET_SPECIES_REPOSITORY')
-    private petSpeciesRepository: Repository<PetSpecies>,
-  ) {}
-
   async list({ id, species_name }: ListSpeciesPayload) {
-    const foundedPetSpecies = await this.petSpeciesRepository
+    const foundedPetSpecies = await petSpeciesRepository
       .createQueryBuilder('species')
       .select(['species', 'breeds'])
       .leftJoinAndSelect('species.breeds', 'breeds')
@@ -34,7 +30,7 @@ export class PetSpeciesService {
   }
 
   async getPetSpeciesById(id: string): Promise<PetSpecies> {
-    const foundedPetSpecies = await this.petSpeciesRepository.findOne({
+    const foundedPetSpecies = await petSpeciesRepository.findOne({
       where: { id },
     });
 
@@ -47,7 +43,7 @@ export class PetSpeciesService {
   async createPetSpecies(species_name: string): Promise<PetSpecies> {
     const speciesToCreate = PetSpecies.createOrUpdate({ species_name });
 
-    return this.petSpeciesRepository.save(speciesToCreate);
+    return petSpeciesRepository.save(speciesToCreate);
   }
 
   async updatePetSpecies(
@@ -60,7 +56,7 @@ export class PetSpeciesService {
       species_name: new_species_name,
     });
 
-    await this.petSpeciesRepository.update(id, speciesItem);
+    await petSpeciesRepository.update(id, speciesItem);
 
     return this.getPetSpeciesById(id);
   }
@@ -68,6 +64,6 @@ export class PetSpeciesService {
   async deletePetSpecies(id: string): Promise<DeleteResult> {
     await this.getPetSpeciesById(id);
 
-    return this.petSpeciesRepository.delete(id);
+    return petSpeciesRepository.delete(id);
   }
 }

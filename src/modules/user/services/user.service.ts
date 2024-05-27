@@ -4,9 +4,8 @@ import {
   LessThanOrEqual,
   Like,
   MoreThanOrEqual,
-  Repository,
 } from 'typeorm';
-import { ForbiddenException, Inject, Injectable } from '@nestjs/common';
+import { ForbiddenException, Injectable } from '@nestjs/common';
 
 import { isNullableValue } from 'src/utils/is-nullable-value.util';
 import { PaginationService } from 'src/lib/pagination/pagination.service';
@@ -14,6 +13,7 @@ import { NotFoundError } from 'src/lib/http-exceptions/errors/types/not-found-er
 import { BadRequestError } from 'src/lib/http-exceptions/errors/types/bad-request-error';
 
 import { User } from '../entities/user.entity';
+import { userRepository } from '../repository/userRepository';
 import type { UpdateUserType } from '../dtos/update-user.to';
 import type { ListUsersPayload } from '../dtos/list-users.dto';
 import type { CreateUserPayload } from '../dtos/create-user.dto';
@@ -21,16 +21,12 @@ import type { PaginateUsersPayload } from '../dtos/paginate-users.dto';
 
 @Injectable()
 export class UserService {
-  constructor(
-    @Inject('USER_REPOSITORY')
-    private userRepository: Repository<User>,
-    private readonly paginationService: PaginationService,
-  ) {}
+  constructor(private readonly paginationService: PaginationService) {}
 
   async paginateUsers({ limit, page, ...params }: PaginateUsersPayload) {
     const whereClause = this.buildWhereClause(params);
 
-    const queryBuilder = this.userRepository
+    const queryBuilder = userRepository
       .createQueryBuilder('u')
       .select([
         'u.id',
@@ -49,7 +45,7 @@ export class UserService {
   }
 
   async getUserByEmail(user_email: string): Promise<User> {
-    const foundedUser = await this.userRepository.findOne({
+    const foundedUser = await userRepository.findOne({
       where: { user_email },
       select: [
         'id',
@@ -75,7 +71,7 @@ export class UserService {
   async listUser(params: ListUsersPayload): Promise<User[]> {
     const whereClause = this.buildWhereClause(params);
 
-    const users = await this.userRepository.find({
+    const users = await userRepository.find({
       where: whereClause,
       select: ['created_at', 'id', 'updated_at', 'user_email', 'user_name'],
       relations: ['pets'],
@@ -86,7 +82,7 @@ export class UserService {
   }
 
   async getUserById(id: string, selectPassword?: boolean): Promise<User> {
-    const foundedUser = await this.userRepository.findOne({
+    const foundedUser = await userRepository.findOne({
       where: { id },
       select: {
         created_at: true,
@@ -111,7 +107,7 @@ export class UserService {
   async createUser(payload: CreateUserPayload): Promise<User> {
     const userItem = await User.create(payload);
 
-    return this.userRepository.save(userItem);
+    return userRepository.save(userItem);
   }
 
   async updateUser(
@@ -125,7 +121,7 @@ export class UserService {
 
     const newUser = await User.update(payload, user.hashed_password);
 
-    await this.userRepository.update(id, newUser);
+    await userRepository.update(id, newUser);
 
     return this.getUserById(id);
   }
@@ -138,7 +134,7 @@ export class UserService {
 
     this.checkUserPermission(userToDelete.id, logged_in_user_id);
 
-    return this.userRepository.delete(userToDelete.id);
+    return userRepository.delete(userToDelete.id);
   }
 
   private checkUserPermission(incoming_id: string, logged_in_user_id: string) {

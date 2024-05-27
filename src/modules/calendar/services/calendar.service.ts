@@ -1,5 +1,4 @@
-import { Repository } from 'typeorm';
-import { ForbiddenException, Inject, Injectable } from '@nestjs/common';
+import { ForbiddenException, Injectable } from '@nestjs/common';
 
 import { PaginationService } from 'src/lib/pagination/pagination.service';
 import { NotFoundError } from 'src/lib/http-exceptions/errors/types/not-found-error';
@@ -8,6 +7,7 @@ import { PetService } from 'src/modules/pet/services/pet.service';
 import { UserService } from 'src/modules/user/services/user.service';
 
 import { Calendar } from '../entities/calendar.entity';
+import { calendarRepository } from '../repository/calendarRepository';
 import type { ListCalendarsPayload } from '../dtos/list-calendars.dto';
 import type { CreateCalendarPayload } from '../dtos/create-calendar.dto';
 import type { UpdateCalendarPayload } from '../dtos/update-calendar.dto';
@@ -16,8 +16,6 @@ import type { PaginateCalendarsPayload } from '../dtos/paginate-calendars.dto';
 @Injectable()
 export class CalendarService {
   constructor(
-    @Inject('CALENDAR_REPOSITORY')
-    private calendarRepository: Repository<Calendar>,
     private readonly petService: PetService,
     private readonly useService: UserService,
     private readonly paginationService: PaginationService,
@@ -60,7 +58,7 @@ export class CalendarService {
 
     const calendarToCreate = Calendar.create({ ...payload, user_id });
 
-    return this.calendarRepository.save(calendarToCreate);
+    return calendarRepository.save(calendarToCreate);
   }
 
   async updateCalendar(
@@ -79,7 +77,7 @@ export class CalendarService {
 
     const calendarItem = Calendar.update(payload);
 
-    await this.calendarRepository.update(id, calendarItem);
+    await calendarRepository.update(id, calendarItem);
 
     return this.getCalendarById(calendarToUpdate.id);
   }
@@ -92,7 +90,7 @@ export class CalendarService {
       current_user_id,
     );
 
-    return this.calendarRepository.remove(calendarToDelete);
+    return calendarRepository.remove(calendarToDelete);
   }
 
   private checkIfCurrentUserMatchesWithCalendar(
@@ -107,7 +105,7 @@ export class CalendarService {
   }
 
   private createCalendarQueryBuilder() {
-    return this.calendarRepository
+    return calendarRepository
       .createQueryBuilder('calendar')
       .select([
         'calendar.id',

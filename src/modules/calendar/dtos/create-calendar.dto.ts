@@ -39,7 +39,8 @@ export const createCalendarSchema = z
       return true;
     },
     {
-      message: 'notification_date must be later to initial_date.',
+      message:
+        'Initial date must be later or equal to today and notification date must be later than initial date.',
       path: ['initial_date', 'notification_date'],
     },
   );

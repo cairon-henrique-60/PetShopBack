@@ -5,15 +5,14 @@ import { PetBreedModule } from '../pet-breed/pet-breed.module';
 import { PetSpeciesModule } from '../pet-species/pet-species.module';
 
 import { PetService } from './services/pet.service';
-import { petProvider } from './providers/pet.provider';
 import { PetController } from './controllers/pet.controller';
 
-const providers = [...petProvider, PetService]
+const providers = [PetService];
 
 @Module({
   providers,
   exports: providers,
   controllers: [PetController],
-  imports: [PetSpeciesModule, PetBreedModule, UserModule]
+  imports: [PetSpeciesModule, PetBreedModule, UserModule],
 })
 export class PetModule {}

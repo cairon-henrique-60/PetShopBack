@@ -1,11 +1,12 @@
-import { Inject, Injectable } from '@nestjs/common';
-import { DeleteResult, Repository } from 'typeorm';
+import { Injectable } from '@nestjs/common';
+import { DeleteResult } from 'typeorm';
 
 import { PaginationService } from 'src/lib/pagination/pagination.service';
 import { NotFoundError } from 'src/lib/http-exceptions/errors/types/not-found-error';
 import { PetSpeciesService } from 'src/modules/pet-species/services/pet-species.service';
 
 import { PetBreed } from '../entities/pet-breed.entity';
+import { petBreedRepository } from '../repository/petBreedRepository';
 import type { ListPetBreedPayload } from '../dtos/list-pet-breed.dto';
 import type { CreatePetBreedPayload } from '../dtos/create-pet-breed.dto';
 import type { UpdatePetBreedPayload } from '../dtos/update-pet-breed.dto';
@@ -14,8 +15,6 @@ import type { PaginatePetBreedPayload } from '../dtos/paginate-pet-breed.dto';
 @Injectable()
 export class PetBreedService {
   constructor(
-    @Inject('PET_BREED_REPOSITORY')
-    private petBreedRepository: Repository<PetBreed>,
     private readonly paginationService: PaginationService,
     private readonly petSpeciesService: PetSpeciesService,
   ) {}
@@ -28,7 +27,7 @@ export class PetBreedService {
     order_by_updated_at,
     species_id,
   }: PaginatePetBreedPayload) {
-    const petBreedQueryBuilder = this.petBreedRepository
+    const petBreedQueryBuilder = petBreedRepository
       .createQueryBuilder('breed')
       .select(['breed'])
       .where(species_id ? 'breed.species_id = :species_id' : '1=1', {
@@ -51,7 +50,7 @@ export class PetBreedService {
   }
 
   async getBreedById(id: string) {
-    const breed = await this.petBreedRepository
+    const breed = await petBreedRepository
       .createQueryBuilder('breed')
       .select([
         'breed.id',
@@ -74,7 +73,7 @@ export class PetBreedService {
   async getBreedsBySpeciesId(
     species_id: string,
   ): Promise<Pick<PetBreed, 'breed_name' | 'id'>[]> {
-    const breeds = await this.petBreedRepository.find({
+    const breeds = await petBreedRepository.find({
       where: { species_id },
       select: ['breed_name', 'id'],
     });
@@ -86,7 +85,7 @@ export class PetBreedService {
     breed_name,
     species_id,
   }: ListPetBreedPayload): Promise<PetBreed[]> {
-    const petQueryBuilder = await this.petBreedRepository
+    const petQueryBuilder = await petBreedRepository
       .createQueryBuilder('breed')
       .select(['breed', 'species'])
       .leftJoinAndSelect('breed.species', 'species')
@@ -106,7 +105,7 @@ export class PetBreedService {
 
     const petBreedItem = PetBreed.create(payload);
 
-    return this.petBreedRepository.save(petBreedItem);
+    return petBreedRepository.save(petBreedItem);
   }
 
   async updatePetBreed(
@@ -120,7 +119,7 @@ export class PetBreedService {
 
     const breedItem = PetBreed.update(payload);
 
-    await this.petBreedRepository.update(breed_id, breedItem);
+    await petBreedRepository.update(breed_id, breedItem);
 
     return this.getBreedById(breed_id);
   }
@@ -128,6 +127,6 @@ export class PetBreedService {
   async deletePetBreed(id: string): Promise<DeleteResult> {
     await this.getBreedById(id);
 
-    return this.petBreedRepository.delete(id);
+    return petBreedRepository.delete(id);
   }
 }

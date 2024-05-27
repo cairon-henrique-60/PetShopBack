@@ -9,6 +9,7 @@ import { DataBaseInterceptor } from 'src/lib/http-exceptions/errors/interceptors
 import { NotFoundInterceptor } from 'src/lib/http-exceptions/errors/interceptors/not-found.interceptor';
 import { BadRequestInterceptor } from 'src/lib/http-exceptions/errors/interceptors/bad-request.interceptor';
 import { UnauthorizedInterceptor } from 'src/lib/http-exceptions/errors/interceptors/unauthorized.interceptor';
+import { DataSourceInterceptor } from 'src/lib/http-exceptions/errors/interceptors/conctionDataSource.interceptor';
 
 import { AppModule } from './app.module';
 
@@ -26,6 +27,7 @@ async function bootstrap() {
      * -----------------------------------------------------------------------------
      */
     app.useGlobalInterceptors(new UnauthorizedInterceptor());
+    app.useGlobalInterceptors(new DataSourceInterceptor());
     app.useGlobalInterceptors(new BadRequestInterceptor());
     app.useGlobalInterceptors(new NotFoundInterceptor());
     app.useGlobalInterceptors(new DataBaseInterceptor());
