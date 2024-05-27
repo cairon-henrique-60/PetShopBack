@@ -4,7 +4,7 @@ import * as path from 'path';
 
 import { ENV_VARIABLES } from 'src/config/env.config';
 
-import { MainSeeder } from './seeds/main.seeder';
+import { MainSeeder } from './seeds/main.seed';
 
 const entitiesPath = path.resolve(__dirname, '../../**/*.entity{.ts,.js}');
 const migrationsPath = path.resolve(
