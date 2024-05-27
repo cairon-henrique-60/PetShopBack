@@ -7,7 +7,6 @@ import {
   Put,
   Post,
   Query,
-  UseInterceptors,
 } from '@nestjs/common';
 import { DeleteResult } from 'typeorm';
 import { Pagination } from 'nestjs-typeorm-paginate';
@@ -16,7 +15,7 @@ import { Public } from 'src/shared/decorators/auth.decorator';
 import { UuidParam } from 'src/shared/decorators/uuid-param.decorator';
 import { DecodedToken } from 'src/shared/decorators/decoded-token.decorator';
 import { ApiPaginationQuery } from 'src/shared/decorators/api-pagination-query.decorator';
-import { DataBaseInterceptor } from 'src/lib/http-exceptions/errors/interceptors/database.interceptor';
+import { DataBaseInterceptorDecorator } from 'src/shared/decorators/database-interceptor.decorator';
 
 import { User } from '../entities/user.entity';
 import { ListUsersDTO } from '../dtos/list-users.dto';
@@ -50,13 +49,13 @@ export class UserController {
 
   @Public()
   @Post()
-  @UseInterceptors(DataBaseInterceptor)
+  @DataBaseInterceptorDecorator()
   create(@Body() createUserDto: CreateUserDTO): Promise<User> {
     return this.userService.createUser(createUserDto);
   }
 
   @Put(':id')
-  @UseInterceptors(DataBaseInterceptor)
+  @DataBaseInterceptorDecorator()
   async updateUser(
     @UuidParam('id') id: string,
     @Body() data: UpdateUserDTO,

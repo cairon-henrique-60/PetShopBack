@@ -6,14 +6,13 @@ import {
   Post,
   Put,
   Query,
-  UseInterceptors,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 
 import { orderByFields } from 'src/config/swagger.config';
 import { UuidParam } from 'src/shared/decorators/uuid-param.decorator';
 import { ApiPaginationQuery } from 'src/shared/decorators/api-pagination-query.decorator';
-import { DataBaseInterceptor } from 'src/lib/http-exceptions/errors/interceptors/database.interceptor';
+import { DataBaseInterceptorDecorator } from 'src/shared/decorators/database-interceptor.decorator';
 
 import { PetBreedService } from '../services/pet-breed.service';
 import { CreatePetBreedDTO } from '../dtos/create-pet-breed.dto';
@@ -42,13 +41,13 @@ export class PetBreedController {
   }
 
   @Post()
-  @UseInterceptors(DataBaseInterceptor)
+  @DataBaseInterceptorDecorator()
   async createBreed(@Body() payload: CreatePetBreedDTO) {
     return this.petBreedService.createPetBreed(payload);
   }
 
   @Put(':id')
-  @UseInterceptors(DataBaseInterceptor)
+  @DataBaseInterceptorDecorator()
   async updateBreed(
     @UuidParam('id') id: string,
     @Body() payload: UpdatePetBreedDTO,

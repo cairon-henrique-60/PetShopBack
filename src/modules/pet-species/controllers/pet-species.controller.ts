@@ -8,11 +8,10 @@ import {
   Post,
   Put,
   Query,
-  UseInterceptors,
 } from '@nestjs/common';
 
 import { UuidParam } from 'src/shared/decorators/uuid-param.decorator';
-import { DataBaseInterceptor } from 'src/lib/http-exceptions/errors/interceptors/database.interceptor';
+import { DataBaseInterceptorDecorator } from 'src/shared/decorators/database-interceptor.decorator';
 
 import { ListSpeciesDTO } from '../dtos/list-species.dto';
 import { PetSpecies } from '../entities/pet-species.entity';
@@ -30,13 +29,13 @@ export class PetSpeciesController {
   }
 
   @Post()
-  @UseInterceptors(DataBaseInterceptor)
+  @DataBaseInterceptorDecorator()
   async create(@Body() body: CreateOrUpdateSpeciesDTO): Promise<PetSpecies> {
     return this.petSpeciesService.createPetSpecies(body.species_name);
   }
 
   @Put(':id')
-  @UseInterceptors(DataBaseInterceptor)
+  @DataBaseInterceptorDecorator()
   async update(
     @UuidParam('id') id: string,
     @Body() body: CreateOrUpdateSpeciesDTO,
