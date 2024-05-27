@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { DataSource } from 'typeorm';
 import { Seeder, SeederFactoryManager } from 'typeorm-extension';
 
@@ -34,7 +35,5 @@ export default class SpeciesSeeder implements Seeder {
       { species_name: 'Papagaio' },
       { species_name: 'Ganso' },
     ]);
-    // ---------------------------------------------------
-    await factoryManager.get(PetSpecies).save();
   }
 }

@@ -24,7 +24,6 @@ const options: DataSourceOptions & SeederOptions = {
   entities: [entitiesPath],
   migrations: [migrationsPath],
   synchronize: false,
-  migrationsRun: true,
   logging: hasDatabaseHost,
   seeds: [MainSeeder],
 };
