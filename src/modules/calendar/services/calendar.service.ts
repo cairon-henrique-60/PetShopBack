@@ -17,7 +17,7 @@ import type { PaginateCalendarsPayload } from '../dtos/paginate-calendars.dto';
 export class CalendarService {
   constructor(
     private readonly petService: PetService,
-    private readonly useService: UserService,
+    private readonly userService: UserService,
     private readonly paginationService: PaginationService,
   ) {}
 
@@ -52,7 +52,7 @@ export class CalendarService {
     user_id: string,
   ): Promise<Calendar> {
     await Promise.all([
-      this.useService.getUserById(user_id),
+      this.userService.getUserById(user_id),
       this.petService.getPetById(payload.pet_id),
     ]);
 
@@ -99,7 +99,7 @@ export class CalendarService {
   ) {
     if (calendar.user.id !== current_user_id) {
       throw new ForbiddenException(
-        'Não é possivel deletar um calendario que não é seu',
+        'Não é possivel deletar ou editar um calendario que não é seu',
       );
     }
   }
