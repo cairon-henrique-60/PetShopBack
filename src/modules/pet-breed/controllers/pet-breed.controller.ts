@@ -14,6 +14,7 @@ import { UuidParam } from 'src/shared/decorators/uuid-param.decorator';
 import { ApiPaginationQuery } from 'src/shared/decorators/api-pagination-query.decorator';
 import { DataBaseInterceptorDecorator } from 'src/shared/decorators/database-interceptor.decorator';
 
+import { ListPetBreedDTO } from '../dtos/list-pet-breed.dto';
 import { PetBreedService } from '../services/pet-breed.service';
 import { CreatePetBreedDTO } from '../dtos/create-pet-breed.dto';
 import { UpdatePetBreedDTO } from '../dtos/update-pet-breed.dto';
@@ -28,6 +29,11 @@ export class PetBreedController {
   @Get('paginate')
   async paginateBreeds(@Query() querys: PaginatePetBreedDTO) {
     return this.petBreedService.paginateBreeds(querys);
+  }
+
+  @Get('list')
+  async listBreeds(@Query() querys: ListPetBreedDTO) {
+    return this.petBreedService.list(querys);
   }
 
   @Get(':id')
