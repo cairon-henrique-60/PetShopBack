@@ -83,6 +83,12 @@ $ pnpm typeorm:migration:run
 $ typeorm migration:revert --fake
 ```
 
+## Seeds
+```bash
+# running
+$ pnpm seed:run
+```
+
 ## Test
 
 ```bash
