@@ -2,34 +2,36 @@
 import { DataSource } from 'typeorm';
 import { Seeder, SeederFactoryManager, runSeeder } from 'typeorm-extension';
 
-import UserSeeder from './UserSeeder';
-import SpeciesSeeder from './SpeciesSeeder';
-import DogsBreedSeeder from './DogsSeeder';
-import CatsBreedSeeder from './CatsSeeder';
-import RabbitsBreedSeeder from './RabbitsSeeder';
-import HorsesBreedSeeder from './HorsesSeeder';
-import HamsterBreedSeeder from './HamstersSeeder';
-import GuineaPigBreedSeeder from './GuineaPig';
-import BirdsBreedSeeder from './BirdsSeeder';
-import FishisBreedSeeder from './FishsSeeder';
-import TurtlesBreedSeeder from './TurtleSeeder';
-import IguanaBreedSeeder from './IguanaSeeder';
-import SnakeBreedSeeder from './SnakeSeeder';
-import FerretsBreedSeeder from './FerretSeeder';
-import MousesBreedSeeder from './MouseSeeder';
-import ChinchilasBreedSeeder from './ChinchilaSeeder';
-import PigsBreedSeeder from './PigSeeder';
-import PonyBreedSeeder from './PonySeeder';
-import GoatBreedSeeder from './GoatSeeder';
-import ParrotBreedSeeder from './ParrotSeeder';
-import GooseBreedSeeder from './GooseSeeder';
-import SheepBreedSeeder from './SheepSeeder';
+import {
+  BirdsBreedSeeder,
+  CatsBreedSeeder,
+  ChinchilasBreedSeeder,
+  DogsBreedSeeder,
+  FerretsBreedSeeder,
+  FishisBreedSeeder,
+  GoatBreedSeeder,
+  GooseBreedSeeder,
+  GuineaPigBreedSeeder,
+  HamsterBreedSeeder,
+  HorsesBreedSeeder,
+  IguanaBreedSeeder,
+  MousesBreedSeeder,
+  ParrotBreedSeeder,
+  PigsBreedSeeder,
+  PonyBreedSeeder,
+  RabbitsBreedSeeder,
+  SheepBreedSeeder,
+  SnakeBreedSeeder,
+  SpeciesSeeder,
+  TurtlesBreedSeeder,
+  UserSeeder,
+} from './seeders';
 
 export class MainSeeder implements Seeder {
   track?: boolean | undefined;
   async run(
     dataSource: DataSource,
-    factoryManager: SeederFactoryManager,
+    _factoryManager: SeederFactoryManager,
   ): Promise<void> {
     await runSeeder(dataSource, UserSeeder);
     await runSeeder(dataSource, SpeciesSeeder);

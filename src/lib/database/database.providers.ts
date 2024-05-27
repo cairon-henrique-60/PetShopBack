@@ -1,10 +1,10 @@
-import { DataSource, DataSourceOptions } from 'typeorm';
+import { DataSource, type DataSourceOptions } from 'typeorm';
+import { type SeederOptions } from 'typeorm-extension';
 import * as path from 'path';
 
 import { ENV_VARIABLES } from 'src/config/env.config';
-import { SeederOptions } from 'typeorm-extension';
 
-import { MainSeeder } from './seeds/MainSeeder';
+import { MainSeeder } from './seeds/main.seeder';
 
 const entitiesPath = path.resolve(__dirname, '../../**/*.entity{.ts,.js}');
 const migrationsPath = path.resolve(
