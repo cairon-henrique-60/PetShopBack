@@ -13,8 +13,8 @@ import { Calendar } from 'src/modules/calendar/entities/calendar.entity';
 import { PetBreed } from 'src/modules/pet-breed/entities/pet-breed.entity';
 import { PetSpecies } from 'src/modules/pet-species/entities/pet-species.entity';
 
-import { CreatePetPayload } from '../dtos/create-pet.dto';
-import { UpdatePetPayload } from '../dtos/update-pet.dto';
+import type { CreatePetPayload } from '../dtos/create-pet.dto';
+import type { UpdatePetPayload } from '../dtos/update-pet.dto';
 
 type CreatePetParams = CreatePetPayload & { tutor_id: string };
 type UpdatePetParams = UpdatePetPayload & { tutor_id: string };
