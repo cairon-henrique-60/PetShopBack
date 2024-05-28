@@ -14,11 +14,7 @@ export const optionalEmailStringSchema = emailStringSchema
   .transform((value) => (isNullableValue(value) ? undefined : value));
 
 export const stringToNumberSchema = stringSchema
-  .refine((value) => {
-    const numberfyedValue = +value;
-
-    return !Number.isNaN(numberfyedValue);
-  })
+  .refine((value) => !Number.isNaN(+value))
   .transform(Number);
 
 export const optionalStringSchema = stringSchema
@@ -28,11 +24,7 @@ export const optionalStringSchema = stringSchema
 
 export const optionalStringToNumberSchema = optionalStringSchema
   .refine((value) => {
-    if (value) {
-      const numberfyedValue = +value;
-
-      return !Number.isNaN(numberfyedValue);
-    }
+    if (value) return !Number.isNaN(+value);
 
     return true;
   })
@@ -79,15 +71,8 @@ export const optionalNumberSchema = numberSchema
 export const paginationParamSchema = z
   .union([z.string(), z.number()])
   .refine((value) => {
-    if (value) {
-      if (typeof value === 'string') {
-        const numberfyedValue = +value;
+    if (typeof value === 'string') return !Number.isNaN(+value);
 
-        return !Number.isNaN(numberfyedValue);
-      }
-
-      return true;
-    }
     return true;
   })
   .transform(Number);
@@ -126,8 +111,9 @@ export const optionalDateStringSchema = dateStringSchema
   .nullable()
   .transform((value) => (isNullableValue(value) ? undefined : value));
 
-export const booleanParamSchema = z
-  .union([z.literal('true'), z.literal('false')])
+export const booleanStringSchema = z.enum(['true', 'false']);
+
+export const optionalBooleanStringSchema = booleanStringSchema
   .optional()
   .nullable()
   .transform((value) =>
