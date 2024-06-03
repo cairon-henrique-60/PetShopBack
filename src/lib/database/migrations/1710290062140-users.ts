@@ -1,5 +1,11 @@
 import { MigrationInterface, QueryRunner, Table } from 'typeorm';
 
+import {
+  UserAuthProviders,
+  user_auth_providers,
+} from 'src/modules/user/enum/user-auth-providers.enum';
+import { UserTypeEnum, user_types } from 'src/modules/user/enum/user-type.enum';
+
 import { baseColumns } from '../entities/base-columns';
 
 export class Users1710290062140 implements MigrationInterface {
@@ -25,11 +31,15 @@ export class Users1710290062140 implements MigrationInterface {
           },
           {
             name: 'user_type',
-            type: 'varchar',
+            type: 'enum',
+            enum: user_types,
+            default: `'${UserTypeEnum.COMMOM}'`,
           },
           {
             name: 'user_auth_provider',
-            type: 'varchar',
+            type: 'enum',
+            enum: user_auth_providers,
+            default: `'${UserAuthProviders.EMAIL}'`,
           },
           {
             name: 'phone_number',

@@ -3,6 +3,7 @@ import { Injectable, ForbiddenException } from '@nestjs/common';
 import { PaginationService } from 'src/lib/pagination/pagination.service';
 import { NotFoundError } from 'src/lib/http-exceptions/errors/types/not-found-error';
 
+import { UserTypeEnum } from 'src/modules/user/enum/user-type.enum';
 import { UserService } from 'src/modules/user/services/user.service';
 import { PetBreed } from 'src/modules/pet-breed/entities/pet-breed.entity';
 import { PetSpecies } from 'src/modules/pet-species/entities/pet-species.entity';
@@ -67,7 +68,7 @@ export class PetService {
     }: PaginatePetsQuerysType,
     decoded_token: DecodedTokenType,
   ) {
-    const isCommomUser = decoded_token.user_type.toUpperCase() !== 'ADMIN';
+    const isCommomUser = decoded_token.user_type !== UserTypeEnum.ADMIN;
 
     const petQueryBuilder = this.createPetQueryBuilder()
       .where(isCommomUser ? 'pet.tutor_id = :tutor_id' : '1=1', {
@@ -125,7 +126,7 @@ export class PetService {
     }: ListPetsQuerysDTO,
     decoded_token: DecodedTokenType,
   ): Promise<Pet[]> {
-    const isCommomUser = decoded_token.user_type.toUpperCase() !== 'ADMIN';
+    const isCommomUser = decoded_token.user_type !== UserTypeEnum.ADMIN;
 
     const petQueryBuilder = this.createPetQueryBuilder()
       .where(isCommomUser ? 'pet.tutor_id = :tutor_id' : '1=1', {

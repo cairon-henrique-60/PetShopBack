@@ -199,6 +199,10 @@ export class UserService {
       ) {
         whereClause[key] = Like(`%${value}%`);
       }
+
+      if (key === 'user_type') {
+        whereClause['user_type'] = value;
+      }
     });
 
     return whereClause;

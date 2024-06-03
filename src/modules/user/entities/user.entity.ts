@@ -9,8 +9,10 @@ import { Friendship } from 'src/modules/friendship/entities/friendship.entity';
 import { BadRequestError } from 'src/lib/http-exceptions/errors/types/bad-request-error';
 import { UnauthorizedError } from 'src/lib/http-exceptions/errors/types/unauthorized-error';
 
+import { UserTypeEnum } from '../enum/user-type.enum';
 import type { UpdateUserType } from '../dtos/update-user.to';
 import type { CreateUserPayload } from '../dtos/create-user.dto';
+import { UserAuthProviders } from '../enum/user-auth-providers.enum';
 
 @Entity('users')
 export class User extends Base {
@@ -24,11 +26,19 @@ export class User extends Base {
   @Column('varchar')
   user_email: string;
 
-  @Column('varchar')
-  user_type: string;
+  @Column({
+    type: 'enum',
+    enum: UserTypeEnum,
+    default: UserTypeEnum.COMMOM,
+  })
+  user_type: UserTypeEnum;
 
-  @Column('varchar')
-  user_auth_provider: string;
+  @Column({
+    type: 'enum',
+    enum: UserAuthProviders,
+    default: UserAuthProviders.EMAIL,
+  })
+  user_auth_provider: UserAuthProviders;
 
   @Column('int', { default: 0 })
   total_friends_count: number;

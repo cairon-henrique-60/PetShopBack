@@ -1,6 +1,7 @@
 import { type IPaginationOptions } from 'nestjs-typeorm-paginate';
 /* eslint-disable @typescript-eslint/ban-types */
 import type { EnvType } from 'src/config/env.config';
+import { UserTypeEnum } from 'src/modules/user/enum/user-type.enum';
 
 declare global {
   namespace NodeJS {
@@ -14,7 +15,7 @@ declare global {
     id: string;
     name: string;
     email: string;
-    user_type: string;
+    user_type: UserTypeEnum;
     iat: number;
     exp: number;
   };

@@ -28,6 +28,10 @@ export class PaginateFriendshipsDTO extends createZodDto(
    * Name of the user.
    * @example pending
    */
-  @ApiPropertyOptional()
+  @ApiPropertyOptional({
+    enum: FriendshipStatus,
+    description: 'Status of the friendship',
+    example: FriendshipStatus.PENDING,
+  })
   status: FriendshipStatus;
 }
