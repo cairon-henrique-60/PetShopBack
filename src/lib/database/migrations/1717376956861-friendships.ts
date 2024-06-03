@@ -31,6 +31,12 @@ export class Friendships1717376956861 implements MigrationInterface {
             isNullable: false,
           },
           {
+            name: 'blocked_by_id',
+            type: 'uuid',
+            isNullable: true,
+            default: null,
+          },
+          {
             name: 'status',
             type: 'enum',
             enum: friendship_statuses,
@@ -72,6 +78,17 @@ export class Friendships1717376956861 implements MigrationInterface {
     await queryRunner.createForeignKey(
       'friendships',
       new TableForeignKey({
+        columnNames: ['blocked_by_id'],
+        referencedColumnNames: ['id'],
+        referencedTableName: 'users',
+        onDelete: 'NO ACTION',
+        onUpdate: 'NO ACTION',
+      }),
+    );
+
+    await queryRunner.createForeignKey(
+      'friendships',
+      new TableForeignKey({
         columnNames: ['recipient_id'],
         referencedColumnNames: ['id'],
         referencedTableName: 'users',
@@ -90,12 +107,18 @@ export class Friendships1717376956861 implements MigrationInterface {
     const foreignKeyRecipient = table?.foreignKeys.find(
       (fk) => fk.columnNames.indexOf('recipient_id') !== -1,
     );
+    const foreignKeyBlockedBy = table?.foreignKeys.find(
+      (fk) => fk.columnNames.indexOf('blocked_by_id') !== -1,
+    );
 
     if (foreignKeyInitiator)
       await queryRunner.dropForeignKey('friendships', foreignKeyInitiator);
 
     if (foreignKeyRecipient)
       await queryRunner.dropForeignKey('friendships', foreignKeyRecipient);
+
+    if (foreignKeyBlockedBy)
+      await queryRunner.dropForeignKey('friendships', foreignKeyBlockedBy);
 
     await queryRunner.dropIndex('friendships', 'IDX_friendship_initiator_id');
     await queryRunner.dropIndex('friendships', 'IDX_friendship_recipient_id');

@@ -15,6 +15,9 @@ export class Friendship extends Base {
   @Column('uuid')
   recipient_id: string; // The ID of the user who received the friendship request.
 
+  @Column('uuid', { nullable: true, default: null })
+  blocked_by_id: NullableValue<string>;
+
   @Column({
     type: 'enum',
     enum: FriendshipStatus,
@@ -29,4 +32,8 @@ export class Friendship extends Base {
   @ManyToOne(() => User)
   @JoinColumn({ name: 'recipient_id' })
   recipient: User;
+
+  @ManyToOne(() => User, { nullable: true })
+  @JoinColumn({ name: 'blocked_by_id' })
+  blocked_by: NullableValue<User>;
 }

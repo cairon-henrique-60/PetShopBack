@@ -23,6 +23,7 @@ export class FriendshipService {
         'friendship.id',
         'friendship.initiator_id',
         'friendship.recipient_id',
+        'friendship.blocked_by_id',
         'friendship.status',
         'friendship.created_at',
         'friendship.updated_at',
@@ -146,6 +147,7 @@ export class FriendshipService {
     }
 
     friendship.status = FriendshipStatus.BLOCKED;
+    friendship.blocked_by_id = logged_in_user_id;
 
     await Promise.all([
       friendshipRepository.update(friendship_id, friendship),
@@ -153,6 +155,38 @@ export class FriendshipService {
         friendship.initiator_id,
         friendship.recipient_id,
         'decrement',
+      ),
+    ]);
+
+    return this.getFriendshipById(friendship_id);
+  }
+
+  async unblockFriendship(friendship_id: string, logged_in_user_id: string) {
+    const friendshipToUnblock = await this.getFriendshipById(friendship_id);
+
+    if (friendshipToUnblock.status !== FriendshipStatus.BLOCKED) {
+      throw new ForbiddenException(
+        'Cannot unblock friendship because it is not currently blocked.',
+      );
+    } else if (!friendshipToUnblock.blocked_by_id) {
+      throw new ForbiddenException(
+        'This friendship is not blocked by any user.',
+      );
+    } else if (friendshipToUnblock.blocked_by_id !== logged_in_user_id) {
+      throw new ForbiddenException(
+        'You are not authorized to unblock this friendship because you did not block it.',
+      );
+    }
+
+    friendshipToUnblock.status = FriendshipStatus.ACTIVE;
+    friendshipToUnblock.blocked_by_id = null;
+
+    await Promise.all([
+      friendshipRepository.update(friendship_id, friendshipToUnblock),
+      this.updateUserFriendCounts(
+        friendshipToUnblock.initiator_id,
+        friendshipToUnblock.recipient_id,
+        'increment',
       ),
     ]);
 

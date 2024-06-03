@@ -61,6 +61,9 @@ export class User extends Base {
   @OneToMany(() => Friendship, (friendship) => friendship.recipient)
   received_friendships: Friendship[];
 
+  @OneToMany(() => Friendship, (friendship) => friendship.blocked_by)
+  blocked_friendships: Friendship[];
+
   static async create(data: CreateUserPayload): Promise<User> {
     const userItem = new User();
     const hashed_password = data.password
