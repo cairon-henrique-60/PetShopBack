@@ -159,44 +159,6 @@ export class FriendshipService {
     return this.getFriendshipById(friendship_id);
   }
 
-  async unblockFriendship(
-    friendship_id: string,
-    logged_in_user_id: string,
-  ): Promise<Friendship> {
-    const friendship = await this.getFriendshipById(friendship_id);
-
-    if (
-      friendship.initiator_id !== logged_in_user_id &&
-      friendship.recipient_id !== logged_in_user_id
-    ) {
-      throw new ForbiddenException('Não é vc que tem q desbloquear!');
-    }
-
-    if (friendship.status !== FriendshipStatus.BLOCKED) {
-      throw new ForbiddenException('A amizade não está bloqueada!');
-    }
-
-    friendship.status = FriendshipStatus.PENDING;
-
-    if (friendship.recipient_id === logged_in_user_id) {
-      friendship.status = FriendshipStatus.ACTIVE;
-    }
-
-    await friendshipRepository.update(friendship_id, friendship);
-
-    const updatedFriendship = await this.getFriendshipById(friendship_id);
-
-    if (updatedFriendship.status === FriendshipStatus.ACTIVE) {
-      await this.updateUserFriendCounts(
-        friendship.initiator_id,
-        friendship.recipient_id,
-        'increment',
-      );
-    }
-
-    return updatedFriendship;
-  }
-
   private async updateUserFriendCounts(
     initiator_id: string,
     recipient_id: string,

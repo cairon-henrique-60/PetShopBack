@@ -58,15 +58,4 @@ export class FriendshipController {
       decoded_token.id,
     );
   }
-
-  @Put('unblock/:friendship_id')
-  unblock(
-    @DecodedToken() decoded_token: DecodedTokenType,
-    @UuidParam('friendship_id') friendship_id: string,
-  ) {
-    return this.friendshipService.unblockFriendship(
-      friendship_id,
-      decoded_token.id,
-    );
-  }
 }
