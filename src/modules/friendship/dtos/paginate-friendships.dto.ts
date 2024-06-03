@@ -10,7 +10,7 @@ import {
 import { FriendshipStatus } from '../enums/friendship-status.enum';
 
 export const paginateFriendshipsSchema = z.object({
-  status: z.nativeEnum(FriendshipStatus).default(FriendshipStatus.PENDING),
+  status: z.nativeEnum(FriendshipStatus).optional().nullable(),
   order_by_created_at: optionalOrderParamSchema,
   order_by_updated_at: optionalOrderParamSchema,
   page: optionalPaginationParamSchema,
@@ -33,5 +33,5 @@ export class PaginateFriendshipsDTO extends createZodDto(
     description: 'Status of the friendship',
     example: FriendshipStatus.PENDING,
   })
-  status: FriendshipStatus;
+  status?: FriendshipStatus | null;
 }

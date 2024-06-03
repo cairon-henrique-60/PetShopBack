@@ -9,11 +9,11 @@ import { FriendshipStatus } from '../enums/friendship-status.enum';
 export class Friendship extends Base {
   @Index()
   @Column('uuid')
-  initiator_id: string; // The ID of the user who initiated the friendship.
+  initiator_id: string;
 
   @Index()
   @Column('uuid')
-  recipient_id: string; // The ID of the user who received the friendship request.
+  recipient_id: string;
 
   @Column('uuid', { nullable: true, default: null })
   blocked_by_id: NullableValue<string>;
@@ -23,7 +23,7 @@ export class Friendship extends Base {
     enum: FriendshipStatus,
     default: FriendshipStatus.PENDING,
   })
-  status: FriendshipStatus; // The status of the friendship (active, blocked).
+  status: FriendshipStatus;
 
   @ManyToOne(() => User)
   @JoinColumn({ name: 'initiator_id' })

@@ -26,6 +26,11 @@ export class FriendshipController {
     );
   }
 
+  @Get(':id')
+  get(@UuidParam('id') id: string) {
+    return this.friendshipService.getFriendshipById(id);
+  }
+
   @Post('send-solicitation/:user_to_be_friend_id')
   async send(
     @UuidParam('user_to_be_friend_id') user_to_be_friend_id: string,

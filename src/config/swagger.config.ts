@@ -2,18 +2,25 @@ import { DocumentBuilder } from '@nestjs/swagger';
 
 import type { Params } from 'src/shared/decorators/api-pagination-query.decorator';
 
+export enum OrderByEnum {
+  ASC = 'ASC',
+  DESC = 'DESC',
+}
+
 export const orderByFields: Params = [
   {
     name: 'order_by_created_at',
     description: 'Order by created date.',
     required: false,
-    type: String,
+    enum: OrderByEnum,
+    example: OrderByEnum.ASC,
   },
   {
     name: 'order_by_updated_at',
     description: 'Order by updated date',
     required: false,
-    type: String,
+    enum: OrderByEnum,
+    example: OrderByEnum.DESC,
   },
 ];
 

@@ -19,14 +19,23 @@ export class FriendshipService {
   private createFriendshipQueryBuilder() {
     return friendshipRepository
       .createQueryBuilder('friendship')
+      .leftJoinAndSelect('friendship.blocked_by', 'blocked_by')
+      .leftJoinAndSelect('friendship.recipient', 'recipient')
+      .leftJoinAndSelect('friendship.initiator', 'initiator')
       .select([
         'friendship.id',
-        'friendship.initiator_id',
-        'friendship.recipient_id',
-        'friendship.blocked_by_id',
         'friendship.status',
         'friendship.created_at',
         'friendship.updated_at',
+        'initiator.id',
+        'initiator.user_name',
+        'initiator.user_email',
+        'recipient.id',
+        'recipient.user_name',
+        'recipient.user_email',
+        'blocked_by.id',
+        'blocked_by.user_name',
+        'blocked_by.user_email',
       ]);
   }
 
@@ -35,10 +44,10 @@ export class FriendshipService {
     user_to_be_friend_id: string,
   ) {
     const existingFriendship = await this.createFriendshipQueryBuilder()
-      .where('friendship.initiator_id = :logged_in_user_id', {
+      .where('initiator.id = :logged_in_user_id', {
         logged_in_user_id,
       })
-      .andWhere('friendship.recipient_id = :user_to_be_friend_id', {
+      .andWhere('recipient.id = :user_to_be_friend_id', {
         user_to_be_friend_id,
       })
       .getOne();
@@ -60,10 +69,10 @@ export class FriendshipService {
   ) {
     const queryBuilder = this.createFriendshipQueryBuilder()
       .where(
-        'friendship.initiator_id = :user_id OR friendship.recipient_id = :user_id',
+        'initiator.id = :user_id OR recipient.id = :user_id OR blocked_by.id = :user_id',
         { user_id },
       )
-      .andWhere(status ? 'friendship.status = :status' : '1=1', { status });
+      .where(status ? 'friendship.status = :status' : '1=1', { status });
 
     if (order_by_created_at)
       queryBuilder.orderBy('friendship.created_at', order_by_created_at);
@@ -117,7 +126,7 @@ export class FriendshipService {
   ): Promise<Friendship> {
     const friendship = await this.getFriendshipById(friendship_id);
 
-    if (logged_in_user_id !== friendship.recipient_id)
+    if (logged_in_user_id !== friendship.recipient.id)
       throw new ForbiddenException('Não é vc que tem q aceitar!');
 
     friendship.status = FriendshipStatus.ACTIVE;
@@ -125,8 +134,8 @@ export class FriendshipService {
     await friendshipRepository.update(friendship_id, friendship);
 
     await this.updateUserFriendCounts(
-      friendship.initiator_id,
-      friendship.recipient_id,
+      friendship.initiator.id,
+      friendship.recipient.id,
       'increment',
     );
 
@@ -140,8 +149,8 @@ export class FriendshipService {
     const friendship = await this.getFriendshipById(friendship_id);
 
     if (
-      friendship.initiator_id !== logged_in_user_id &&
-      friendship.recipient_id !== logged_in_user_id
+      friendship.initiator.id !== logged_in_user_id &&
+      friendship.recipient.id !== logged_in_user_id
     ) {
       throw new ForbiddenException('Não é vc que tem q bloquear!');
     }
@@ -152,8 +161,8 @@ export class FriendshipService {
     await Promise.all([
       friendshipRepository.update(friendship_id, friendship),
       this.updateUserFriendCounts(
-        friendship.initiator_id,
-        friendship.recipient_id,
+        friendship.initiator.id,
+        friendship.recipient.id,
         'decrement',
       ),
     ]);
@@ -168,11 +177,11 @@ export class FriendshipService {
       throw new ForbiddenException(
         'Cannot unblock friendship because it is not currently blocked.',
       );
-    } else if (!friendshipToUnblock.blocked_by_id) {
+    } else if (!friendshipToUnblock.blocked_by?.id) {
       throw new ForbiddenException(
         'This friendship is not blocked by any user.',
       );
-    } else if (friendshipToUnblock.blocked_by_id !== logged_in_user_id) {
+    } else if (friendshipToUnblock.blocked_by.id !== logged_in_user_id) {
       throw new ForbiddenException(
         'You are not authorized to unblock this friendship because you did not block it.',
       );
@@ -180,12 +189,13 @@ export class FriendshipService {
 
     friendshipToUnblock.status = FriendshipStatus.ACTIVE;
     friendshipToUnblock.blocked_by_id = null;
+    friendshipToUnblock.blocked_by = null;
 
     await Promise.all([
       friendshipRepository.update(friendship_id, friendshipToUnblock),
       this.updateUserFriendCounts(
-        friendshipToUnblock.initiator_id,
-        friendshipToUnblock.recipient_id,
+        friendshipToUnblock.initiator.id,
+        friendshipToUnblock.recipient.id,
         'increment',
       ),
     ]);
