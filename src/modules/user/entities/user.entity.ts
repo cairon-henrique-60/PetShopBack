@@ -5,11 +5,12 @@ import { Pet } from 'src/modules/pet/entities/pet.entity';
 import { Base } from 'src/lib/database/entities/base.entity';
 import { createHashedPassword } from 'src/utils/password.utils';
 import { Calendar } from 'src/modules/calendar/entities/calendar.entity';
-import { UnauthorizedError } from 'src/lib/http-exceptions/errors/types/unauthorized-error';
+import { Friendship } from 'src/modules/friendship/entities/friendship.entity';
 import { BadRequestError } from 'src/lib/http-exceptions/errors/types/bad-request-error';
+import { UnauthorizedError } from 'src/lib/http-exceptions/errors/types/unauthorized-error';
 
-import { type UpdateUserType } from '../dtos/update-user.to';
-import { type CreateUserPayload } from '../dtos/create-user.dto';
+import type { UpdateUserType } from '../dtos/update-user.to';
+import type { CreateUserPayload } from '../dtos/create-user.dto';
 
 @Entity('users')
 export class User extends Base {
@@ -29,6 +30,9 @@ export class User extends Base {
   @Column('varchar')
   user_auth_provider: string;
 
+  @Column('int', { default: 0 })
+  total_friends_count: number;
+
   @Column('varchar', { nullable: true })
   phone_number: NullableValue<string>;
 
@@ -40,6 +44,12 @@ export class User extends Base {
 
   @OneToMany(() => Calendar, (calendar) => calendar.user)
   calendars: Calendar[];
+
+  @OneToMany(() => Friendship, (friendship) => friendship.initiator)
+  initiated_friendships: Friendship[];
+
+  @OneToMany(() => Friendship, (friendship) => friendship.recipient)
+  received_friendships: Friendship[];
 
   static async create(data: CreateUserPayload): Promise<User> {
     const userItem = new User();

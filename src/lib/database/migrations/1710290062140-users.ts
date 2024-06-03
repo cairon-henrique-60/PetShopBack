@@ -19,6 +19,11 @@ export class Users1710290062140 implements MigrationInterface {
             type: 'varchar',
           },
           {
+            name: 'total_friends_count',
+            type: 'int',
+            default: 0,
+          },
+          {
             name: 'user_type',
             type: 'varchar',
           },

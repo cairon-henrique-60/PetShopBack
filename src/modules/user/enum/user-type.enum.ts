@@ -3,3 +3,5 @@ export enum UserTypeEnum {
   COMPANY = 'COMPANY',
   ADMIN = 'ADMIN',
 }
+
+export const user_types = Object.values(UserTypeEnum);

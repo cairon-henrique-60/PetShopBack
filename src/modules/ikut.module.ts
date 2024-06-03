@@ -8,6 +8,7 @@ import { GoogleModule } from './google/google.module';
 import { CalendarModule } from './calendar/calendar.module';
 import { PetBreedModule } from './pet-breed/pet-breed.module';
 import { PetSpeciesModule } from './pet-species/pet-species.module';
+import { FriendshipModule } from './friendship/friendship.module';
 
 @Global()
 @Module({
@@ -20,6 +21,7 @@ import { PetSpeciesModule } from './pet-species/pet-species.module';
     MailModule,
     GoogleModule,
     CalendarModule,
+    FriendshipModule,
   ],
 })
 export class IKutModule {}

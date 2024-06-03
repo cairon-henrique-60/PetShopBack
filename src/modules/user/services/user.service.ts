@@ -81,6 +81,39 @@ export class UserService {
     return users;
   }
 
+  async getUserTotalFriendCount(id: string) {
+    const response = await userRepository
+      .createQueryBuilder('u')
+      .select('u.total_friends_count')
+      .where('u.id = :id', { id })
+      .getOneOrFail();
+
+    return response;
+  }
+
+  async updateUserTotalFriendCount(
+    id: string,
+    type: 'increment' | 'decrement',
+  ): Promise<number> {
+    const user = await this.getUserTotalFriendCount(id);
+
+    if (user.total_friends_count === 0 && type === 'decrement')
+      throw new BadRequestError(
+        'Não é possivel ter um número negativo de amigos',
+      );
+
+    user.total_friends_count =
+      type === 'increment'
+        ? user.total_friends_count + 1
+        : user.total_friends_count - 1;
+
+    await userRepository.update(id, user);
+
+    const updatedUser = await this.getUserTotalFriendCount(id);
+
+    return updatedUser.total_friends_count;
+  }
+
   async getUserById(id: string, selectPassword?: boolean): Promise<User> {
     const foundedUser = await userRepository.findOne({
       where: { id },
@@ -92,6 +125,7 @@ export class UserService {
         user_name: true,
         user_type: true,
         hashed_password: selectPassword,
+        total_friends_count: true,
       },
       relations: ['pets'],
       loadEagerRelations: false,
