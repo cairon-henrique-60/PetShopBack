@@ -131,13 +131,14 @@ export class FriendshipService {
 
     friendship.status = FriendshipStatus.ACTIVE;
 
-    await friendshipRepository.update(friendship_id, friendship);
-
-    await this.updateUserFriendCounts(
-      friendship.initiator.id,
-      friendship.recipient.id,
-      'increment',
-    );
+    await Promise.all([
+      friendshipRepository.update(friendship_id, friendship),
+      this.updateUserFriendCounts(
+        friendship.initiator.id,
+        friendship.recipient.id,
+        'increment',
+      ),
+    ]);
 
     return this.getFriendshipById(friendship_id);
   }

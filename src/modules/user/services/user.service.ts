@@ -81,7 +81,9 @@ export class UserService {
     return users;
   }
 
-  async getUserTotalFriendCount(id: string) {
+  async getUserTotalFriendCount(
+    id: string,
+  ): Promise<Pick<User, 'total_friends_count'>> {
     const response = await userRepository
       .createQueryBuilder('u')
       .select('u.total_friends_count')
@@ -94,7 +96,7 @@ export class UserService {
   async updateUserTotalFriendCount(
     id: string,
     type: 'increment' | 'decrement',
-  ): Promise<number> {
+  ) {
     const user = await this.getUserTotalFriendCount(id);
 
     if (user.total_friends_count === 0 && type === 'decrement')
@@ -108,10 +110,6 @@ export class UserService {
         : user.total_friends_count - 1;
 
     await userRepository.update(id, user);
-
-    const updatedUser = await this.getUserTotalFriendCount(id);
-
-    return updatedUser.total_friends_count;
   }
 
   async getUserById(id: string, selectPassword?: boolean): Promise<User> {
