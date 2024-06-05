@@ -1,36 +1,35 @@
 import { z } from 'nestjs-zod/z';
 
-import { isNullableValue } from 'src/utils/is-nullable-value.util';
+import { createNullableTransform } from 'src/utils/create-nullable-transform.util';
 
+/**
+ * -----------------------------------------------------------------------------
+ * Default Schemas
+ * -----------------------------------------------------------------------------
+ */
 export const stringSchema = z.string().trim();
-
 export const emailStringSchema = stringSchema.email();
-
 export const urlStringSchema = stringSchema.url();
+export const uuidSchema = stringSchema.uuid();
+export const orderParamSchema = z.enum(['ASC', 'DESC']);
+export const genderStringSchema = z.enum(['M', 'F']);
 
-export const optionalEmailStringSchema = emailStringSchema
-  .optional()
-  .nullable()
-  .transform((value) => (isNullableValue(value) ? undefined : value));
+export const numberSchema = z
+  .number()
+  .refine((value) => !Number.isNaN(value), { message: 'NaN is not valid' });
 
 export const stringToNumberSchema = stringSchema
   .refine((value) => !Number.isNaN(+value))
   .transform(Number);
 
-export const optionalStringSchema = stringSchema
-  .optional()
-  .nullable()
-  .transform((value) => (isNullableValue(value) ? undefined : value));
+export const paginationParamSchema = z
+  .union([stringSchema, numberSchema])
+  .refine((value) => !Number.isNaN(+value))
+  .transform(Number);
 
-export const optionalStringToNumberSchema = optionalStringSchema
-  .refine((value) => {
-    if (value) return !Number.isNaN(+value);
-
-    return true;
-  })
-  .transform((value) => (value ? Number(value) : undefined));
-
-export const uuidSchema = stringSchema.uuid();
+export const booleanStringSchema = z
+  .enum(['true', 'false'])
+  .transform((value) => value === 'true');
 
 export const phoneNumberStringSchema = stringSchema.refine(
   (data) => {
@@ -44,52 +43,9 @@ export const phoneNumberStringSchema = stringSchema.refine(
   },
 );
 
-export const optionalPhoneNumberStringSchema = phoneNumberStringSchema
-  .optional()
-  .nullable()
-  .transform((value) => (isNullableValue(value) ? undefined : value));
-
-export const optionalUuidSchema = uuidSchema
-  .optional()
-  .nullable()
-  .transform((value) => (isNullableValue(value) ? undefined : value));
-
-export const optionalUrlStringSchema = urlStringSchema
-  .optional()
-  .nullable()
-  .transform((value) => (isNullableValue(value) ? undefined : value));
-
-export const numberSchema = z
-  .number()
-  .refine((value) => !Number.isNaN(value), { message: 'NaN is not valid' });
-
-export const optionalNumberSchema = numberSchema
-  .optional()
-  .nullable()
-  .transform((value) => (isNullableValue(value) ? undefined : value));
-
-export const paginationParamSchema = z
-  .union([z.string(), z.number()])
-  .refine((value) => {
-    if (typeof value === 'string') return !Number.isNaN(+value);
-
-    return true;
-  })
-  .transform(Number);
-
-export const optionalPaginationParamSchema = paginationParamSchema
-  .optional()
-  .nullable()
-  .transform((value) => (isNullableValue(value) ? undefined : value));
-
 export const datetimeStringSchema = stringSchema
   .datetime()
   .transform((value) => new Date(value));
-
-export const optionalDatetimeStringSchema = datetimeStringSchema
-  .optional()
-  .nullable()
-  .transform((value) => (isNullableValue(value) ? undefined : value));
 
 export const dateStringSchema = stringSchema
   .date()
@@ -101,35 +57,47 @@ export const endDateStringSchema = dateStringSchema.transform((endDate) => {
   return endDate;
 });
 
-export const optionalEndDateStringSchema = endDateStringSchema
-  .optional()
-  .nullable()
-  .transform((value) => (isNullableValue(value) ? undefined : value));
+/**
+ * -----------------------------------------------------------------------------
+ * Optional Schemas
+ * -----------------------------------------------------------------------------
+ */
+export const optionalEmailStringSchema =
+  createNullableTransform(emailStringSchema);
 
-export const optionalDateStringSchema = dateStringSchema
-  .optional()
-  .nullable()
-  .transform((value) => (isNullableValue(value) ? undefined : value));
+export const optionalStringSchema = createNullableTransform(stringSchema);
 
-export const booleanStringSchema = z.enum(['true', 'false']);
+export const optionalStringToNumberSchema =
+  createNullableTransform(stringToNumberSchema);
 
-export const optionalBooleanStringSchema = booleanStringSchema
-  .optional()
-  .nullable()
-  .transform((value) =>
-    !isNullableValue(value) ? value === 'true' : undefined,
-  );
+export const optionalPhoneNumberStringSchema = createNullableTransform(
+  phoneNumberStringSchema,
+);
 
-export const orderParamSchema = z.union([z.literal('ASC'), z.literal('DESC')]);
+export const optionalUuidSchema = createNullableTransform(uuidSchema);
 
-export const optionalOrderParamSchema = orderParamSchema
-  .optional()
-  .nullable()
-  .transform((value) => (isNullableValue(value) ? undefined : value));
+export const optionalUrlStringSchema = createNullableTransform(urlStringSchema);
 
-export const genderStringSchema = z.enum(['M', 'F']);
+export const optionalNumberSchema = createNullableTransform(numberSchema);
 
-export const optionalGenderStringSchema = genderStringSchema
-  .optional()
-  .nullable()
-  .transform((value) => (isNullableValue(value) ? undefined : value));
+export const optionalPaginationParamSchema = createNullableTransform(
+  paginationParamSchema,
+);
+
+export const optionalDatetimeStringSchema =
+  createNullableTransform(datetimeStringSchema);
+
+export const optionalEndDateStringSchema =
+  createNullableTransform(endDateStringSchema);
+
+export const optionalDateStringSchema =
+  createNullableTransform(dateStringSchema);
+
+export const optionalBooleanStringSchema =
+  createNullableTransform(booleanStringSchema);
+
+export const optionalOrderParamSchema =
+  createNullableTransform(orderParamSchema);
+
+export const optionalGenderStringSchema =
+  createNullableTransform(genderStringSchema);

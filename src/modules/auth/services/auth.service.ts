@@ -27,9 +27,8 @@ export class AuthService {
   }: LoginPayload): Promise<AccessDTO> {
     const user = await this.usersService.getUserByEmail(user_email);
 
-    if (auth_provider === UserAuthProviders.EMAIL) {
+    if (auth_provider === UserAuthProviders.EMAIL)
       await this.handleEmailSignIn(user, password);
-    }
 
     if (
       auth_provider === UserAuthProviders.GOOGLE &&
@@ -75,9 +74,7 @@ export class AuthService {
   ): Promise<void> {
     if (!password) {
       throw new BadRequestError('Senha é obrigatoria');
-    }
-
-    if (!user.hashed_password) {
+    } else if (!user.hashed_password) {
       throw new InternalServerErrorException(
         'Voce provavelmente fez o seu cadastro por outro provedor',
       );
@@ -99,6 +96,7 @@ export class AuthService {
       email: user.user_email,
       name: user.user_name,
       user_type: user.user_type,
+      user_auth_provider: user.user_auth_provider,
     });
 
     return access_token;

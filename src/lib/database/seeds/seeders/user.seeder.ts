@@ -16,17 +16,16 @@ export default class UserSeeder implements Seeder {
   ): Promise<any> {
     const userRepository = dataSource.getRepository(User);
 
-    const userData = {
+    const newUser = userRepository.create({
       user_name: 'admin',
       user_email: 'admin@gmail.com',
       user_type: UserTypeEnum.ADMIN,
       hashed_password: await hash('teste', 10),
       user_auth_provider: UserAuthProviders.EMAIL,
-      phone_number: '3499999988',
+      phone_number: '+919367788755',
       is_email_verified: false,
-    };
+    });
 
-    const newUser = userRepository.create(userData);
     await userRepository.save(newUser);
   }
 }
