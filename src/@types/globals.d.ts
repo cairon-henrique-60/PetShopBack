@@ -1,34 +1,36 @@
-import { type IPaginationOptions } from 'nestjs-typeorm-paginate';
-/* eslint-disable @typescript-eslint/ban-types */
+import type {
+  IPaginationOptions,
+  IPaginationMeta,
+} from 'nestjs-typeorm-paginate';
+
 import type { EnvType } from 'src/config/env.config';
-import { UserTypeEnum } from 'src/modules/user/enum/user-type.enum';
+import type { UserTypeEnum } from 'src/modules/user/enum/user-type.enum';
+import type { UserAuthProviders } from 'src/modules/user/enum/user-auth-providers.enum';
 
 declare global {
   namespace NodeJS {
-    // eslint-disable-next-line @typescript-eslint/no-empty-interface
     interface ProcessEnv extends EnvType {}
   }
 
   export type NullableValue<T> = T | null;
 
-  export type DecodedTokenType = {
-    id: string;
-    name: string;
-    email: string;
-    user_type: UserTypeEnum;
-    iat: number;
-    exp: number;
-  };
+  export type Maybe<T> = NullableValue<T> | undefined;
 
   export interface IJwtPayload {
     id: string;
     email: string;
     name: string;
-    user_type?: string;
+    user_type: UserTypeEnum;
+    user_auth_provider: UserAuthProviders;
   }
 
-  export type PaginationArgs<T extends Record<string, any> = {}> = T &
-    Omit<IPaginationOptions, 'limit' | 'page'> & {
+  export type DecodedTokenType = IJwtPayload & {
+    iat: number;
+    exp: number;
+  };
+
+  export type PaginationArgs<T extends Record<string, any> = Record> = T &
+    Omit<IPaginationOptions<IPaginationMeta>, 'limit' | 'page'> & {
       limit?: string | number;
       page?: string | number;
     };

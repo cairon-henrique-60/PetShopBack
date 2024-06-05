@@ -116,14 +116,17 @@ export class CalendarService {
         'calendar.end_date',
         'calendar.location',
         'calendar.notification_date',
-        'calendar.user_id',
+        'user.id',
+        'user.user_name',
+        'user.user_email',
         'pet',
         'pet.id',
         'pet.pet_name',
         'pet.pet_breed_id',
         'pet.pet_species_id',
       ])
-      .leftJoin('calendar.pet', 'pet');
+      .leftJoinAndSelect('calendar.pet', 'pet')
+      .leftJoinAndSelect('calendar.user', 'user');
   }
 
   private handleCalendarsFilters(

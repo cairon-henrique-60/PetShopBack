@@ -33,7 +33,6 @@ class UserDTO {
 
   @ApiProperty({
     description: 'Total Friends count',
-    default: 0,
   })
   total_friends_count: number;
 }
