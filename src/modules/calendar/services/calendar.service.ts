@@ -107,6 +107,8 @@ export class CalendarService {
   private createCalendarQueryBuilder() {
     return calendarRepository
       .createQueryBuilder('calendar')
+      .leftJoinAndSelect('calendar.pet', 'pet')
+      .leftJoinAndSelect('calendar.user', 'user')
       .select([
         'calendar.id',
         'calendar.created_at',
@@ -120,13 +122,11 @@ export class CalendarService {
         'user.user_name',
         'user.user_email',
         'pet',
-        'pet.id',
-        'pet.pet_name',
-        'pet.pet_breed_id',
-        'pet.pet_species_id',
-      ])
-      .leftJoinAndSelect('calendar.pet', 'pet')
-      .leftJoinAndSelect('calendar.user', 'user');
+        // 'pet.id',
+        // 'pet.pet_name',
+        // 'pet.pet_breed_id',
+        // 'pet.pet_species_id',
+      ]);
   }
 
   private handleCalendarsFilters(
