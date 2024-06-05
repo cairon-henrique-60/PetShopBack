@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 
+import { UserTypeEnum } from 'src/modules/user/enum/user-type.enum';
 import { UserAuthProviders } from 'src/modules/user/enum/user-auth-providers.enum';
 
 class UserDTO {
@@ -12,8 +13,8 @@ class UserDTO {
   @ApiProperty({ description: 'The email address of the user' })
   user_email: string;
 
-  @ApiProperty({ description: 'The type of the user' })
-  user_type: string;
+  @ApiProperty({ description: 'The type of the user', enum: UserTypeEnum })
+  user_type: UserTypeEnum;
 
   @ApiProperty({ description: 'Indicates if the email is verified' })
   is_email_verified: boolean;
