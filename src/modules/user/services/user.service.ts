@@ -57,6 +57,8 @@ export class UserService {
         'user_type',
         'is_email_verified',
         'phone_number',
+        'user_auth_provider',
+        'total_friends_count',
       ],
       loadEagerRelations: false,
     });
