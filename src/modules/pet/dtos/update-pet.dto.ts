@@ -25,6 +25,7 @@ export const updatePetSchema = z
   .refine(
     ({ pet_species_id, pet_breed_id }) => {
       if (pet_species_id && !pet_breed_id) return false;
+      return true
     },
     {
       message: 'Caso queira mudar a especie insira uma raça!',
