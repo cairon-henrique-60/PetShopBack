@@ -10,21 +10,21 @@ import { GoogleOauthGuard } from '../guards/google-outh.guard';
 export class GoogleController {
   @Public()
   @UseGuards(GoogleOauthGuard)
-  @Patch('google/login')
+  @Patch('login')
   async handleGoogleLogin() {
     return { ok: true };
   }
 
   @Public()
   @UseGuards(GoogleOauthGuard)
-  @Patch('google/register')
+  @Patch('register')
   async handleGoogleRegister() {
     return { ok: true };
   }
 
   @Public()
   @UseGuards(GoogleOauthGuard)
-  @Patch('google/redirect')
+  @Patch('redirect')
   async handleGoogleRedirect() {
     return { ok: true };
   }
