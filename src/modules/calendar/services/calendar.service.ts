@@ -1,10 +1,10 @@
 import { ForbiddenException, Injectable } from '@nestjs/common';
 
+import { PetService } from 'src/modules/pet/services/pet.service';
+import { UserTypeEnum } from 'src/modules/user/enum/user-type.enum';
+import { UserService } from 'src/modules/user/services/user.service';
 import { PaginationService } from 'src/lib/pagination/pagination.service';
 import { NotFoundError } from 'src/lib/http-exceptions/errors/types/not-found-error';
-
-import { PetService } from 'src/modules/pet/services/pet.service';
-import { UserService } from 'src/modules/user/services/user.service';
 
 import { Calendar } from '../entities/calendar.entity';
 import { calendarRepository } from '../repository/calendar.repository';
@@ -49,14 +49,20 @@ export class CalendarService {
 
   async createCalendar(
     payload: CreateCalendarPayload,
-    user_id: string,
+    decoded_token: DecodedTokenType,
   ): Promise<Calendar> {
-    await Promise.all([
-      this.userService.getUserById(user_id),
-      this.petService.getPetById(payload.pet_id),
-    ]);
+    const validatedPet = await this.petService.getPetById(payload.pet_id);
 
-    const calendarToCreate = Calendar.create({ ...payload, user_id });
+    if (
+      decoded_token.user_type !== UserTypeEnum.COMPANY &&
+      decoded_token.id !== validatedPet.tutor.id
+    )
+      throw new ForbiddenException('Erro');
+
+    const calendarToCreate = Calendar.create({
+      ...payload,
+      user_id: decoded_token.id,
+    });
 
     return calendarRepository.save(calendarToCreate);
   }
@@ -64,16 +70,24 @@ export class CalendarService {
   async updateCalendar(
     id: string,
     payload: UpdateCalendarPayload,
-    current_user_id: string,
+    decoded_token: DecodedTokenType,
   ): Promise<Calendar> {
     const calendarToUpdate = await this.getCalendarById(id);
 
     this.checkIfCurrentUserMatchesWithCalendar(
       calendarToUpdate,
-      current_user_id,
+      decoded_token.id,
     );
 
-    if (payload.pet_id) this.petService.getPetById(payload.pet_id);
+    if (payload.pet_id) {
+      const newPet = await this.petService.getPetById(payload.pet_id);
+
+      if (
+        decoded_token.user_type !== UserTypeEnum.COMMOM &&
+        newPet.tutor.id !== decoded_token.id
+      )
+        throw new ForbiddenException('Erro');
+    }
 
     const calendarItem = Calendar.update(payload);
 

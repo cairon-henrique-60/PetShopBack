@@ -54,7 +54,7 @@ export class CalendarController {
     @Body() payload: CreateCalendarDTO,
     @DecodedToken() decoded_token: DecodedTokenType,
   ) {
-    return this.calendarService.createCalendar(payload, decoded_token.id);
+    return this.calendarService.createCalendar(payload, decoded_token);
   }
 
   @Put(':id')
@@ -64,7 +64,7 @@ export class CalendarController {
     @Body() payload: UpdateCalendarDTO,
     @DecodedToken() decoded_token: DecodedTokenType,
   ) {
-    return this.calendarService.updateCalendar(id, payload, decoded_token.id);
+    return this.calendarService.updateCalendar(id, payload, decoded_token);
   }
 
   @Delete(':id')
