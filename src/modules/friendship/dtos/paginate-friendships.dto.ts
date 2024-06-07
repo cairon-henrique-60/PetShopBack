@@ -6,11 +6,12 @@ import {
   optionalOrderParamSchema,
   optionalPaginationParamSchema,
 } from 'src/shared/schemas.shared';
+import { createNullableTransform } from 'src/utils/create-nullable-transform.util';
 
 import { FriendshipStatus } from '../enums/friendship-status.enum';
 
 export const paginateFriendshipsSchema = z.object({
-  status: z.nativeEnum(FriendshipStatus).optional().nullable(),
+  status: createNullableTransform(z.nativeEnum(FriendshipStatus)),
   order_by_created_at: optionalOrderParamSchema,
   order_by_updated_at: optionalOrderParamSchema,
   page: optionalPaginationParamSchema,
@@ -33,5 +34,5 @@ export class PaginateFriendshipsDTO extends createZodDto(
     description: 'Status of the friendship',
     example: FriendshipStatus.PENDING,
   })
-  status?: FriendshipStatus | null;
+  status?: FriendshipStatus;
 }
