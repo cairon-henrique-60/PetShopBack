@@ -7,23 +7,24 @@ import { createNullableTransform } from 'src/utils/create-nullable-transform.uti
  * Default Schemas
  * -----------------------------------------------------------------------------
  */
+export const numberSchema = z.number().safe('Value is not safe');
 export const stringSchema = z.string().trim();
 export const emailStringSchema = stringSchema.email();
 export const urlStringSchema = stringSchema.url();
 export const uuidSchema = stringSchema.uuid();
 export const orderParamSchema = z.enum(['ASC', 'DESC']);
 export const genderStringSchema = z.enum(['M', 'F']);
-
-export const numberSchema = z
-  .number()
-  .refine((value) => !Number.isNaN(value), { message: 'NaN is not valid' });
+export const integerNumberSchema = numberSchema.int();
+export const floatNumberSchema = numberSchema.refine((val) => val % 1 !== 0, {
+  message: 'Value must be float',
+});
 
 export const stringToNumberSchema = stringSchema
   .refine((value) => !Number.isNaN(+value))
   .transform(Number);
 
 export const paginationParamSchema = z
-  .union([stringSchema, numberSchema])
+  .union([stringSchema, integerNumberSchema])
   .refine((value) => !Number.isNaN(+value))
   .transform(Number);
 
@@ -42,6 +43,8 @@ export const phoneNumberStringSchema = stringSchema.refine(
     message: 'Invalid phone number format',
   },
 );
+
+export const timeStringSchema = stringSchema.time({ precision: 3 });
 
 export const datetimeStringSchema = stringSchema
   .datetime()
@@ -78,11 +81,18 @@ export const optionalUuidSchema = createNullableTransform(uuidSchema);
 
 export const optionalUrlStringSchema = createNullableTransform(urlStringSchema);
 
-export const optionalNumberSchema = createNullableTransform(numberSchema);
+export const optionalIntegerNumberSchema =
+  createNullableTransform(integerNumberSchema);
+
+export const optionalFloatNumberSchema =
+  createNullableTransform(floatNumberSchema);
 
 export const optionalPaginationParamSchema = createNullableTransform(
   paginationParamSchema,
 );
+
+export const optionalTimeStringSchema =
+  createNullableTransform(timeStringSchema);
 
 export const optionalDatetimeStringSchema =
   createNullableTransform(datetimeStringSchema);
