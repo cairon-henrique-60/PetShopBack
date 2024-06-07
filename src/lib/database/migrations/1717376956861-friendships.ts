@@ -63,14 +63,13 @@ export class Friendships1717376956861 implements MigrationInterface {
       }),
     );
 
-    // Create foreign keys
     await queryRunner.createForeignKey(
       'friendships',
       new TableForeignKey({
         columnNames: ['initiator_id'],
         referencedColumnNames: ['id'],
         referencedTableName: 'users',
-        onDelete: 'NO ACTION',
+        onDelete: 'CASCADE',
         onUpdate: 'NO ACTION',
       }),
     );
@@ -81,7 +80,7 @@ export class Friendships1717376956861 implements MigrationInterface {
         columnNames: ['blocked_by_id'],
         referencedColumnNames: ['id'],
         referencedTableName: 'users',
-        onDelete: 'NO ACTION',
+        onDelete: 'CASCADE',
         onUpdate: 'NO ACTION',
       }),
     );
@@ -92,7 +91,7 @@ export class Friendships1717376956861 implements MigrationInterface {
         columnNames: ['recipient_id'],
         referencedColumnNames: ['id'],
         referencedTableName: 'users',
-        onDelete: 'NO ACTION',
+        onDelete: 'CASCADE',
         onUpdate: 'NO ACTION',
       }),
     );
